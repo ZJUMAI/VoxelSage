@@ -1,0 +1,48 @@
+name: segmentation_modification
+version: 1.0.0
+description: >
+  交互式分割编辑器。在 2D CT 切片上点击添加正/负样本点，
+  调用 MedSAM2 模型实时优化分割掩码，最后保存修改后的掩码到 NIfTI。
+  返回编辑器的 Web UI 访问链接。
+
+  使用步骤：
+  1. 打开返回的 editor_url
+  2. 在切片上点击标记前景（Positive）或背景（Negative）
+  3. 点击 "Refine" 运行分割优化
+  4. 重复 2-3 直到满意
+  5. 点击 "Save" 保存修改后的掩码
+
+triggers:
+  - 用户需要修改/修复分割结果
+  - 分割掩码不准确，需要手动修正
+  - 需要添加或去除分割区域
+
+inputs:
+  mask_name:
+    type: string
+    description: "编辑器打开时默认选中的掩码（如 tumor_1, liver），不指定则使用第一个。所有掩码可在页面下拉切换编辑。"
+    required: false
+
+outputs:
+  type: object
+  properties:
+    editor_url:
+      type: string
+      description: "分割编辑器 Web UI 访问 URL（一个页面包含所有 mask）"
+    session_id:
+      type: string
+      description: "编辑器会话 ID"
+    mask_name:
+      type: string
+      description: "当前默认选中的掩码名称"
+    mask_names:
+      type: array
+      items:
+        type: string
+      description: "所有可编辑的掩码列表"
+    num_slices:
+      type: integer
+      description: "CT 切片总数"
+    image_size:
+      type: string
+      description: "切片尺寸 (HxW)"

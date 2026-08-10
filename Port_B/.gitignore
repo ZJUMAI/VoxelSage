@@ -1,0 +1,27 @@
+# Runtime data, generated artifacts, and medical images
+data/
+output/
+process-output/
+models/
+checkpoints/
+*.dcm
+*.nii
+*.nii.gz
+*.nrrd
+*.mha
+*.mhd
+*.npz
+
+# Credentials and local state
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.log
+__pycache__/
+*.py[cod]
+.venv/
+venv/

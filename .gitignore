@@ -1,0 +1,28 @@
+# Python and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Medical data, model weights, and generated outputs
+data/
+output/
+models/
+checkpoints/
+*.dcm
+*.nii
+*.nii.gz
+*.nrrd
+*.mha
+*.pt
+*.pth
+*.ckpt

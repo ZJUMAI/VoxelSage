@@ -1,0 +1,51 @@
+name: tumor_vessel_distance
+version: 1.0.0
+description: >
+  计算每个肿瘤到最近血管的距离（mm），并根据临床标准
+  给出血管侵犯风险评估：<1mm 高度可疑、1-5mm 邻近、
+  5-20mm 中等、≥20mm 距离充足。
+
+triggers:
+  - 用户询问肿瘤与血管的关系
+  - 需要评估血管侵犯风险
+  - 计算肿瘤到血管的距离
+  - 术前规划切缘评估
+
+inputs:
+  ct_nifti_path:
+    type: string
+    description: "CT 原始影像 NIfTI 文件路径"
+    source: context
+    required: true
+  mask_dir:
+    type: string
+    description: "分割掩码目录路径"
+    source: context
+    required: true
+  tumor_label:
+    type: string
+    description: "肿瘤掩码名称"
+    default: "hepatic tumor"
+    required: false
+  vessel_names:
+    type: array
+    description: "血管名称列表"
+    default: ["hepatic", "portal"]
+    items:
+      type: string
+    required: false
+
+outputs:
+  type: object
+  properties:
+    distances:
+      type: array
+      description: "每个肿瘤距离每种血管的测量结果"
+      items:
+        type: object
+        properties:
+          tumor_id: { type: string }
+          vessel_name: { type: string }
+          min_distance_mm: { type: number }
+          interpretation: { type: string }
+          tumor_contacts_vessel: { type: boolean }

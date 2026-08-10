@@ -1,0 +1,52 @@
+name: tumor_diameter
+version: 1.0.0
+description: >
+  计算肿瘤的最大直径（mm）。使用三维凸包法（ConvexHull）
+  对大肿瘤精确测量，微小肿瘤用轴对齐包围盒 fallback。
+  自动对 hepatic tumor 做连通域分裂，每个肿瘤独立计算。
+
+triggers:
+  - 用户询问肿瘤大小或直径
+  - 需要评估肿瘤的最大径
+  - 比较多个肿瘤的大小
+
+inputs:
+  ct_nifti_path:
+    type: string
+    description: "CT 原始影像 NIfTI 文件路径"
+    source: context
+    required: true
+  mask_dir:
+    type: string
+    description: "分割掩码目录路径"
+    source: context
+    required: true
+  tumor_label:
+    type: string
+    description: "肿瘤掩码名称，如 'hepatic tumor'"
+    default: "hepatic tumor"
+    required: false
+  min_voxels:
+    type: integer
+    description: "最小体素数过滤阈值"
+    default: 10
+    required: false
+  convex_hull_threshold:
+    type: integer
+    description: "使用凸包法的最小体素阈值"
+    default: 100
+    required: false
+
+outputs:
+  type: object
+  properties:
+    tumors:
+      type: array
+      description: "每个肿瘤的直径数据"
+      items:
+        type: object
+        properties:
+          tumor_id: { type: string }
+          max_diameter_mm: { type: number }
+          method: { type: string }
+          voxel_count: { type: integer }

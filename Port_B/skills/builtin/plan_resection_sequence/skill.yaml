@@ -1,0 +1,73 @@
+name: plan_resection_sequence
+version: 0.1.0
+description: >
+  基于用户在三维网页中明确保存的肝切除 Bézier 剖面，生成面网格上的
+  序贯覆盖访问顺序。当前版本是可解释的工程基线：允许回访已覆盖单元，
+  使用固定经验参数和静态血管安全距离，不重新选择或修改手术剖面。
+  调用本 Skill 前，必须先调用 three_d_reconstruction Skill，并设置
+  generate_resection_plane=true 生成手术剖面；随后用户必须在三维网页中
+  编辑并保存最终剖面。未满足这些前置条件时，本 Skill 不应调用。
+
+prerequisites:
+  - skill: three_d_reconstruction
+    required: true
+    parameters:
+      generate_resection_plane: true
+    description: "必须先生成手术剖面和三维网页"
+  - user_action: save_resection_plane
+    required: true
+    description: "用户必须在三维网页中保存最终编辑后的手术剖面"
+
+triggers:
+  - 用户已保存手术剖面并要求生成序贯切除路径
+  - 需要在肝切除曲面上生成网格覆盖顺序
+inputs:
+  case_name:
+    type: string
+    description: "病例名；默认使用当前病例"
+    source: context
+    required: false
+  grid_resolution:
+    type: array
+    description: "可选网格顶点分辨率 [nU,nV]，默认读取已保存剖面"
+    required: false
+  start_cell:
+    type: integer
+    description: "起点面单元编号；必须位于 Liver∩剖面的安全外边界，未提供时自动选择第一个合法边界单元"
+    required: false
+  preview_only:
+    type: boolean
+    description: "仅返回合法起点和网格状态，不生成或写入正式路径；供三维前端选择起点"
+    default: false
+    required: false
+  algorithm:
+    type: string
+    description: "路径基线：nearest、dfs 或 spanning_tree"
+    default: nearest
+    required: false
+  vascular_safe_distance_mm:
+    type: number
+    description: "血管禁入距离（mm），经验参数，默认 5.0"
+    default: 5.0
+    required: false
+  liver_intersection_min_samples:
+    type: integer
+    description: "一个面单元至少有多少个角点/中心采样点落在 Liver 内才纳入规划；默认 1"
+    default: 1
+    required: false
+  step_time_seconds:
+    type: number
+    description: "相邻网格移动的经验耗时（秒），默认 1.0"
+    default: 1.0
+    required: false
+outputs:
+  type: object
+  properties:
+    status: {type: string, description: "规划状态"}
+    result_path: {type: string, description: "路径 JSON 文件"}
+    path_length: {type: integer, description: "移动步数"}
+    coverage: {type: number, description: "覆盖率"}
+    algorithm: {type: string, description: "使用的规划基线"}
+    start_cell: {type: integer, description: "实际使用的起点单元"}
+    uncovered_cells: {type: array, description: "不可达或未覆盖单元"}
+    failure_reason: {type: string, description: "部分覆盖或失败原因"}

@@ -1,0 +1,63 @@
+name: slice_selection
+version: 1.0.0
+description: >
+  从 CT 序列中选出信息量最大的 K 张切片，并保存为 PNG 图像
+  （原始切片 + 器官轮廓叠加图各一张）。支持多种评分模式：
+  composite（综合评分）、cflt（病灶聚焦）、crlm（肝肿瘤专项）。
+
+triggers:
+  - 用户需要查看关键切片
+  - 需要提取最有诊断价值的切片
+  - 生成切片画廊
+  - 需要 CT 切片上的器官轮廓标注
+
+inputs:
+  ct_nifti_path:
+    type: string
+    description: "CT 原始影像 NIfTI 文件路径"
+    source: context
+    required: true
+  mask_dir:
+    type: string
+    description: "分割掩码目录路径"
+    source: context
+    required: true
+  output_dir:
+    type: string
+    description: "输出目录路径（PNG 将放在此目录）"
+    source: context
+    required: true
+  top_k:
+    type: integer
+    description: "返回的切片数量"
+    default: 3
+    required: false
+  scoring_mode:
+    type: string
+    description: "评分模式: composite（综合）/ cflt（病灶聚焦）/ crlm（肝肿瘤，默认）"
+    enum: ["composite", "cflt", "crlm"]
+    default: "crlm"
+    required: false
+  case_name:
+    type: string
+    description: "病例名（用于 PNG 文件名）"
+    source: context
+    required: false
+
+outputs:
+  type: object
+  properties:
+    slices:
+      type: array
+      description: "选中的切片列表（按评分排序）"
+      items:
+        type: object
+        properties:
+          index: { type: integer }
+          score: { type: number }
+          png_path: { type: string, description: "原始切片 PNG 的服务器文件路径" }
+          overlay_path: { type: string, description: "叠加切片 PNG 的服务器文件路径" }
+          png_url: { type: string, description: "原始切片 PNG 的 HTTP URL（经 8898 代理）" }
+          overlay_url: { type: string, description: "叠加切片 PNG 的 HTTP URL（经 8898 代理）" }
+    scoring_mode:
+      type: string

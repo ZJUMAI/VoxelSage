@@ -1,0 +1,39 @@
+name: liver_analysis
+version: 1.0.0
+description: >
+  综合肝脏分析。计算肝脏体积、各血管体积（肝静脉/门静脉）、
+  每个肿瘤的最大直径和到各血管的距离，并生成格式化文本报告。
+  这是最全面的肝脏分析 Skill，涵盖了 vessel_volume、tumor_diameter、
+  tumor_vessel_distance 三个 Skills 的功能聚合。
+
+triggers:
+  - 用户需要完整的肝脏分析报告
+  - 需要同时获得肿瘤直径和血管距离
+  - 术前综合评估
+  - 需要格式化报告文本
+
+inputs:
+  ct_nifti_path:
+    type: string
+    description: "CT 原始影像 NIfTI 文件路径"
+    source: context
+    required: true
+  mask_dir:
+    type: string
+    description: "分割掩码目录路径"
+    source: context
+    required: true
+
+outputs:
+  type: object
+  properties:
+    liver_volume_cm3: { type: number }
+    vessel_volumes:
+      type: object
+      description: "血管名 → 体积数据"
+    tumor_results:
+      type: object
+      description: "肿瘤名 → 直径/距离数据"
+    report_text:
+      type: string
+      description: "格式化文本报告"

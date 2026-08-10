@@ -1,0 +1,42 @@
+name: vessel_volume
+version: 1.0.0
+description: >
+  计算指定血管的体积（mm³ 和 cm³）。
+  对肝静脉（hepatic）和门静脉（portal）分别计算体积及占肝脏比例。
+
+triggers:
+  - 用户询问血管体积
+  - 需要评估肝静脉或门静脉的形态
+  - 计算血管占肝脏的比例
+
+inputs:
+  ct_nifti_path:
+    type: string
+    description: "CT 原始影像 NIfTI 文件路径"
+    source: context
+    required: true
+  mask_dir:
+    type: string
+    description: "分割掩码目录路径"
+    source: context
+    required: true
+  vessel_names:
+    type: array
+    description: "要计算的血管名称列表，如 ['hepatic', 'portal']"
+    default: ["hepatic", "portal"]
+    items:
+      type: string
+    required: false
+
+outputs:
+  type: object
+  properties:
+    vessels:
+      type: object
+      description: "血管名 → 体积数据"
+      additionalProperties:
+        type: object
+        properties:
+          volume_mm3: { type: number }
+          volume_cm3: { type: number }
+          voxel_count: { type: integer }

@@ -1,0 +1,72 @@
+name: three_d_reconstruction
+version: 1.1.0
+description: >
+  从分割掩码生成交互式 3D 可视化 HTML（Three.js）。
+  支持多器官半透明渲染、病灶高亮、测量工具和标注功能。
+  可选同时计算肝脏手术最优切除剖面（Bézier 曲面），包含安全切缘评估。
+  输出 HTML 文件可直接在浏览器中打开，支持缩放/旋转/剖切。
+
+
+triggers:
+  - 用户需要查看三维重建
+  - 需要交互式 3D 可视化
+  - 术中导航参考
+  - 展示肿瘤与血管的空间位置关系
+  - 需要规划手术切除路径
+  - 评估肿瘤安全切缘
+
+inputs:
+  mask_dir:
+    type: string
+    description: "分割掩码目录路径"
+    source: context
+    required: true
+  output_dir:
+    type: string
+    description: "输出目录路径（3D HTML 将放在此目录）"
+    source: context
+    required: true
+  step_size:
+    type: integer
+    description: "Marching cubes 步长（1=精细慢，2=推荐）"
+    default: 2
+    required: false
+  downsample_factor:
+    type: number
+    description: "体素降采样倍率（1.0=不降采样）"
+    default: 1.0
+    required: false
+  case_name:
+    type: string
+    description: "病例名（用于 HTML 标题和 JSON 文件名）"
+    source: context
+    required: false
+  generate_resection_plane:
+    type: boolean
+    description: "是否同时计算肝脏手术最优切除剖面（Bézier 曲面），默认 false；如果用户只要求三维重建，则此参数应为false；如果用户要求计算手术切除剖面，则此参数应为true"
+    default: false
+    required: false
+  tumor_margin_mm:
+    type: number
+    description: "安全切缘距离（mm），仅当 generate_resection_plane=true 时生效，默认 5.0"
+    default: 5.0
+    required: false
+
+outputs:
+  type: object
+  properties:
+    html_path:
+      type: string
+      description: "3D HTML 的 HTTP URL（经 8898 代理），可直接在浏览器访问"
+    html_url:
+      type: string
+      description: "可通过浏览器访问的 URL"
+    organ_count:
+      type: integer
+      description: "渲染的器官数量"
+    organs:
+      type: array
+      description: "器官名称列表"
+    resection:
+      type: object
+      description: "手术剖面计算结果（仅当 generate_resection_plane=true 时返回）"

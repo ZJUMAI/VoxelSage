@@ -1,0 +1,51 @@
+name: plan_resection
+version: 1.0.0
+description: >
+  计算肝脏手术最优切除剖面（Bézier 曲面）。
+  基于 GeoSurge 引擎，从分割掩码生成 4x4 控制点定义的
+  Bézier 切除曲面，包含安全切缘评估和距离可视化数据。
+  结果追加到已有的 3D 可视化 JSON 文件中，刷新 HTML 即见。
+
+triggers:
+  - 用户需要规划手术切除路径
+  - 需要查看最佳切除剖面
+  - 评估肿瘤安全切缘
+  - 手术规划
+
+inputs:
+  mask_dir:
+    type: string
+    description: "分割掩码目录路径"
+    source: context
+    required: true
+  output_dir:
+    type: string
+    description: "输出目录路径（3D JSON 将在此目录被更新）"
+    source: context
+    required: true
+  case_name:
+    type: string
+    description: "病例名（用于查找 GeoSurge 数据和 3D JSON 文件）"
+    source: context
+    required: false
+  tumor_margin_mm:
+    type: number
+    description: "安全切缘距离（mm），默认 5.0"
+    default: 5.0
+    required: false
+
+outputs:
+  type: object
+  properties:
+    margin_min_mm:
+      type: number
+      description: "肿瘤到切面的最小距离（mm）"
+    margin_success:
+      type: boolean
+      description: "是否满足安全切缘要求"
+    resection_plane_count:
+      type: integer
+      description: "切除剖面数量"
+    json_updated:
+      type: boolean
+      description: "是否成功更新 3D JSON 文件"
