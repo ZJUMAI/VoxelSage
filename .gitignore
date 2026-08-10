@@ -26,3 +26,7 @@ checkpoints/
 *.pt
 *.pth
 *.ckpt
+
+# Local agent inspection artifacts
+.codex-tmp/
+*.pptx.inspect.ndjson

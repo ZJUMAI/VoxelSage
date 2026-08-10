@@ -131,15 +131,33 @@ def _load_matching_mask(
     return np.asanyarray(image.dataobj) != 0
 
 
-def _json_safe(value):
+def _json_safe(value, *, warnings=None, path="$"):
+    """Return a strict-JSON-safe value and report replaced non-finite floats."""
+    if warnings is None:
+        warnings = []
     if isinstance(value, dict):
-        return {str(key): _json_safe(item) for key, item in value.items()}
+        return {
+            str(key): _json_safe(
+                item,
+                warnings=warnings,
+                path=f"{path}.{key}",
+            )
+            for key, item in value.items()
+        }
     if isinstance(value, (list, tuple)):
-        return [_json_safe(item) for item in value]
+        return [
+            _json_safe(item, warnings=warnings, path=f"{path}[{index}]")
+            for index, item in enumerate(value)
+        ]
     if isinstance(value, np.ndarray):
-        return [_json_safe(item) for item in value.tolist()]
+        return _json_safe(value.tolist(), warnings=warnings, path=path)
     if isinstance(value, np.generic):
-        return value.item()
+        return _json_safe(value.item(), warnings=warnings, path=path)
+    if isinstance(value, float) and not np.isfinite(value):
+        warning = f"non_finite_audit_value_replaced_with_null:{path}"
+        if warning not in warnings:
+            warnings.append(warning)
+        return None
     if isinstance(value, Path):
         return str(value)
     return value
@@ -1072,7 +1090,7 @@ def optimize_vessel_mask(
     }
 
     def finish() -> dict:
-        safe_report = _json_safe(report)
+        safe_report = _json_safe(report, warnings=warnings)
         if report_path is not None:
             _write_json_atomic(safe_report, report_path)
         return safe_report

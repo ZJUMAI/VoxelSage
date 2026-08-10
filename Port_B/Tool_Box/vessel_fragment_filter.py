@@ -187,6 +187,7 @@ def _evaluate_source(
                 nearby_other_points = other_points[nearby_ids]
         other_direction = _principal_direction(nearby_other_points, spacing)
         angle = _angle_deg(direction, other_direction)
+        direction_angle_available = bool(np.isfinite(angle))
         source_radius = float(np.median(source_radius_map[indices]))
         if len(nearby_other_points):
             other_radius = float(np.median(
@@ -197,6 +198,7 @@ def _evaluate_source(
         radius_ratio = (
             source_radius / other_radius if other_radius > 0.0 else float("inf")
         )
+        radius_ratio_available = bool(np.isfinite(radius_ratio))
         small_for_reclassification = (
             component["length_mm"] <= config.max_reclassify_length_mm
             and component["volume_mm3"] <= config.max_reclassify_volume_mm3
@@ -242,8 +244,22 @@ def _evaluate_source(
             "median_distance_to_other_main_mm": median_other,
             "p90_distance_to_other_main_mm": p90_other,
             "other_neighborhood_fraction": near_fraction,
-            "direction_angle_deg": angle,
-            "radius_ratio": radius_ratio,
+            "direction_angle_deg": (
+                angle if direction_angle_available else None
+            ),
+            "direction_angle_available": direction_angle_available,
+            "direction_angle_unavailable_reason": (
+                None
+                if direction_angle_available
+                else "local_direction_not_estimable"
+            ),
+            "radius_ratio": radius_ratio if radius_ratio_available else None,
+            "radius_ratio_available": radius_ratio_available,
+            "radius_ratio_unavailable_reason": (
+                None
+                if radius_ratio_available
+                else "nearby_other_vessel_radius_zero_or_unavailable"
+            ),
             "tumor_protected": tumor_near,
         })
     return decisions, removal_masks

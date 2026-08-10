@@ -20,7 +20,7 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 
-from Tool_Box.vessel_connectivity import optimize_vessel_mask
+from Tool_Box.vessel_connectivity import _json_safe, optimize_vessel_mask
 from Tool_Box.vessel_fragment_filter import filter_cross_class_fragments
 from Tool_Box.vessel_optimization_contract import (
     AUDIT_SCHEMA,
@@ -147,6 +147,10 @@ def split_hepatic_tumor(mask_dir: str, min_voxels: int = 10) -> list[str]:
 
 
 def _write_json_atomic(report: dict, report_path: Path) -> None:
+    warnings = report.setdefault("warnings", [])
+    safe_report = _json_safe(report, warnings=warnings)
+    report.clear()
+    report.update(safe_report)
     report_path.parent.mkdir(parents=True, exist_ok=True)
     temp_path = report_path.with_name(report_path.name + ".tmp")
     try:
