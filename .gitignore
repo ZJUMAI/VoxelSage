@@ -30,3 +30,6 @@ checkpoints/
 # Local agent inspection artifacts
 .codex-tmp/
 *.pptx.inspect.ndjson
+
+# macOS metadata
+.DS_Store
