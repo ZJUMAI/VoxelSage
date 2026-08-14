@@ -1,4 +1,4 @@
-# GeoSurge 智能影像辅助诊断平台
+# VoxelSage 智能影像辅助诊断平台
 
 基于多模态 3D 医疗影像与 CT 切片分析的「感知-理解」智能临床辅助诊断平台前端。
 
@@ -23,7 +23,9 @@
 ## 快速开始
 
 ```bash
-npm install
+cd Frontend/voxelsage-public
+npm ci
+cp .env.example .env.local
 npm run dev
 ```
 
@@ -31,20 +33,24 @@ npm run dev
 
 ### 后端依赖
 
-前端通过 HTTP + WebSocket 与后端 Agent 服务通信，后端地址集中配置在 `src/api.ts`：
+前端通过 HTTP + WebSocket 与后端 Agent 服务通信。部署地址通过
+`.env.local` 中的 Vite 构建变量配置：
 
-```ts
-export const WS_CHAT_URL = 'ws://localhost:8900/ws/frontend/chat';
-export const HTTP_BASE_URL = 'http://localhost:8900';
-export const SKILLS_BASE_URL = 'http://localhost:8765';
+```dotenv
+VITE_PORT_A_HTTP_URL=http://127.0.0.1:8900
+VITE_PORT_A_WS_URL=ws://127.0.0.1:8900
+VITE_PORT_B_HTTP_URL=http://127.0.0.1:8765
 ```
 
-部署时请将这些常量改为你的实际后端地址。详细说明见 `.env.example`。
+未设置时，前端会使用当前页面主机名和默认端口。HTTPS 部署必须使用
+`https://`/`wss://`，或通过同域反向代理转发。详细说明见 `.env.example`。
 
 ## 构建
 
 ```bash
+npm run lint
 npm run build   # 产物输出到 dist/
+npm run preview -- --host 0.0.0.0
 ```
 
 ## 项目结构
@@ -65,4 +71,3 @@ src/
     ├── portBUrlHelper.ts       # 后端相对路径 → 前端 URL
     └── ...
 ```
-

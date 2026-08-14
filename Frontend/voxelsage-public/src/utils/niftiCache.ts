@@ -26,7 +26,7 @@ interface CachedNiftiRecord {
   createdAt: number;
 }
 
-const DB_NAME = 'GeoSurgeCache';
+const DB_NAME = 'VoxelSageCache';
 const STORE_NAME = 'niftiVolumes';
 const DB_VERSION = 2;
 

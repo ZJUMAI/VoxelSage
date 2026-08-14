@@ -319,6 +319,7 @@ def propagate_3d(
     video_height: int,
     video_width: int,
     num_anchor_slices: int = 5,
+    max_propagation_slices: "Optional[int]" = None,
 ) -> dict:
     """在 3D 体积上运行 MedSAM2 propagation（双向传播）。
 
@@ -331,7 +332,10 @@ def propagate_3d(
        propagate_in_video 不会修改它们，导致相邻切片 mask 不变）
     - 双向传播：forward（从第一个 refine 切片→末尾）+ backward（从最后一个→开头）
     - 合并两方向结果：frames 优先使用离它最近的传播方向的结果
-    - 对于传播未覆盖的切片（如 obj_id 未被检测到），复制最近 refine 切片的 mask
+    - 只返回距任一 refine 锚点不超过 max_propagation_slices 的切片；范围外
+      保留原掩码，避免局部 negative 编辑影响远端切片
+    - 对于范围内传播未覆盖的切片（如 obj_id 未被检测到），保留该层原始
+      mask，避免用单张锚点强行覆盖邻层
 
     Args:
         ct_volume: (H, W, D) float32 CT
@@ -339,7 +343,8 @@ def propagate_3d(
         refined_indices: 被用户 refine 过的切片索引列表
         video_height: H
         video_width: W
-        num_anchor_slices: 保留参数，不再使用（仅向后兼容）
+        num_anchor_slices: 旧参数；未指定 max_propagation_slices 时作为传播半径
+        max_propagation_slices: 锚点前后最多传播的切片数
 
     Returns:
         Dict[int, np.ndarray]: {frame_idx: (H, W) uint8 二值 mask, ...}
@@ -355,6 +360,20 @@ def propagate_3d(
 
     model_size = predictor.image_size  # 通常是 512
     num_frames = ct_volume.shape[2]
+
+    if not refined_indices:
+        raise ValueError("refined_indices must contain at least one slice")
+    anchor_slices = sorted({int(z) for z in refined_indices})
+    if anchor_slices[0] < 0 or anchor_slices[-1] >= num_frames:
+        raise ValueError("refined_indices contains an out-of-range slice")
+
+    propagation_radius = (
+        int(num_anchor_slices)
+        if max_propagation_slices is None
+        else int(max_propagation_slices)
+    )
+    if propagation_radius < 0:
+        raise ValueError("max_propagation_slices must be non-negative")
 
     # ── 1. CT 预处理 ──
     windowed = apply_ct_window(ct_volume, wl=40.0, ww=400.0)
@@ -388,10 +407,10 @@ def propagate_3d(
     # 导致相邻切片的 mask 没有任何变化。
     #
     # 修复后只注入用户真正修改过的切片，让 MedSAM2 将编辑效果传播到所有其他帧。
-    anchor_slices = sorted(set(refined_indices))
     logger.info(
         f"[MedSAM2] Propagation anchors: {len(anchor_slices)} refined slice(s): "
-        f"{anchor_slices[:10]}{'...' if len(anchor_slices) > 10 else ''}"
+        f"{anchor_slices[:10]}{'...' if len(anchor_slices) > 10 else ''}; "
+        f"radius=+/-{propagation_radius} slices"
     )
 
     first_anchor = min(anchor_slices)
@@ -428,14 +447,14 @@ def propagate_3d(
         )
         return inf_state
 
-    def _inject_anchors(state, anchor_list):
-        """向 state 中注入锚点 mask。"""
-        for z in anchor_list:
-            mask_2d = mask_volume[:, :, z]
+    def _inject_anchors(state, anchor_pairs):
+        """向 state 注入 (视频帧索引, 原体积 mask 索引) 锚点。"""
+        for frame_idx, mask_idx in anchor_pairs:
+            mask_2d = mask_volume[:, :, mask_idx]
             if mask_2d.sum() > 0:
                 predictor.add_new_mask(
                     inference_state=state,
-                    frame_idx=z,
+                    frame_idx=frame_idx,
                     obj_id=obj_id,
                     mask=mask_2d,
                 )
@@ -444,7 +463,7 @@ def propagate_3d(
     # 方向 A: Forward — 从第一个锚点出发，向 volume 末尾传播
     # ================================================================
     state_fwd = _init_state(images_tensor)
-    _inject_anchors(state_fwd, anchor_slices)
+    _inject_anchors(state_fwd, [(z, z) for z in anchor_slices])
     logger.info("[MedSAM2] Running forward propagation...")
     fwd_result = _run_forward(state_fwd)
     logger.info(f"[MedSAM2] Forward done: {len(fwd_result)} frames with obj detected")
@@ -455,10 +474,10 @@ def propagate_3d(
     # 翻转帧顺序: images_rev[i] = images_tensor[num_frames-1-i]
     images_rev = images_tensor.flip(0)
     # 锚点在反转后的索引
-    rev_anchors = [num_frames - 1 - z for z in anchor_slices]
+    rev_anchor_pairs = [(num_frames - 1 - z, z) for z in anchor_slices]
 
     state_bwd = _init_state(images_rev)
-    _inject_anchors(state_bwd, rev_anchors)
+    _inject_anchors(state_bwd, rev_anchor_pairs)
     logger.info("[MedSAM2] Running backward propagation (reversed volume)...")
     rev_result = _run_forward(state_bwd)
     # 将反向传播结果映射回原始帧索引
@@ -479,6 +498,11 @@ def propagate_3d(
 
     merged = {}
     for z in range(num_frames):
+        # 最关键的安全边界：模型仍可在完整 volume 上推理，但只有锚点附近的
+        # 结果能够写回 session；远端原掩码绝不会被本次局部编辑覆盖。
+        if _distance_to_anchors(z) > propagation_radius:
+            continue
+
         in_fwd = z in fwd_result
         in_bwd = z in bwd_result
 
@@ -495,9 +519,9 @@ def propagate_3d(
         elif in_bwd:
             merged[z] = bwd_result[z]
         else:
-            # 两个方向都没检测到 → 复制最近锚点的 mask
-            nearest = min(anchor_slices, key=lambda a: abs(a - z))
-            merged[z] = mask_volume[:, :, nearest].copy()
+            # 两个方向都没检测到时不应把锚点 mask 强行复制到这一层；对
+            # negative 编辑而言，这种复制尤其容易造成大块误删。
+            merged[z] = mask_volume[:, :, z].copy()
 
     # 统计实际变化的切片数
     changed = sum(
@@ -505,7 +529,7 @@ def propagate_3d(
         if not np.array_equal(merged[z], mask_volume[:, :, z])
     )
     logger.info(
-        f"[MedSAM2] Merged: {len(merged)}/{num_frames} slices, "
+        f"[MedSAM2] Merged within radius: {len(merged)}/{num_frames} slices, "
         f"{changed} changed from original"
     )
     return merged

@@ -20,8 +20,9 @@ triggers:
 inputs:
   mask_name:
     type: string
-    description: "编辑器打开时默认选中的掩码（如 tumor_1, liver），不指定则使用第一个。所有掩码可在页面下拉切换编辑。"
+    description: "编辑器打开时默认选中的掩码；默认为 liver。所有掩码可在页面下拉切换编辑。"
     required: false
+    default: "liver"
 
 outputs:
   type: object

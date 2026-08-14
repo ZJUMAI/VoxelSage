@@ -1,7 +1,7 @@
 # Third-party notices and provenance
 
 This document records direct third-party software dependencies and published
-work that informed GeoSurge. It does not grant rights beyond the applicable
+work that informed VoxelSage. It does not grant rights beyond the applicable
 upstream terms.
 
 ## Three.js
@@ -38,7 +38,7 @@ does not imply affiliation with or endorsement by that project's authors.
 
 At the time of this notice, the upstream repository does not display a
 repository license. No source file from that repository may be copied,
-modified, or redistributed in GeoSurge unless the applicable upstream license
+modified, or redistributed in VoxelSage unless the applicable upstream license
 or written permission is documented first.
 
 ## Bézier-surface liver-resection planning reference
@@ -50,14 +50,14 @@ The Bézier-surface and distance-map planning approach was informed by:
 > surfaces and distance maps.* Computer Methods and Programs in Biomedicine.
 > 2017;144:135–145. doi:[10.1016/j.cmpb.2017.03.019](https://doi.org/10.1016/j.cmpb.2017.03.019).
 
-The publication is available under CC BY-NC-ND. GeoSurge does not reproduce
+The publication is available under CC BY-NC-ND. VoxelSage does not reproduce
 the paper's text, figures, supplementary material, or implementation. This
 reference records methodological inspiration; it is not a license for any
 third-party code.
 
-## GeoSurge-authored code
+## VoxelSage-authored code
 
-Unless a file states otherwise, code authored for GeoSurge is licensed under
+Unless a file states otherwise, code authored for VoxelSage is licensed under
 Apache License 2.0. The repository-wide license does not override any
 third-party license, copyright notice, model term, data-use term, or patent
 right.

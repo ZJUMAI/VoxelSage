@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GeoSurge Port B 文件代理服务器
+VoxelSage Port B 文件代理服务器
 =============================
 仅做一件事：把 /output/ 和 /process-output/ 请求转发到 API.py (:8765)。
 

@@ -218,6 +218,23 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     font-size: 12px;
   }
   .action-btn.undo:hover { background: var(--btn-hover); }
+  .propagation-settings {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+  .propagation-settings input {
+    width: 64px;
+    padding: 5px 7px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--btn-bg);
+    color: var(--text);
+    text-align: center;
+  }
 
   /* Click 列表 */
   .click-list {
@@ -440,6 +457,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     <button class="action-btn refine" id="btn-refine" onclick="refineSlice()">
       运行 Refine
     </button>
+    <div class="propagation-settings">
+      <label for="propagation-radius">3D 传播半径（层）</label>
+      <input id="propagation-radius" type="number" min="1" max="50" value="5">
+    </div>
     <button class="action-btn save" id="btn-propagate" onclick="propagate3D()"
             style="background:var(--accent);opacity:0.85;"
             disabled title="先运行 Refine 后再传播">
@@ -778,6 +799,9 @@ async function refineSlice() {
 async function propagate3D() {
   const btn = document.getElementById('btn-propagate');
   if (btn.disabled) return;
+  const radiusInput = document.getElementById('propagation-radius');
+  const propagationRadius = Math.max(1, Math.min(50, parseInt(radiusInput.value, 10) || 5));
+  radiusInput.value = propagationRadius;
 
   btn.disabled = true;
   showLoading('3D 传播中（可能需要 30-60 秒）...');
@@ -789,6 +813,7 @@ async function propagate3D() {
       body: JSON.stringify({
         session_id: SESSION_ID,
         slice_idx: state.currentSlice,
+        max_propagation_slices: propagationRadius,
       })
     });
 
@@ -803,7 +828,7 @@ async function propagate3D() {
     loadSlice(state.currentSlice);
 
     showToast(
-      `3D 传播完成 ✓ 更新了 ${data.propagated_slices}/${data.total_slices} 层`,
+      `3D 传播完成 ✓ 在锚点±${data.propagation_radius}层内更新了 ${data.propagated_slices} 层`,
       'success'
     );
   } catch (e) {

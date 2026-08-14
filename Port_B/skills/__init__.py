@@ -1,4 +1,4 @@
-"""GeoSurge Port B Skills system.
+"""VoxelSage Port B Skills system.
 
 Skills are modular, executable analysis units that Port A (LLM) can
 autonomously invoke via POST /api/skills/run.

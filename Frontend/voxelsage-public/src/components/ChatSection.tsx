@@ -486,7 +486,7 @@ export default function ChatSection({
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping"></span>
                   <span className="font-mono text-[9px] text-blue-600 font-bold uppercase tracking-wider">
-                    GeoSurge 智能体分析中...
+                    VoxelSage 智能体分析中...
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-500 font-sans italic leading-none">

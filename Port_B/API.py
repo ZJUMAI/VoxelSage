@@ -207,18 +207,18 @@ for _k, _v in _VIZ_ORGAN_COLORS.items():
         ORGAN_COLORS[_k] = _v
 
 ORGAN_DISPLAY_NAMES = {
-    "liver":             "肝脏 (Liver)",
-    "spleen":            "脾脏 (Spleen)",
-    "pancreas":          "胰腺 (Pancreas)",
-    "colon":             "结肠 (Colon)",
-    "left kidney":       "左肾 (Left Kidney)",
-    "right kidney":      "右肾 (Right Kidney)",
-    "kidney":            "肾脏 (Kidney)",
-    "pancreatic tumor":  "胰腺肿瘤 (Pancreatic Tumor)",
-    "hepatic tumor":     "肝肿瘤 (Hepatic Tumor)",
-    "left kidney cyst":  "左肾囊肿 (Left Kidney Cyst)",
-    "right kidney cyst": "右肾囊肿 (Right Kidney Cyst)",
-    "kidney cyst":       "肾囊肿 (Kidney Cyst)",
+    "liver":             "肝脏",
+    "spleen":            "脾脏",
+    "pancreas":          "胰腺",
+    "colon":             "结肠",
+    "left kidney":       "左肾",
+    "right kidney":      "右肾",
+    "kidney":            "肾脏",
+    "pancreatic tumor":  "胰腺肿瘤",
+    "hepatic tumor":     "肝肿瘤",
+    "left kidney cyst":  "左肾囊肿",
+    "right kidney cyst": "右肾囊肿",
+    "kidney cyst":       "肾囊肿",
 }
 # Fallback display names
 for _k, _v in _VIZ_ORGAN_DISPLAY_NAMES.items():
@@ -237,10 +237,10 @@ for _k, _v in _CRLM_ORGAN_COLORS.items():
     ORGAN_COLORS[_k] = _v
 
 _CRLM_DISPLAY_NAMES = {
-    "liver":          "肝脏 (Liver)",
-    "liver_remnant":  "残余肝脏 (Liver Remnant)",
-    "hepatic":        "肝静脉 (Hepatic Veins)",
-    "portal":         "门静脉 (Portal Veins)",
+    "liver":          "肝脏",
+    "liver_remnant":  "残余肝脏",
+    "hepatic":        "肝静脉",
+    "portal":         "门静脉",
 }
 for _k, _v in _CRLM_DISPLAY_NAMES.items():
     if _k not in ORGAN_DISPLAY_NAMES:
@@ -267,7 +267,7 @@ with open(_VISTA_LABEL_PATH) as _f:
 
 # Default output directory — all pipeline outputs go under output/
 _DEFAULT_OUTPUT_ROOT = Path(
-    os.environ.get("GEOSURGE_OUTPUT_DIR", Path(__file__).resolve().parent / "output")
+    os.environ.get("VOXELSAGE_OUTPUT_DIR", Path(__file__).resolve().parent / "output")
 )
 DEFAULT_OUTPUT_DIR = _DEFAULT_OUTPUT_ROOT
 
@@ -2908,6 +2908,12 @@ if _HAS_FASTAPI:
         json_file: str = Field(..., description="3D JSON 文件名")
         plane_index: int = Field(..., ge=0, description="当前候选剖面的数组下标")
 
+    class RestoreResectionPlaneRequest(InvalidateResectionPlaneRequest):
+        """POST /api/resection-plane/restore request body."""
+        original_control_points_3d: List[List[List[float]]] = Field(
+            ..., description="页面加载时保留的原始 4x4 三维控制点（网页坐标系）"
+        )
+
 
 # ======================================================================
 # [Section 16]  FastAPI app + endpoints
@@ -2944,7 +2950,7 @@ if _HAS_FASTAPI:
                 del _jobs[jid]
 
     app = FastAPI(
-        title="GeoSurge API",
+        title="VoxelSage API",
         description="将 CT 分割结果（NIfTI 掩码）渲染为交互式 3D HTML 的可视化服务。",
         version="2.0.0",
     )
@@ -3417,7 +3423,7 @@ if _HAS_FASTAPI:
     def api_plan_resection(req: PlanResectionRequest):
         """3D 网页按需计算肝脏手术最优切除剖面。
 
-        从 3D HTML 页面的 toggle 开关调用，执行 GeoSurge 引擎
+        从 3D HTML 页面的 toggle 开关调用，执行 VoxelSage 引擎
         计算 Bézier 切除剖面并追加到已有 3D JSON 文件中。
         """
         import glob as _glob
@@ -3485,6 +3491,10 @@ if _HAS_FASTAPI:
                 raise HTTPException(status_code=400, detail="剖面下标超出范围")
             now = _datetime.datetime.now(_datetime.timezone.utc).isoformat()
             plane = planes[req.plane_index]
+            if "original_control_points_3d" not in plane and plane.get("control_points_3d"):
+                # Preserve the pre-edit baseline for legacy JSON files before
+                # the first manual save overwrites their active control points.
+                plane["original_control_points_3d"] = plane["control_points_3d"]
             plane["control_points_3d"] = req.control_points_3d
             plane["user_saved"] = True
             plane["saved_at"] = now
@@ -3541,6 +3551,58 @@ if _HAS_FASTAPI:
         except Exception as e:
             _log(f"[resection-plane/invalidate] Error: {e}")
             raise HTTPException(status_code=500, detail=f"剖面失效处理失败: {e}")
+
+    @app.post("/api/resection-plane/restore")
+    def api_restore_resection_plane(req: RestoreResectionPlaneRequest):
+        """放弃人工控制点修改并持久化恢复最初的 Bézier 剖面。"""
+        import json as _json
+
+        output_dir = Path(req.output_dir).resolve()
+        json_path = output_dir / Path(req.json_file).name
+        if not output_dir.is_dir() or not json_path.is_file() or json_path.suffix != ".json":
+            raise HTTPException(status_code=400, detail="无效的 3D JSON 路径")
+        if len(req.original_control_points_3d) != 4 or any(
+            len(row) != 4 or any(len(point) != 3 for point in row)
+            for row in req.original_control_points_3d
+        ):
+            raise HTTPException(status_code=400, detail="原始控制点必须是 4x4x3")
+
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = _json.load(f)
+            planes = data.get("resection_planes", [])
+            if req.plane_index >= len(planes):
+                raise HTTPException(status_code=400, detail="剖面下标超出范围")
+            plane = planes[req.plane_index]
+            # New outputs carry the optimizer baseline in JSON. For older
+            # outputs, the page-load snapshot is the best available baseline.
+            original = plane.get("original_control_points_3d")
+            if original is None:
+                original = req.original_control_points_3d
+                plane["original_control_points_3d"] = original
+            plane["control_points_3d"] = original
+            plane["user_saved"] = False
+            plane["unsaved_changes"] = False
+            for key in ("saved_at", "save_source", "saved_candidate_name"):
+                plane.pop(key, None)
+            data["resection_planes"] = planes
+            data["resection_sequence_available"] = False
+            if data.get("selected_resection_plane_index") == req.plane_index:
+                data["selected_resection_plane_source"] = "restored_original"
+                data.pop("selected_resection_plane_saved_at", None)
+            with open(json_path, "w", encoding="utf-8") as f:
+                _json.dump(data, f, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+            return {
+                "status": "ok",
+                "plane_index": req.plane_index,
+                "user_saved": False,
+                "control_points_3d": original,
+            }
+        except HTTPException:
+            raise
+        except Exception as e:
+            _log(f"[resection-plane/restore] Error: {e}")
+            raise HTTPException(status_code=500, detail=f"复原剖面失败: {e}")
 
     @app.post("/api/process-lite", response_model=ProcessLiteResponse)
     def process_lite(req: ProcessLiteRequest):
@@ -3824,7 +3886,7 @@ def server_main(argv: Optional[List[str]] = None):
 
     import argparse
     parser = argparse.ArgumentParser(
-        description="GeoSurge API — CT 影像分割、三维可视化与肝癌分析服务",
+        description="VoxelSage API — CT 影像分割、三维可视化与肝癌分析服务",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--port", type=int, default=8765, help="Server port (default: 8765)")
@@ -3913,7 +3975,7 @@ def server_main(argv: Optional[List[str]] = None):
     # ---- Banner ----
     sep = "=" * 60
     _log(sep)
-    _log("  GeoSurge API Server v2.0.0")
+    _log("  VoxelSage API Server v2.0.0")
     _log(sep)
     _log(f"  Start:     http://{args.host}:{args.port}")
     _log(f"  API Docs:  http://{args.host}:{args.port}/docs")

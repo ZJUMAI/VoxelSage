@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GeoSurge Port B 全流程管线 — 向后兼容导入桩
+VoxelSage Port B 全流程管线 — 向后兼容导入桩
 ==============================================
 
 所有逻辑已迁移到 Visualization.API。此文件为重新导出桩（re-export shim），

@@ -56,6 +56,7 @@ class SwitchMaskRequest(BaseModel):
 class Propagate3DRequest(BaseModel):
     session_id: str
     slice_idx: int  # 用户当前正在 refine 的切片，作为传播锚点
+    max_propagation_slices: int = 5  # 每个锚点前后最多传播的层数
 
 # ============================================================
 # 切片渲染（CT + mask overlay + click 标记）
@@ -463,6 +464,7 @@ def register_routes(app):
                 final_mask = merged
 
             session.update_mask_slice(slice_idx, final_mask)
+            session.mark_refined_slice(slice_idx)
             session.clear_clicks_for_slice(slice_idx)
 
             ct_slice = session.get_ct_uint8()[:, :, slice_idx]
@@ -505,6 +507,12 @@ def register_routes(app):
         slice_idx = int(req.slice_idx)
         if slice_idx < 0 or slice_idx >= session._ct_shape[2]:
             raise HTTPException(status_code=400, detail="Slice index out of range")
+        propagation_radius = int(req.max_propagation_slices)
+        if propagation_radius < 1 or propagation_radius > 50:
+            raise HTTPException(
+                status_code=400,
+                detail="max_propagation_slices must be between 1 and 50",
+            )
 
         # 确保当前 mask 已加载（含 refine 修改）
         session.get_current_mask()
@@ -522,21 +530,16 @@ def register_routes(app):
             mask_volume = session.get_current_mask()
             h, w, d = ct_volume.shape
 
-            # 判断哪些切片被 refine 过（与原始 mask 不同）
-            # 用 refined_indices 记录所有有变化的切片
-            orig_raw = getattr(session, '_original_masks', {}).get(session.current_mask_name)
-            if orig_raw is not None:
-                refined_indices = [
-                    z for z in range(d)
-                    if not np.array_equal(mask_volume[:, :, z], orig_raw[:, :, z])
-                ]
-            else:
-                refined_indices = [slice_idx]
-
+            # 只使用用户实际 Refine 过的切片。若把上次传播产生的变化也当成
+            # 锚点，多次点击传播会令有效范围不断向远端扩张。
+            refined_indices = session.get_refined_slices()
             if not refined_indices:
                 refined_indices = [slice_idx]
 
-            session.log(f"3D propagation from {len(refined_indices)} refined anchor(s): {refined_indices[:5]}...")
+            session.log(
+                f"3D propagation from {len(refined_indices)} refined anchor(s): "
+                f"{refined_indices[:5]}..., radius=+/-{propagation_radius} slices"
+            )
 
             # 运行 MedSAM2 3D propagation
             propagated = run_propagate(
@@ -545,22 +548,27 @@ def register_routes(app):
                 refined_indices=refined_indices,
                 video_height=h,
                 video_width=w,
-                num_anchor_slices=5,
+                max_propagation_slices=propagation_radius,
             )
 
             # 更新 session 中的 mask
             changed_count = 0
             for frame_idx, new_mask_2d in propagated.items():
-                session.update_mask_slice(frame_idx, new_mask_2d)
-                changed_count += 1
+                if not np.array_equal(mask_volume[:, :, frame_idx], new_mask_2d):
+                    session.update_mask_slice(frame_idx, new_mask_2d)
+                    changed_count += 1
 
-            session.log(f"3D propagation updated {changed_count} slices")
+            session.log(
+                f"3D propagation changed {changed_count} slices within "
+                f"+/-{propagation_radius} of an anchor"
+            )
 
             return {
                 "status": "ok",
                 "propagated_slices": changed_count,
                 "total_slices": d,
                 "anchors": refined_indices[:10],
+                "propagation_radius": propagation_radius,
             }
 
         except (FileNotFoundError, ImportError) as e:

@@ -50,7 +50,7 @@ export class ErrorBoundary extends React.Component<
                   页面渲染异常
                 </h2>
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-                  GeoSurge 遇到了一个意外错误
+                  VoxelSage 遇到了一个意外错误
                 </p>
               </div>
             </div>

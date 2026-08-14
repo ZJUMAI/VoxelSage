@@ -27,13 +27,64 @@ inputs:
 outputs:
   type: object
   properties:
-    liver_volume_cm3: { type: number }
+    liver_volume_cm3:
+      type: number
+      description: "肝脏体积 (cm³)"
     vessel_volumes:
       type: object
       description: "血管名 → 体积数据"
+      additionalProperties:
+        type: object
+        description: "单根血管的体积统计"
+        properties:
+          volume_mm3: { type: number, description: "血管体积 (mm³)" }
+          volume_cm3: { type: number, description: "血管体积 (cm³)" }
+          voxel_count: { type: integer, description: "血管掩码体素数" }
+          voxel_volume_mm3: { type: number, description: "单个体素体积 (mm³)" }
+          mask_variant: { type: string, description: "掩码来源（raw/downsampled 等）" }
     tumor_results:
       type: object
-      description: "肿瘤名 → 直径/距离数据"
+      description: "肿瘤名 → 直径/距离/体积数据"
+      additionalProperties:
+        type: object
+        description: "单个肿瘤的完整分析结果"
+        properties:
+          volume_mm3: { type: number, description: "肿瘤体积 (mm³)" }
+          volume_cm3: { type: number, description: "肿瘤体积 (cm³)" }
+          tumor_voxels: { type: integer, description: "肿瘤掩码体素数" }
+          diameter:
+            type: object
+            description: "肿瘤最大三维直径"
+            properties:
+              max_diameter_mm: { type: number, description: "最大三维直径 (mm)，微小/空肿瘤为 null" }
+              method: { type: string, description: "测量方法: convex_hull | axis_aligned | too_small | empty" }
+              voxel_count: { type: integer, description: "参与测量的体素数" }
+              hull_vertices_count: { type: integer, description: "凸包顶点数（仅 convex_hull 模式）" }
+              note: { type: string, description: "附注（如微小病灶跳过精确分析）" }
+          largest_cc:
+            type: object
+            description: "最大连通域统计"
+            properties:
+              total_components: { type: integer, description: "总连通域数（含噪声）" }
+              valid_components: { type: integer, description: "有效分量数（≥ min_voxels）" }
+              largest_voxels: { type: integer, description: "最大分量体素数" }
+              largest_ratio: { type: number, description: "最大分量占比" }
+              component_sizes:
+                type: array
+                description: "各分量体素数（降序）"
+                items: { type: integer }
+          vessel_distances:
+            type: object
+            description: "血管名 → 肿瘤到该血管的最短距离"
+            additionalProperties:
+              type: object
+              description: "到单根血管的距离与临床释义"
+              properties:
+                min_distance_mm: { type: number, description: "最短距离 (mm)" }
+                interpretation: { type: string, description: "临床释义（<1mm 高度可疑…≥20mm 距离充足）" }
+                tumor_voxels: { type: integer, description: "参与计算的肿瘤体素数" }
+                tumor_contacts_vessel: { type: boolean, description: "肿瘤是否与血管直接接触" }
+                mask_variant: { type: string, description: "血管掩码来源" }
     report_text:
       type: string
       description: "格式化文本报告"

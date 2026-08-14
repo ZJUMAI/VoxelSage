@@ -8,9 +8,12 @@ from pathlib import Path
 
 
 MAX_ALLOWED_GAP_MM = 4.0
-AUDIT_SCHEMA = "geosurge.vessel-optimization-audit"
+AUDIT_SCHEMA = "voxelsage.vessel-optimization-audit"
 AUDIT_SCHEMA_VERSION = 2
-LEGACY_AUDIT_SCHEMAS = frozenset({"3dmedagent.vessel-optimization-audit"})
+LEGACY_AUDIT_SCHEMAS = frozenset({
+    "geosurge.vessel-optimization-audit",
+    "3dmedagent.vessel-optimization-audit",
+})
 SUPPORTED_AUDIT_SCHEMAS = frozenset({AUDIT_SCHEMA, *LEGACY_AUDIT_SCHEMAS})
 CASE_MANIFEST_FILENAME = "vessel_optimization_report.json"
 OPTIMIZABLE_VESSELS = frozenset({"hepatic", "portal"})
@@ -21,7 +24,7 @@ def is_supported_audit_schema(value) -> bool:
 
     New manifests use ``AUDIT_SCHEMA``.  The legacy identifier remains
     readable so previously generated, otherwise valid audit manifests retain
-    their safety-validation path after the GeoSurge naming migration.
+    their safety-validation path after the VoxelSage naming migration.
     """
     return value in SUPPORTED_AUDIT_SCHEMAS
 

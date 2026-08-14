@@ -46,7 +46,8 @@ outputs:
       items:
         type: object
         properties:
-          tumor_id: { type: string }
-          max_diameter_mm: { type: number }
-          method: { type: string }
-          voxel_count: { type: integer }
+          tumor_id: { type: string, description: "肿瘤标识（如 tumor_1）" }
+          max_diameter_mm: { type: number, description: "最大三维直径 (mm)，微小/空肿瘤为 null" }
+          method: { type: string, description: "测量方法: convex_hull | axis_aligned | too_small | empty" }
+          voxel_count: { type: integer, description: "肿瘤体素数" }
+          note: { type: string, description: "附注（如微小病灶跳过精确分析）" }
