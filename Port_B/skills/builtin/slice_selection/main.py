@@ -44,14 +44,14 @@ def run(ctx):
             scoring_mode = "composite"
 
     # 确定器官列表
-    # 扫描 mask_dir 获取实际存在的器官
-    organ_list = _CRLM_DEFAULT_ORGANS.copy()
-    available = []
-    for organ in organ_list:
-        if os.path.exists(os.path.join(ctx.mask_dir, f"{organ}.nii.gz")):
-            available.append(organ)
+    # 扫描 mask_dir 获取实际存在的器官。CRLM 后处理会把 VISTA3D 原名重命名/拆分
+    # （hepatic vessel → hepatic，portal vein and splenic vein → portal，
+    #  hepatic tumor → tumor_1..tumor_N），因此不能用 VISTA3D 原名精确匹配，
+    # 否则肿瘤/血管 mask 全部漏掉，crlm 评分奖励与 overlay 都会失效。
+    from Tool_Box.mask_resolution import scan_logical_masks
+    available = list(scan_logical_masks(ctx.mask_dir).keys())
     if not available:
-        available = organ_list
+        available = _CRLM_DEFAULT_ORGANS
 
     # 执行切片评分与选取
     indices, label_masks, scores = select_top_slices(

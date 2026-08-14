@@ -27,7 +27,7 @@ def run(ctx):
         output_filename=f"{case_name}_3d",
         step_size=step_size,
         downsample_factor=downsample,
-        title=f"3D Visualization — {case_name}",
+        title=f"三维医学影像可视化 — {case_name}",
     )
 
     if result.get("status") == "error":

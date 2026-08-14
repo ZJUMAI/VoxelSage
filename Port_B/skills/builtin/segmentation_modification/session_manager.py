@@ -72,13 +72,21 @@ class EditorSession:
         if not self.mask_names:
             self.mask_names = self._split_multilabel_masks(mask_dir, _raw_names, ct_shape)
 
-        # 如果过滤后初始掩码名不可用，退到第一个可用掩码
+        # 如果过滤/拆分后初始掩码名不可用，仍优先选 liver，再退到第一个。
+        # 这覆盖了会话收到 all、随后才拆分多标签掩码的路径。
         if mask_name not in self.mask_names:
-            mask_name = self.mask_names[0] if self.mask_names else ""
+            mask_name = (
+                "liver"
+                if "liver" in self.mask_names
+                else (self.mask_names[0] if self.mask_names else "")
+            )
 
         self.current_mask_name = mask_name
         self._masks: Dict[str, Optional[np.ndarray]] = {n: None for n in self.mask_names}
         self._original_masks: Dict[str, Optional[np.ndarray]] = {n: None for n in self.mask_names}
+        # 仅记录用户实际运行过 Refine 的切片。传播写回的切片不能成为下一次
+        # 传播的新锚点，否则多次传播会让影响范围逐步向远端扩张。
+        self._refined_slices: Dict[str, set] = {n: set() for n in self.mask_names}
 
         # 惰性加载数据
         self._ct_array: Optional[np.ndarray] = None
@@ -425,6 +433,14 @@ class EditorSession:
                 order=0,
             )
         mask[:, :, slice_idx] = (new_mask_2d > 0).astype(np.uint8)
+
+    def mark_refined_slice(self, slice_idx: int) -> None:
+        """记录当前 mask 上由用户 Refine 产生的真实传播锚点。"""
+        self._refined_slices.setdefault(self.current_mask_name, set()).add(int(slice_idx))
+
+    def get_refined_slices(self) -> List[int]:
+        """返回当前 mask 的用户 Refine 切片，不包含传播生成的切片。"""
+        return sorted(self._refined_slices.get(self.current_mask_name, set()))
 
     # ── Click 管理 ──
 

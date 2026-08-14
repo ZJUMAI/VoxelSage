@@ -5,7 +5,7 @@
 ## 项目结构
 
 ```
-qwen_vl_demo/
+Port_A/
 ├── core/
 │   ├── server.py                  # FastAPI 主服务器 (WebSocket / Agent Loop)
 │   ├── medical_knowledge_base.py  # 医学知识库：测量值校验、临床规则检查
@@ -15,11 +15,19 @@ qwen_vl_demo/
 │   └── test_p0_optimizations.py   # 单元测试
 ├── docs/
 │   └── ARCHITECTURE.md            # 架构文档
-├── restart.sh                     # 服务重启脚本
+├── requirements.txt               # Python 运行依赖
 └── README.md
 ```
 
 ## 快速开始
+
+在仓库根目录创建 Python 3.10+ 虚拟环境并安装依赖：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r Port_A/requirements.txt
+```
 
 ### 环境变量
 
@@ -33,18 +41,17 @@ export CACHE_ROOT="./case_cache"
 ### 启动服务
 
 ```bash
+cd Port_A
 python -m core.server
 ```
 
-或：
-
-```bash
-bash restart.sh
-```
+服务默认监听 `0.0.0.0:8900`。启动前请先运行 Port B，并确保
+`PORT_B_INTERNAL` 指向其可访问地址。
 
 ### 运行测试
 
 ```bash
+cd Port_A
 python tests/test_p0_optimizations.py
 ```
 

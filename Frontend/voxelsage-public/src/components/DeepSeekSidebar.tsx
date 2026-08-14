@@ -53,7 +53,7 @@ export default function DeepSeekSidebar({
             <Activity size={15} className="text-white animate-pulse" />
           </div>
           <div className="truncate">
-            <h1 className="text-sm font-bold tracking-tight text-slate-900 uppercase font-mono leading-none truncate">GeoSurge</h1>
+            <h1 className="text-sm font-bold tracking-tight text-slate-900 uppercase font-mono leading-none truncate">VoxelSage</h1>
             <span className="text-[8px] text-slate-400 font-mono block mt-0.5 truncate">多模态会诊系统 v1.2</span>
           </div>
         </div>

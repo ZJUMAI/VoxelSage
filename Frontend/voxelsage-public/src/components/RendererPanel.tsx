@@ -26,6 +26,7 @@ interface RendererPanelProps {
   onMaximize3d: () => void;
   skillResults: any[];
   navigateTo?: { tab: string; skillIdx?: number; skillName?: string } | null;
+  threeDMeta?: any;
   // 2D slice viewer props
   niftiVolume?: any;
   currentSliceIndex?: number;

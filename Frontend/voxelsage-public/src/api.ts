@@ -1,21 +1,37 @@
 import { AgentStatus, ReasoningStep } from './types';
 
-// 后端地址 — 请根据实际部署修改（公开版默认使用本机 localhost）
-export const WS_CHAT_URL = 'ws://localhost:8900/ws/frontend/chat';
-export const HTTP_BASE_URL = 'http://localhost:8900';
-export const HEALTH_URL = 'http://localhost:8900/health';
-export const UPLOAD_URL = 'http://localhost:8900/api/upload';
+const runtimeHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+const defaultHttpProtocol = isSecure ? 'https:' : 'http:';
+const defaultWsProtocol = isSecure ? 'wss:' : 'ws:';
+const stripTrailingSlash = (value: string) => value.replace(/\/$/, '');
+
+const portAHttpRoot = stripTrailingSlash(
+  import.meta.env.VITE_PORT_A_HTTP_URL || `${defaultHttpProtocol}//${runtimeHost}:8900`,
+);
+const portAWsRoot = stripTrailingSlash(
+  import.meta.env.VITE_PORT_A_WS_URL || `${defaultWsProtocol}//${runtimeHost}:8900`,
+);
+const portBHttpRoot = stripTrailingSlash(
+  import.meta.env.VITE_PORT_B_HTTP_URL || `${defaultHttpProtocol}//${runtimeHost}:8765`,
+);
+
+// Backend URLs can be injected at build time; defaults follow the page hostname.
+export const WS_CHAT_URL = `${portAWsRoot}/ws/frontend/chat`;
+export const HTTP_BASE_URL = portAHttpRoot;
+export const HEALTH_URL = `${portAHttpRoot}/health`;
+export const UPLOAD_URL = `${portAHttpRoot}/api/upload`;
 
 // Port B — Skill 列表 & 渲染工具
-export const SKILLS_BASE_URL = 'http://localhost:8765';
+export const SKILLS_BASE_URL = portBHttpRoot;
 export const SKILLS_LIST_URL = `${SKILLS_BASE_URL}/api/skills/list`;
 
-/** @deprecated 改用硬编码 WS_CHAT_URL */
+/** @deprecated 直接使用配置后的 WS_CHAT_URL */
 export function getApiBaseUrl(): string {
   return WS_CHAT_URL;
 }
 
-/** @deprecated 改用硬编码 HTTP_BASE_URL */
+/** @deprecated 直接使用配置后的 HTTP_BASE_URL */
 export function getHttpRootUrl(): string {
   return HTTP_BASE_URL;
 }

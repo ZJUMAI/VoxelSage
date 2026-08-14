@@ -93,52 +93,67 @@ ORGAN_COLORS = {
     "tumor_5":           {"color": "#e84040", "opacity": 1.0},
 }
 
-# Display names (for legend and hover). Falls back to the key name.
+# 中文显示名称（用于图例与悬停提示）。未知名称保留原始值。
 ORGAN_DISPLAY_NAMES = {
-    "liver":             "Liver",
-    "spleen":            "Spleen",
-    "pancreas":          "Pancreas",
-    "colon":             "Colon",
-    "left kidney":       "Left Kidney",
-    "right kidney":      "Right Kidney",
-    "kidney":            "Kidney",
-    "adrenal gland":     "Adrenal Gland",
-    "right adrenal gland": "Right Adrenal",
-    "left adrenal gland":  "Left Adrenal",
-    "stomach":           "Stomach",
-    "duodenum":          "Duodenum",
-    "gallbladder":       "Gallbladder",
-    "esophagus":         "Esophagus",
-    "bladder":           "Bladder",
-    "aorta":             "Aorta",
-    "inferior vena cava": "IVC",
-    "prostate":          "Prostate",
-    "pancreatic tumor":  "Pancreatic Tumor",
-    "hepatic tumor":     "Hepatic Tumor #1",
-    "hepatic tumor2":    "Hepatic Tumor #2",
-    "liver tumor":       "Liver Tumor",
-    "left kidney cyst":  "Left Kidney Cyst",
-    "right kidney cyst": "Right Kidney Cyst",
-    "kidney cyst":       "Kidney Cyst",
-    "kidney_cyst":       "Kidney Cyst",
-    "hepatic":           "Hepatic Veins",
-    "portal":            "Portal Veins",
-    "liver_remnant":     "Liver Remnant",
-    "tumor_1":           "Tumor #1",
-    "tumor_2":           "Tumor #2",
-    "tumor_3":           "Tumor #3",
-    "tumor_4":           "Tumor #4",
-    "tumor_5":           "Tumor #5",
+    "liver":             "肝脏",
+    "spleen":            "脾脏",
+    "pancreas":          "胰腺",
+    "colon":             "结肠",
+    "left kidney":       "左肾",
+    "right kidney":      "右肾",
+    "kidney":            "肾脏",
+    "adrenal gland":     "肾上腺",
+    "right adrenal gland": "右肾上腺",
+    "left adrenal gland":  "左肾上腺",
+    "stomach":           "胃",
+    "duodenum":          "十二指肠",
+    "gallbladder":       "胆囊",
+    "esophagus":         "食管",
+    "bladder":           "膀胱",
+    "lung":              "肺",
+    "left lung":         "左肺",
+    "right lung":        "右肺",
+    "heart":             "心脏",
+    "bone":              "骨骼",
+    "rib":               "肋骨",
+    "vertebra":          "椎骨",
+    "muscle":            "肌肉",
+    "small bowel":       "小肠",
+    "portal vein":       "门静脉",
+    "aorta":             "主动脉",
+    "inferior vena cava": "下腔静脉",
+    "prostate":          "前列腺",
+    "pancreatic tumor":  "胰腺肿瘤",
+    "hepatic tumor":     "肝肿瘤 #1",
+    "hepatic tumor2":    "肝肿瘤 #2",
+    "liver tumor":       "肝肿瘤",
+    "left kidney cyst":  "左肾囊肿",
+    "right kidney cyst": "右肾囊肿",
+    "kidney cyst":       "肾囊肿",
+    "kidney_cyst":       "肾囊肿",
+    "cyst":              "囊肿",
+    "lesion":            "病灶",
+    "metastasis":        "转移灶",
+    "nodule":            "结节",
+    "tumor":             "肿瘤",
+    "hepatic":           "肝静脉",
+    "portal":            "门静脉",
+    "liver_remnant":     "剩余肝脏",
+    "tumor_1":           "肿瘤 #1",
+    "tumor_2":           "肿瘤 #2",
+    "tumor_3":           "肿瘤 #3",
+    "tumor_4":           "肿瘤 #4",
+    "tumor_5":           "肿瘤 #5",
 }
 
 
 def get_display_name(name):
-    """Return an English display name, including dynamic tumor_N fallbacks."""
+    """返回中文显示名称，并支持动态 tumor_N 名称。"""
     if name in ORGAN_DISPLAY_NAMES:
         return ORGAN_DISPLAY_NAMES[name]
     m = re.match(r"^tumor_(\d+)$", name)
     if m:
-        return f"Tumor #{m.group(1)}"
+        return f"肿瘤 #{m.group(1)}"
     return name
 
 
@@ -727,7 +742,7 @@ let INITIAL_CAM_POS = null;
 
 fetch(DATA_URL)
   .then(r => {
-    if (!r.ok) throw new Error('Failed to load 3D data: ' + DATA_URL);
+    if (!r.ok) throw new Error('无法加载三维数据：' + DATA_URL);
     return r.json();
   })
   .then(jsonData => {
@@ -751,7 +766,7 @@ fetch(DATA_URL)
       const faces = new Uint32Array(data.faces);
       const color = data.color || FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
       const opacity = data.opacity != null ? data.opacity : 0.85;
-      const name = data.name || `Organ ${idx + 1}`;
+      const name = data.name || `结构 ${idx + 1}`;
 
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.BufferAttribute(verts, 3));
@@ -801,6 +816,9 @@ fetch(DATA_URL)
         let isEditMode = false;
         let activeDragControls = null;
 
+        const cloneControlPoints = points => points.map(
+          row => row.map(point => point.slice()));
+
         resectionPlanes.forEach((planeData, pi) => {
           if (centerOffset && !planeData.center_offset) {
             planeData.center_offset = centerOffset;
@@ -824,11 +842,20 @@ fetch(DATA_URL)
           if (result.label) result.label.visible = visible;
 
           result.mesh.userData = {
-            name: resectionPlanes[pi].candidate_name || ('Resection Plan ' + (pi + 1)),
+            name: resectionPlanes[pi].candidate_name || ('切除方案 ' + (pi + 1)),
             type: 'resection_plane',
             planeIndex: pi,
           };
-          planeObjects.push({ ...result, cpGroup, planeData, hasCP: !!planeData.control_points_3d });
+          const initialControlPoints = planeData.original_control_points_3d
+            || planeData.control_points_3d;
+          planeObjects.push({
+            ...result,
+            cpGroup,
+            planeData,
+            hasCP: !!planeData.control_points_3d,
+            originalControlPoints: initialControlPoints
+              ? cloneControlPoints(initialControlPoints) : null,
+          });
         });
 
         // --- Load and display the saved sequence path, if it exists ---
@@ -839,7 +866,7 @@ fetch(DATA_URL)
           const sequencePlane = resectionPlanes[sequencePlaneIndex];
           if (sequence.saved_at && (!sequencePlane || !sequencePlane.saved_at
               || sequence.saved_at !== sequencePlane.saved_at)) {
-            throw new Error('Sequence belongs to an older saved resection plane');
+            throw new Error('该切除序列对应的是旧版已保存切面');
           }
           clearSequenceCells();
           resectionSequence = sequence;
@@ -886,7 +913,7 @@ fetch(DATA_URL)
         function fetchSequence(cacheBust) {
           const url = cacheBust ? `${sequenceUrl}?t=${Date.now()}` : sequenceUrl;
           return fetch(url).then(r => {
-            if (!r.ok) throw new Error('No saved sequence');
+            if (!r.ok) throw new Error('没有已保存的切除序列');
             return r.json();
           }).then(loadSequence).catch(() => {
             const panel = document.getElementById('path-planning-panel');
@@ -1033,7 +1060,7 @@ fetch(DATA_URL)
             selectedStartCell = hits[0].object.userData.sequenceCell;
             pickStartMode = false;
             updateCellColors();
-            createSequenceControls(`Start cell ${selectedStartCell} selected.`);
+            createSequenceControls(`已选择起始网格 ${selectedStartCell}。`);
           });
         }
 
@@ -1041,7 +1068,7 @@ fetch(DATA_URL)
           const cd = document.getElementById('case-data');
           const po = planeObjects[activePlane];
           if (!cd || !po || !po.planeData || !po.planeData.user_saved) {
-            createSequenceControls('Save the edited plane before choosing a start.');
+            createSequenceControls('请先保存编辑后的切面，再选择起点。');
             return;
           }
           const vascularDistance = Number(document.getElementById('path-vascular-distance').value);
@@ -1054,13 +1081,13 @@ fetch(DATA_URL)
             JSON.stringify(po.planeData.control_points_3d || []),
           ].join('|');
           const activatePreview = preview => {
-            clearDisplayedSequence('Preparing valid start cells…');
+            clearDisplayedSequence('正在准备有效起始网格…');
             resectionSequence = preview;
             selectedStartCell = null;
             pickStartMode = true;
             ensureSequenceCells(po.planeData);
             updateCellColors();
-            createSequenceControls('Green boundary cells are valid starting points.');
+            createSequenceControls('绿色边界网格可作为有效起点。');
           };
           const cachedPreview = startCellPreviewCache.get(previewKey);
           if (cachedPreview) {
@@ -1068,7 +1095,7 @@ fetch(DATA_URL)
             return;
           }
           pathPlanningBusy = true;
-          clearDisplayedSequence('Finding valid start cells…');
+          clearDisplayedSequence('正在查找有效起始网格…');
           fetch('/api/skills/run', {
             method: 'POST', headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -1082,12 +1109,12 @@ fetch(DATA_URL)
             })
           }).then(r => r.json()).then(data => {
             if (data.status !== 'ok' || !data.result || data.result.status !== 'preview') {
-              throw new Error(data.message || data.detail || 'Could not identify valid start cells');
+              throw new Error(data.message || data.detail || '无法识别有效起始网格');
             }
             startCellPreviewCache.set(previewKey, data.result);
             activatePreview(data.result);
           }).catch(err => {
-            createSequenceControls('Start-cell preview failed: ' + err.message);
+            createSequenceControls('起始网格预览失败：' + err.message);
           }).finally(() => {
             pathPlanningBusy = false;
             createSequenceControls();
@@ -1131,9 +1158,11 @@ fetch(DATA_URL)
           resectionPathObjects = {completed, remaining, current};
           const label = document.getElementById('path-status');
           if (label) {
-            const coverageText = `Step ${resectionPathStep + 1}/${steps.length} · ${steps[resectionPathStep].action} · Coverage ${((new Set(steps.slice(0, resectionPathStep + 1).map(s => s.cell)).size / (resectionSequence.target_cell_count || 1)) * 100).toFixed(1)}%`;
+            const actionNames = { cut: '切除', transfer: '转移', move: '移动' };
+            const action = actionNames[steps[resectionPathStep].action] || steps[resectionPathStep].action;
+            const coverageText = `步骤 ${resectionPathStep + 1}/${steps.length} · ${action} · 覆盖率 ${((new Set(steps.slice(0, resectionPathStep + 1).map(s => s.cell)).size / (resectionSequence.target_cell_count || 1)) * 100).toFixed(1)}%`;
             label.textContent = resectionSequence.status === 'partial'
-              ? `${coverageText} · ${resectionSequence.failure_reason || 'Partial coverage'}`
+              ? `${coverageText} · ${resectionSequence.failure_reason || '部分覆盖'}`
               : coverageText;
           }
           const slider = document.getElementById('path-slider');
@@ -1160,9 +1189,9 @@ fetch(DATA_URL)
           if (replanButton) replanButton.disabled = pathPlanningBusy;
           const pickButton = document.getElementById('path-pick-start');
           pickButton.disabled = !po || !po.planeData.user_saved || pathPlanningBusy;
-          pickButton.textContent = pickStartMode ? 'Click a cell' : 'Pick Start';
+          pickButton.textContent = pickStartMode ? '点击网格' : '选择起点';
           if (message) document.getElementById('path-status').textContent = message;
-          else if (selectedStartCell != null) document.getElementById('path-status').textContent = `Start cell ${selectedStartCell}`;
+          else if (selectedStartCell != null) document.getElementById('path-status').textContent = `起始网格 ${selectedStartCell}`;
           if (!resectionCellObjects.length && po && resectionSequence) ensureSequenceCells(po.planeData);
           if (sequenceControlsWired) return;
           sequenceControlsWired = true;
@@ -1174,14 +1203,14 @@ fetch(DATA_URL)
               if (resectionPathStep >= resectionSequence.path.length - 1) { stopSequence(); return; }
               drawSequenceStep(resectionPathStep + 1);
             }, 120);
-            document.getElementById('path-play').textContent = 'Pause';
+            document.getElementById('path-play').textContent = '暂停';
           });
           document.getElementById('path-prev').addEventListener('click', () => { stopSequence(); drawSequenceStep(resectionPathStep - 1); });
           document.getElementById('path-next').addEventListener('click', () => { stopSequence(); drawSequenceStep(resectionPathStep + 1); });
           pickButton.addEventListener('click', () => {
             if (pickStartMode) {
               pickStartMode = false;
-              createSequenceControls('Start selection cancelled.');
+              createSequenceControls('已取消起点选择。');
               return;
             }
             requestStartCellPreview();
@@ -1193,7 +1222,7 @@ fetch(DATA_URL)
           if (resectionPathTimer) clearInterval(resectionPathTimer);
           resectionPathTimer = null;
           const btn = document.getElementById('path-play');
-          if (btn) btn.textContent = 'Play';
+          if (btn) btn.textContent = '播放';
         }
 
         function clearDisplayedSequence(message, revealPanel = true) {
@@ -1212,7 +1241,7 @@ fetch(DATA_URL)
           selectedStartCell = null;
           pickStartMode = false;
           if (revealPanel) {
-            createSequenceControls(message || 'Save the plane, then replan.');
+            createSequenceControls(message || '请先保存切面，再重新规划。');
           } else {
             const panel = document.getElementById('path-planning-panel');
             if (panel) {
@@ -1227,18 +1256,18 @@ fetch(DATA_URL)
           const cd = document.getElementById('case-data');
           const po = planeObjects[activePlane];
           if (!cd || !po || !po.planeData || !po.planeData.user_saved) {
-            createSequenceControls('Save the edited plane first.');
+            createSequenceControls('请先保存编辑后的切面。');
             return;
           }
           if (selectedStartCell == null) {
-            createSequenceControls('Pick a start cell on the surface first.');
+            createSequenceControls('请先在切面上选择起始网格。');
             return;
           }
           const button = document.getElementById('path-replan');
           button.disabled = true;
           pathPlanningBusy = true;
-          button.textContent = 'Planning…';
-          createSequenceControls('Planning from the saved plane…');
+          button.textContent = '规划中…';
+          createSequenceControls('正在基于已保存切面规划…');
           fetch('/api/skills/run', {
             method: 'POST', headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -1254,17 +1283,17 @@ fetch(DATA_URL)
             })
           }).then(r => r.json()).then(data => {
             if (data.status !== 'ok' || !data.result || !['ok', 'partial'].includes(data.result.status)) {
-              throw new Error(data.message || data.detail || 'Path planning failed');
+              throw new Error(data.message || data.detail || '路径规划失败');
             }
             return fetchSequence(true);
           }).then(() => {
-            if (!resectionSequence) throw new Error('Could not load the new path result');
+            if (!resectionSequence) throw new Error('无法加载新的路径结果');
           }).catch(err => {
-            createSequenceControls('Path planning failed: ' + err.message);
+            createSequenceControls('路径规划失败：' + err.message);
           }).finally(() => {
             pathPlanningBusy = false;
             button.disabled = false;
-            button.textContent = 'Replan';
+            button.textContent = '重新规划';
             createSequenceControls();
           });
         }
@@ -1279,8 +1308,8 @@ fetch(DATA_URL)
           }
           const po = planeObjects[activePlane];
           const message = po && po.planeData && po.planeData.user_saved
-            ? (resectionSequence ? undefined : 'Pick a start cell, then generate the optimal path.')
-            : 'Save the selected resection plane before planning a surgical path.';
+            ? (resectionSequence ? undefined : '请选择起始网格，然后生成最优路径。')
+            : '请先保存所选切除面，再规划手术路径。';
           createSequenceControls(message);
         }
         document.addEventListener('path-planning-open-request', handlePathPlanningOpenRequest);
@@ -1290,6 +1319,56 @@ fetch(DATA_URL)
         }
 
         // --- Edit mode controls ---
+        function rebuildEditedPlane(po, controlPoints, gridVisible) {
+          const cp3d = cloneControlPoints(controlPoints);
+          const nU = (po.planeData.surface_resolution && po.planeData.surface_resolution[0]) || 20;
+          const nV = (po.planeData.surface_resolution && po.planeData.surface_resolution[1]) || 20;
+          const newPos = BS.computeSurfacePositions(cp3d, nU, nV);
+          const dists = BS.computeVertexDistances(newPos, tumorCloud);
+          const cols = BS.distancesToColors(dists);
+
+          po.planeData.control_points_3d = cp3d;
+          BS.updateSurfaceGeometry(po.mesh.geometry, newPos, cols);
+          po.cpGroup.children.forEach((sphere, index) => {
+            const point = cp3d[Math.floor(index / 4)][index % 4];
+            sphere.position.set(point[0], point[1], point[2]);
+          });
+
+          const marginMin = Math.min(...dists);
+          po.planeData.margin_min_mm = marginMin;
+          po.planeData.margin_p05_mm = 0;
+          po.planeData.margin_success = marginMin >= (po.planeData.margin_target_mm || 5);
+          if (po.label) {
+            const labelWasVisible = po.label.visible;
+            scene.remove(po.label);
+            po.label.material?.map?.dispose();
+            po.label.material?.dispose();
+            po.label = BS.buildMarginLabel(po.planeData, dim);
+            if (po.label) {
+              po.label.visible = labelWasVisible;
+              scene.add(po.label);
+            }
+          }
+
+          scene.remove(po.line);
+          po.line.geometry.dispose();
+          po.line.material.dispose();
+          po.line = BS.buildBoundaryLineFromCP(cp3d, nU, nV);
+          po.line.renderOrder = 6;
+          po.line.visible = po.mesh.visible;
+          scene.add(po.line);
+
+          if (po.gridHelper) {
+            scene.remove(po.gridHelper);
+            po.gridHelper.geometry.dispose();
+            po.gridHelper.material.dispose();
+          }
+          po.gridHelper = BS.buildSurfaceGridFromCP(cp3d, nU, nV);
+          po.gridHelper.renderOrder = 6;
+          po.gridHelper.visible = gridVisible;
+          scene.add(po.gridHelper);
+        }
+
         function enterEditMode() {
           if (isEditMode) return;
           const po = planeObjects[activePlane];
@@ -1321,7 +1400,7 @@ fetch(DATA_URL)
             po.planeData.unsaved_changes = true;
             delete po.planeData.saved_at;
             startCellPreviewCache.clear();
-            clearDisplayedSequence('Plane edited. Save it, then replan.', false);
+            clearDisplayedSequence('切面已编辑，请保存后重新规划。', false);
             const cd = document.getElementById('case-data');
             if (cd) {
               fetch('/api/resection-plane/invalidate', {
@@ -1410,11 +1489,11 @@ fetch(DATA_URL)
 
           const prevBtn = document.createElement('button');
           prevBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg>';
-          prevBtn.setAttribute('aria-label', 'Previous plane');
+          prevBtn.setAttribute('aria-label', '上一个切面');
           prevBtn.style.cssText = 'border:none;background:transparent;cursor:pointer;font-size:16px;padding:2px 8px;';
           const nextBtn = document.createElement('button');
           nextBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg>';
-          nextBtn.setAttribute('aria-label', 'Next plane');
+          nextBtn.setAttribute('aria-label', '下一个切面');
           nextBtn.style.cssText = 'border:none;background:transparent;cursor:pointer;font-size:16px;padding:2px 8px;';
           const label = document.createElement('span');
           label.id = 'plane-label';
@@ -1422,16 +1501,24 @@ fetch(DATA_URL)
 
           // Edit mode toggle
           const editBtn = document.createElement('button');
-          editBtn.innerHTML = '<svg viewBox="0 0 1024 1024" width="17" height="17" aria-hidden="true" fill="currentColor"><path d="M257.536 744.448 307.2 595.2 717.824 184.576a42.667 42.667 0 0 1 60.33 0l61.27 61.269a42.667 42.667 0 0 1 0 60.33L428.8 716.8l-149.248 49.664a17.067 17.067 0 0 1-22.016-22.016zM348.16 646.4l47.104 47.104 49.664-16.554-80.214-80.214L348.16 646.4z"></path></svg><span>Edit</span>';
-          editBtn.title = 'Edit control points';
+          editBtn.innerHTML = '<svg viewBox="0 0 1024 1024" width="17" height="17" aria-hidden="true" fill="currentColor"><path d="M257.536 744.448 307.2 595.2 717.824 184.576a42.667 42.667 0 0 1 60.33 0l61.27 61.269a42.667 42.667 0 0 1 0 60.33L428.8 716.8l-149.248 49.664a17.067 17.067 0 0 1-22.016-22.016zM348.16 646.4l47.104 47.104 49.664-16.554-80.214-80.214L348.16 646.4z"></path></svg><span>编辑</span>';
+          editBtn.title = '编辑控制点';
           editBtn.style.cssText = 'border:none;background:transparent;color:#333;cursor:pointer;font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;transition:all 0.15s;';
           const editLabel = editBtn.querySelector('span');
           editLabel.style.cssText = 'font-size:11px;line-height:17px;';
 
+          const restoreBtn = document.createElement('button');
+          restoreBtn.innerHTML = '<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg><span>复原</span>';
+          restoreBtn.title = '放弃当前切面的所有人工拖动，恢复最初的 Bézier 曲面';
+          restoreBtn.setAttribute('aria-label', '复原最初的贝塞尔曲面');
+          restoreBtn.style.cssText = 'border:none;background:transparent;color:#333;cursor:pointer;font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;transition:all 0.15s;';
+          const restoreLabel = restoreBtn.querySelector('span');
+          restoreLabel.style.cssText = 'font-size:11px;line-height:17px;';
+
           const saveBtn = document.createElement('button');
           saveBtn.innerHTML = '<svg viewBox="0 0 1024 1024" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M170.666667 128h597.333333l115.498667 115.498667a42.666667 42.666667 0 0 1 12.501333 30.165333V853.333333a42.666667 42.666667 0 0 1-42.666667 42.666667H170.666667a42.666667 42.666667 0 0 1-42.666667-42.666667V170.666667a42.666667 42.666667 0 0 1 42.666667-42.666667z m128 42.666667v213.333333h384V170.666667H298.666667z m-42.666667 341.333333v298.666667h512v-298.666667H256z m298.666667-298.666667h85.333333v128h-85.333333V213.333333z"></path></svg>';
-          saveBtn.title = 'Save current plane';
-          saveBtn.innerHTML += '<span>Save</span>';
+          saveBtn.title = '保存当前切面';
+          saveBtn.innerHTML += '<span>保存</span>';
           saveBtn.style.cssText = 'border:none;background:transparent;color:#333;cursor:pointer;font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;transition:all 0.15s;';
           const saveLabel = saveBtn.querySelector('span');
           saveLabel.style.cssText = 'font-size:11px;line-height:18px;';
@@ -1454,17 +1541,17 @@ fetch(DATA_URL)
                 source: 'three_d_editor'
               })
             }).then(r => r.json()).then(data => {
-              if (data.status !== 'ok') throw new Error(data.message || 'Save failed');
+              if (data.status !== 'ok') throw new Error(data.message || '保存失败');
               po.planeData.user_saved = true;
               po.planeData.saved_at = data.saved_at || new Date().toISOString();
               startCellPreviewCache.clear();
-              saveLabel.textContent = 'Saved';
+              saveLabel.textContent = '已保存';
               saveBtn.style.background = '#34a853';
               saveBtn.style.color = '#fff';
-              clearDisplayedSequence('Plane saved. Path planning is now available.', false);
+              clearDisplayedSequence('切面已保存，现在可以进行路径规划。', false);
             }).catch(err => {
-              saveLabel.textContent = 'Save';
-              alert('Plane save failed: ' + err.message);
+              saveLabel.textContent = '保存';
+              alert('切面保存失败：' + err.message);
             }).finally(() => { saveBtn.disabled = false; });
           });
 
@@ -1475,17 +1562,55 @@ fetch(DATA_URL)
               enterEditMode();
               editBtn.style.background = '#4285f4';
               editBtn.style.color = '#fff';
-              editLabel.textContent = 'Done';
+              editLabel.textContent = '完成';
             } else {
               exitEditMode();
               editBtn.style.background = 'transparent';
               editBtn.style.color = '#333';
-              editLabel.textContent = 'Edit';
+              editLabel.textContent = '编辑';
             }
           });
 
+          restoreBtn.addEventListener('click', () => {
+            const po = planeObjects[activePlane];
+            const cd = document.getElementById('case-data');
+            if (!po || !po.originalControlPoints) return;
+
+            rebuildEditedPlane(po, po.originalControlPoints, !isEditMode && po.mesh.visible);
+            po.planeData.user_saved = false;
+            po.planeData.unsaved_changes = false;
+            delete po.planeData.saved_at;
+            startCellPreviewCache.clear();
+            clearDisplayedSequence('切面已复原；如需用于路径规划，请先保存。', false);
+            saveLabel.textContent = '保存';
+            saveBtn.style.background = 'transparent';
+            saveBtn.style.color = '#333';
+            updatePlaneView(activePlane);
+
+            if (!cd) return;
+            restoreBtn.disabled = true;
+            restoreLabel.textContent = '复原中…';
+            fetch('/api/resection-plane/restore', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                output_dir: cd.dataset.outputDir || '',
+                json_file: cd.dataset.jsonFile || '',
+                plane_index: activePlane,
+                original_control_points_3d: po.originalControlPoints
+              })
+            }).then(r => r.json()).then(data => {
+              if (data.status !== 'ok') throw new Error(data.message || data.detail || '复原失败');
+              restoreLabel.textContent = '已复原';
+              window.setTimeout(() => { restoreLabel.textContent = '复原'; }, 1200);
+            }).catch(err => {
+              restoreLabel.textContent = '复原';
+              alert('画面已复原，但服务器未能保存复原状态：' + err.message);
+            }).finally(() => { restoreBtn.disabled = false; });
+          });
+
           function updatePlaneView(idx) {
-            if (isEditMode) { exitEditMode(); editBtn.style.background = 'transparent'; editBtn.style.color = '#333'; editLabel.textContent = 'Edit'; }
+            if (isEditMode) { exitEditMode(); editBtn.style.background = 'transparent'; editBtn.style.color = '#333'; editLabel.textContent = '编辑'; }
             planeObjects.forEach((po, i) => {
               const v = i === idx;
               po.mesh.visible = v;
@@ -1495,7 +1620,7 @@ fetch(DATA_URL)
               po.cpGroup.visible = false;
             });
             const p = resectionPlanes[idx];
-            const marginStr = p.margin_success ? 'SAFE' : 'RISK';
+            const marginStr = p.margin_success ? '安全' : '风险';
             label.textContent = (idx + 1) + '/' + resectionPlanes.length + ' '
               + marginStr + ' · ' + (p.margin_min_mm || 0).toFixed(1) + ' mm';
           }
@@ -1509,13 +1634,13 @@ fetch(DATA_URL)
             updatePlaneView(activePlane);
           });
 
-          updatePlaneView(0);
+          updatePlaneView(activePlane);
           const planeHeading = document.createElement('div');
           planeHeading.className = 'panel-heading plane-panel-heading';
           planeHeading.dataset.dragHandle = 'true';
-          planeHeading.innerHTML = '<div><div class="panel-title">Resection Plane</div>'
-            + '<div class="panel-subtitle">Candidate and safety margin</div></div>'
-            + '<button id="plane-panel-toggle" type="button" aria-label="Collapse resection plane panel" aria-expanded="true">'
+          planeHeading.innerHTML = '<div><div class="panel-title">切除面</div>'
+            + '<div class="panel-subtitle">候选方案与安全切缘</div></div>'
+            + '<button id="plane-panel-toggle" type="button" aria-label="收起切除面面板" aria-expanded="true">'
             + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>'
             + '</button>';
           const planeControls = document.createElement('div');
@@ -1524,6 +1649,7 @@ fetch(DATA_URL)
           planeControls.appendChild(label);
           planeControls.appendChild(nextBtn);
           planeControls.appendChild(editBtn);
+          planeControls.appendChild(restoreBtn);
           planeControls.appendChild(saveBtn);
           selector.appendChild(planeHeading);
           selector.appendChild(planeControls);
@@ -1541,16 +1667,16 @@ fetch(DATA_URL)
           + 'border:1px solid rgba(0,0,0,0.12);font-size:12px;color:#333;'
           + 'box-shadow:0 2px 8px rgba(0,0,0,0.08);';
         legend.innerHTML = '<div class="panel-heading distance-panel-heading" data-drag-handle="true">'
-          + '<div><div class="panel-title">Distance to Tumor</div>'
-          + '<div class="panel-subtitle">Safety margin bands</div></div>'
-          + '<button id="distance-panel-toggle" type="button" aria-label="Collapse distance panel" aria-expanded="true">'
+          + '<div><div class="panel-title">肿瘤距离</div>'
+          + '<div class="panel-subtitle">安全切缘分级</div></div>'
+          + '<button id="distance-panel-toggle" type="button" aria-label="收起距离面板" aria-expanded="true">'
           + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>'
           + '</button></div>'
           + '<div class="distance-legend-body">'
-          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#2878b8"></i><span>≥ 20 mm · Ample</span></div>'
-          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#2f8f6b"></i><span>10–20 mm · Safe</span></div>'
-          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#d89221"></i><span>5–10 mm · Caution</span></div>'
-          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#c43d3d"></i><span>&lt; 5 mm · Below margin</span></div>'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#2878b8"></i><span>≥ 20 mm · 充足</span></div>'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#2f8f6b"></i><span>10–20 mm · 安全</span></div>'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#d89221"></i><span>5–10 mm · 注意</span></div>'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#c43d3d"></i><span>&lt; 5 mm · 低于切缘</span></div>'
           + '</div>';
         const rightWorkspace = document.getElementById('right-workspace');
         const planeSelector = document.getElementById('plane-selector');
@@ -1570,7 +1696,7 @@ fetch(DATA_URL)
     buildOrganTree();
   })
   .catch(err => {
-    document.getElementById('info').textContent = 'Data error · ' + (err.message || err);
+    document.getElementById('info').textContent = '数据错误 · ' + (err.message || err);
     console.error('3D data load error:', err);
   });
 
@@ -1593,7 +1719,7 @@ function buildOrganTree() {
   }
 
   const groups = { organ: [], lesion: [], vessel: [], plan: [] };
-  const groupNames = { organ: 'Organs', lesion: 'Lesions', vessel: 'Vessels', plan: 'Plan' };
+  const groupNames = { organ: '器官', lesion: '病灶', vessel: '血管', plan: '手术方案' };
   const groupLabels = { organ: '', lesion: '', vessel: '', plan: '' };
 
   MESH_DATA.forEach((data, idx) => {
@@ -1642,7 +1768,7 @@ function buildOrganTree() {
       const eye = document.createElement('span');
       eye.className = 'eye';
       eye.textContent = '';
-      eye.title = 'Toggle visibility';
+      eye.title = '切换显示状态';
       eye.addEventListener('click', (e) => {
         e.stopPropagation();
         const m = meshes[d.idx];
@@ -1670,7 +1796,7 @@ function buildOrganTree() {
 
       const opacityDot = document.createElement('span');
       opacityDot.className = 'opacity-dot full';
-      opacityDot.title = 'Toggle opacity';
+      opacityDot.title = '切换透明度';
       opacityDot.addEventListener('click', (e) => {
         e.stopPropagation();
         const m = meshes[d.idx];
@@ -1703,7 +1829,7 @@ function buildOrganTree() {
   if (totalVolume > 0) {
     const footer = document.createElement('div');
     footer.className = 'tree-total';
-  footer.innerHTML = `<span>Total</span><span>${totalVolume >= 100 ? totalVolume.toFixed(0) : totalVolume.toFixed(1)} mL</span>`;
+  footer.innerHTML = `<span>总体积</span><span>${totalVolume >= 100 ? totalVolume.toFixed(0) : totalVolume.toFixed(1)} mL</span>`;
     treeEl.appendChild(footer);
   }
 }
@@ -1782,7 +1908,7 @@ btnRotate.addEventListener('click', () => {
   controls.autoRotate = isRotating;
   controls.autoRotateSpeed = 2.0;
   btnRotate.classList.toggle('active', isRotating);
-  btnRotate.title = isRotating ? 'Stop rotation' : 'Auto rotate';
+  btnRotate.title = isRotating ? '停止旋转' : '自动旋转';
   btnRotate.setAttribute('aria-label', btnRotate.title);
   btnRotate.setAttribute('aria-pressed', String(isRotating));
   const tooltip = btnRotate.querySelector('.tooltip');
@@ -1796,7 +1922,7 @@ btnBg.addEventListener('click', () => {
   isDarkBg = !isDarkBg;
   scene.background = new THREE.Color(isDarkBg ? '#1a1a2e' : ##BG_COLOR##);
   document.body.classList.toggle('dark-mode', isDarkBg);
-  btnBg.title = isDarkBg ? 'Switch to light background' : 'Switch to dark background';
+  btnBg.title = isDarkBg ? '切换为浅色背景' : '切换为深色背景';
   btnBg.setAttribute('aria-label', btnBg.title);
   btnBg.setAttribute('aria-pressed', String(isDarkBg));
   const tooltip = btnBg.querySelector('.tooltip');
@@ -1883,12 +2009,12 @@ const measureManager = {
     const statusEl = document.getElementById('measure-status');
 
     if (this.points.length === 1) {
-      statusEl.textContent = 'MEASURE · Select the second point';
+      statusEl.textContent = '测量 · 请选择第二个点';
       statusEl.style.display = 'block';
     } else if (this.points.length === 2) {
       this.finalizeMeasurement(this.points[0], this.points[1]);
       this.points = [];
-      statusEl.textContent = 'MEASURE · Select the first point to continue';
+      statusEl.textContent = '测量 · 请选择第一个点继续';
       document.getElementById('measure-clear-btn').style.display = 'block';
     }
   },
@@ -1995,7 +2121,7 @@ btnMeasure.addEventListener('click', () => {
   btnMeasure.setAttribute('aria-pressed', String(isMeasureMode));
   renderer.domElement.style.cursor = isMeasureMode ? 'crosshair' : 'default';
   if (isMeasureMode) {
-    document.getElementById('measure-status').textContent = 'MEASURE · Select the first point';
+    document.getElementById('measure-status').textContent = '测量 · 请选择第一个点';
     document.getElementById('measure-status').style.display = 'block';
   } else {
     measureManager.cancelPending();
@@ -2093,7 +2219,7 @@ const annotationManager = {
     });
 
     this.hideInput();
-    document.getElementById('annotation-status').textContent = `ANNOTATE · Note ${annotateIdCounter} placed; select another surface`;
+    document.getElementById('annotation-status').textContent = `标注 · 已添加标注 ${annotateIdCounter}，可继续选择表面`;
     document.getElementById('annotation-status').style.display = 'block';
     document.getElementById('annotation-clear-btn').style.display = 'block';
   },
@@ -2105,7 +2231,7 @@ const annotationManager = {
       document.getElementById('annotation-clear-btn').style.display = 'none';
     }
     if (this.active) {
-      document.getElementById('annotation-status').textContent = 'ANNOTATE · Select an organ surface';
+      document.getElementById('annotation-status').textContent = '标注 · 请选择器官表面';
       document.getElementById('annotation-status').style.display = 'block';
     }
   },
@@ -2177,7 +2303,7 @@ const annotationManager = {
     btnAnnotate.classList.add('active');
     btnAnnotate.setAttribute('aria-pressed', 'true');
     renderer.domElement.style.cursor = 'crosshair';
-    document.getElementById('annotation-status').textContent = 'ANNOTATE · Select an organ surface';
+    document.getElementById('annotation-status').textContent = '标注 · 请选择器官表面';
     document.getElementById('annotation-status').style.display = 'block';
   }
 };
@@ -2287,7 +2413,7 @@ document.getElementById('toggle-resection-plane').addEventListener('change', fun
         } else {
           if (loadingEl) loadingEl.style.display = 'none';
           toggle.checked = false;
-          alert('Resection plane computation failed: ' + (data.message || 'Unknown error'));
+          alert('切除面计算失败：' + (data.message || '未知错误'));
         }
       })
       .catch(function (err) {
@@ -2295,7 +2421,7 @@ document.getElementById('toggle-resection-plane').addEventListener('change', fun
         if (resectionPlanAbortController !== controller) return;
         if (loadingEl) loadingEl.style.display = 'none';
         toggle.checked = false;
-        alert('Network request failed: ' + err.message);
+        alert('网络请求失败：' + err.message);
       })
       .finally(function () {
         if (resectionPlanAbortController === controller) {
@@ -2337,7 +2463,7 @@ document.getElementById('cancel-resection-computation').addEventListener('click'
   toggle.disabled = false;
 });"""
 
-def _make_threejs_html(title="3D Segmentation Visualization",
+def _make_threejs_html(title="三维分割可视化",
                         bg_color="#f5f5f8", three_sources=None,
                         json_url=None, bezier_source=None,
                         case_name="", mask_dir="", output_dir=""):
@@ -2770,96 +2896,97 @@ def _make_threejs_html(title="3D Segmentation Visualization",
 </style>
 </head>
 <body>
-<div id="info">Anatomy &amp; resection planning</div>
+<div id="info">解剖结构与切除规划</div>
+<div id="compact-mode-hint" role="status">进入全屏模式以使用完整功能</div>
 
 <!-- Toolbar -->
 <div id="toolbar">
-  <button class="tb-btn" id="btn-zoom-in" type="button" title="Zoom in" aria-label="Zoom in"><span class="tooltip">Zoom in</span></button>
-  <button class="tb-btn" id="btn-zoom-out" type="button" title="Zoom out" aria-label="Zoom out"><span class="tooltip">Zoom out</span></button>
+  <button class="tb-btn" id="btn-zoom-in" type="button" title="放大" aria-label="放大"><span class="tooltip">放大</span></button>
+  <button class="tb-btn" id="btn-zoom-out" type="button" title="缩小" aria-label="缩小"><span class="tooltip">缩小</span></button>
   <div class="sep"></div>
-  <button class="tb-btn" id="btn-reset" title="Reset view"><span class="tooltip">Reset view</span></button>
+  <button class="tb-btn" id="btn-reset" title="重置视图"><span class="tooltip">重置视图</span></button>
   <div class="sep"></div>
-  <button class="tb-btn" id="btn-rotate" title="Auto rotate"><span class="tooltip">Auto rotate</span></button>
-  <button class="tb-btn" id="btn-bg" title="Toggle background"><span class="tooltip">Toggle background</span></button>
+  <button class="tb-btn" id="btn-rotate" title="自动旋转"><span class="tooltip">自动旋转</span></button>
+  <button class="tb-btn" id="btn-bg" title="切换背景"><span class="tooltip">切换背景</span></button>
   <button class="tb-btn" id="btn-screenshot" title="截图导出 (Screenshot)"><svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M677.888 494.592q0 28.672-10.752 53.76t-29.184 43.52-43.008 29.184-53.248 10.752-53.248-10.752-43.008-29.184-29.184-43.52-10.752-53.76q0-27.648 10.752-52.736t29.184-43.52 43.008-29.184 53.248-10.752 53.248 10.752 43.008 29.184 29.184 43.52 10.752 52.736zM171.008 766.976q-28.672 0-51.2-5.12t-37.888-17.408-23.552-33.28-8.192-52.736l0-346.112q0-57.344 27.136-79.872t85.504-22.528l172.032 0q16.384 0 27.136-6.144t17.408-16.384 11.776-24.064 11.264-28.16q10.24-26.624 35.84-46.08t58.368-19.456l95.232 0q37.888 0 61.952 20.992t32.256 44.544q11.264 30.72 29.696 52.736t38.912 22.016l130.048 0q45.056-1.024 71.68 24.576t26.624 74.752l0 351.232q0 52.224-27.648 79.36t-73.728 27.136l-710.656 0zM539.648 280.576q-45.056 0-83.968 16.896t-67.584 46.08-45.568 68.096-16.896 82.944q0 45.056 16.896 83.968t45.568 67.584 67.584 45.568 83.968 16.896q44.032 0 82.944-16.896t67.584-45.568 45.568-67.584 16.896-83.968q0-44.032-16.896-82.944t-45.568-68.096-67.584-46.08-82.944-16.896zM611.328 169.984q0-16.384-1.536-25.6t-20.992-9.216l-84.992 0q-19.456-1.024-20.992 8.192t-1.536 26.624q-1.024 19.456 2.048 27.648t20.48 8.192l84.992 0q19.456 0 20.992-9.216t1.536-26.624z"/></svg><span class="tooltip">截图导出</span></button>
   <div class="sep"></div>
   <button class="tb-btn" id="btn-measure" title="测量距离 (Measure)"><svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M921.1 62.6H101.6c-10.1 0-18.3 8.2-18.3 18.3v263.8c0 10.1 8.2 18.3 18.3 18.3h819.5c10.1 0 18.3-8.2 18.3-18.3V80.9c0-10.1-8.2-18.3-18.3-18.3z m-18.3 263.8h-72.4v-59.1c0-10.1-8.2-18.3-18.3-18.3-10.1 0-18.3 8.2-18.3 18.3v59.1H682.6v-94.3c0-10.1-8.2-18.3-18.3-18.3-10.1 0-18.3 8.2-18.3 18.3v94.3H534.9v-59.1c0-10.1-8.2-18.3-18.3-18.3-10.1 0-18.3 8.2-18.3 18.3v59.1H387.2v-87.2c0-10.1-8.2-18.3-18.3-18.3s-18.3 8.2-18.3 18.3v87.2H239.5v-59.1c0-10.1-8.2-18.3-18.3-18.3s-18.3 8.2-18.3 18.3v59.1h-83V99.1h782.9v227.3zM919.3 730.8c-10.1 0-18.3 8.2-18.3 18.3v95.1H136.3v-95.1c0-10.1-8.2-18.3-18.3-18.3s-18.3 8.2-18.3 18.3v190.3c0 10.1 8.2 18.3 18.3 18.3s18.3-8.2 18.3-18.3v-58.5H901v58.5c0 10.1 8.2 18.3 18.3 18.3 10.1 0 18.3-8.2 18.3-18.3V749.1c0-10.1-8.2-18.3-18.3-18.3z"/></svg><span class="tooltip">测量距离</span></button>
   <button class="tb-btn" id="btn-annotate" title="标注 (Annotate)"><svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M832 64 192 64C121.6 64 64 121.6 64 192l0 512c0 70.4 57.6 128 128 128l128 0 132.096 120.448C459.072 957.632 466.88 960 474.432 960 493.824 960 512 944.704 512 922.496L512 832l320 0c70.4 0 128-57.6 128-128L960 192C960 121.6 902.4 64 832 64zM896 704c0 35.328-28.672 64-64 64L512 768c-16.96 0-33.28 6.72-45.248 18.752S448 815.04 448 832l0 30.08-84.864-77.376C351.296 773.952 335.936 768 320 768L192 768c-35.328 0-64-28.672-64-64L128 192c0-35.328 28.672-64 64-64l640 0c35.328 0 64 28.672 64 64L896 704zM736 320l-448 0C270.336 320 256 334.336 256 352S270.336 384 288 384l448 0C753.664 384 768 369.664 768 352S753.664 320 736 320zM736 512l-448 0C270.336 512 256 526.336 256 544S270.336 576 288 576l448 0C753.664 576 768 561.664 768 544S753.664 512 736 512z"/></svg><span class="tooltip">标注</span></button>
   <div class="sep"></div>
-  <button class="tb-btn" id="btn-help" type="button" title="Navigation help" aria-controls="interaction-help" aria-expanded="false"><span class="tooltip">Navigation help</span></button>
+  <button class="tb-btn" id="btn-help" type="button" title="操作帮助" aria-controls="interaction-help" aria-expanded="false"><span class="tooltip">操作帮助</span></button>
 </div>
 
 <!-- Organ Tree Panel -->
 <div id="organ-tree">
   <div class="panel-heading" data-drag-handle="true">
     <div>
-      <div class="panel-title">Structures</div>
-      <div class="panel-subtitle">Visibility and opacity</div>
+      <div class="panel-title">解剖结构</div>
+      <div class="panel-subtitle">显示与透明度</div>
     </div>
     <div class="panel-heading-actions">
       <span class="panel-badge" id="structure-count">0</span>
-      <button id="structure-panel-toggle" type="button" aria-label="Collapse structures panel" aria-expanded="true">
+      <button id="structure-panel-toggle" type="button" aria-label="收起结构面板" aria-expanded="true">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>
       </button>
     </div>
   </div>
-  <div id="organ-tree-resize-handle" role="separator" aria-orientation="vertical" aria-label="Resize organ panel"></div>
+  <div id="organ-tree-resize-handle" role="separator" aria-orientation="vertical" aria-label="调整结构面板宽度"></div>
 </div>
 
-<div id="interaction-help" role="dialog" aria-label="3D navigation instructions" aria-hidden="true">
+<div id="interaction-help" role="dialog" aria-label="三维导航说明" aria-hidden="true">
   <div class="interaction-help-title">
     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
-    <span>Navigation</span>
+    <span>三维导航</span>
   </div>
-  <div class="interaction-help-row"><kbd>Drag</kbd><span>Rotate model</span></div>
-  <div class="interaction-help-row"><kbd>Scroll</kbd><span>Zoom view</span></div>
-  <div class="interaction-help-row"><kbd>Right-drag</kbd><span>Pan view</span></div>
+  <div class="interaction-help-row"><kbd>拖动</kbd><span>旋转模型</span></div>
+  <div class="interaction-help-row"><kbd>滚轮</kbd><span>缩放视图</span></div>
+  <div class="interaction-help-row"><kbd>右键拖动</kbd><span>平移视图</span></div>
 </div>
 
 <!-- Case metadata for on-demand resection computation -->
 <div id="case-data" data-case-name="{case_name}" data-mask-dir="{mask_dir}" data-output-dir="{output_dir}" data-json-file="{json_url}" style="display:none"></div>
 
 <!-- Planning toggles (top-right) -->
-<div id="planning-toggles" aria-label="Surgical planning layers">
-  <div id="path-planning-toggle" class="planning-toggle" title="最佳手术路径规划 (Optimal surgical path)">
+<div id="planning-toggles" aria-label="手术规划图层">
+  <div id="path-planning-toggle" class="planning-toggle" title="最佳手术路径规划">
     <label>
-      <input type="checkbox" id="toggle-path-planning" aria-label="Optimal path" aria-controls="path-planning-panel">
-      <span>Optimal path</span>
+      <input type="checkbox" id="toggle-path-planning" aria-label="最优路径" aria-controls="path-planning-panel">
+      <span>最优路径</span>
     </label>
   </div>
   <div id="resection-toggle" class="planning-toggle">
     <label>
-      <input type="checkbox" id="toggle-resection-plane" aria-label="Resection plane">
-      <span>Resection plane</span>
+      <input type="checkbox" id="toggle-resection-plane" aria-label="切除面">
+      <span>切除面</span>
     </label>
   </div>
 </div>
 
 <!-- Saved sequence path playback -->
-<aside id="right-workspace" aria-label="Resection planning tools">
+<aside id="right-workspace" aria-label="切除规划工具">
 <div id="path-planning-panel">
-  <div class="path-panel-title" data-drag-handle="true"><span>Resection Sequence</span><button class="path-panel-collapse" id="path-panel-collapse" type="button" aria-label="Collapse panel"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
+  <div class="path-panel-title" data-drag-handle="true"><span>切除序列</span><button class="path-panel-collapse" id="path-panel-collapse" type="button" aria-label="收起面板"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
   <div class="path-panel-body">
-    <button id="path-pick-start" type="button">Pick Start Cell</button>
-    <button id="path-replan" type="button">Replan</button>
-    <div class="path-playback"><button id="path-prev" type="button" aria-label="Previous step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg></button><button id="path-play" type="button">Play</button><button id="path-next" type="button" aria-label="Next step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg></button><input id="path-slider" type="range" min="0" value="0"></div>
-    <span id="path-status">Loading…</span>
+    <button id="path-pick-start" type="button">选择起始网格</button>
+    <button id="path-replan" type="button">重新规划</button>
+    <div class="path-playback"><button id="path-prev" type="button" aria-label="上一步"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg></button><button id="path-play" type="button">播放</button><button id="path-next" type="button" aria-label="下一步"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg></button><input id="path-slider" type="range" min="0" value="0"></div>
+    <span id="path-status">正在加载…</span>
     <details id="path-advanced">
-      <summary>Advanced settings</summary>
+      <summary>高级设置</summary>
       <div class="path-panel-section">
-        <label title="Planning algorithm">Algorithm <select id="path-algorithm"><option value="nearest">Nearest Neighbor</option><option value="dfs">Depth First</option><option value="spanning_tree">Spanning Tree</option></select></label>
-        <label title="Vessel exclusion distance">Vessel <input id="path-vascular-distance" type="number" min="0" step="0.5" value="5"> <span>mm</span></label>
-        <label title="Minimum Liver intersection samples">Liver samples <input id="path-liver-samples" type="number" min="1" max="5" step="1" value="1"></label>
-        <label title="Estimated time per step">Step time <input id="path-step-time" type="number" min="0.01" step="0.1" value="1"> <span>s</span></label>
+        <label title="规划算法">算法 <select id="path-algorithm"><option value="nearest">最近邻</option><option value="dfs">深度优先</option><option value="spanning_tree">生成树</option></select></label>
+        <label title="血管排除距离">血管距离 <input id="path-vascular-distance" type="number" min="0" step="0.5" value="5"> <span>mm</span></label>
+        <label title="最小肝脏相交采样数">肝脏采样 <input id="path-liver-samples" type="number" min="1" max="5" step="1" value="1"></label>
+        <label title="每步预计时间">单步时间 <input id="path-step-time" type="number" min="0.01" step="0.1" value="1"> <span>秒</span></label>
       </div>
     </details>
-    <div id="path-legend" aria-label="Grid state legend">
-    <span class="legend-item"><i class="legend-swatch" style="background:#808892"></i>Visited</span>
-    <span class="legend-item"><i class="legend-swatch" style="background:#ff1744"></i>Current</span>
-    <span class="legend-item"><i class="legend-swatch" style="background:#1976d2"></i>Start</span>
-    <span class="legend-item"><i class="legend-swatch" style="background:#4e342e"></i>Outside liver</span>
-    <span class="legend-item"><i class="legend-swatch" style="background:#ff8f00"></i>Vessel risk</span>
-    <span class="legend-item"><i class="legend-swatch" style="background:#8e24aa"></i>Unreachable</span>
+    <div id="path-legend" aria-label="网格状态图例">
+    <span class="legend-item"><i class="legend-swatch" style="background:#808892"></i>已访问</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#ff1744"></i>当前</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#1976d2"></i>起点</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#4e342e"></i>肝脏外</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#ff8f00"></i>血管风险</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#8e24aa"></i>不可达</span>
     </div>
   </div>
 </div>
@@ -2868,8 +2995,8 @@ def _make_threejs_html(title="3D Segmentation Visualization",
 <!-- Loading overlay for on-demand resection computation -->
 <div id="resection-loading">
   <div class="spinner"></div>
-  <div class="loading-text">Computing the optimal resection plane…</div>
-  <div class="loading-sub">Bézier surface optimization · about 30 seconds</div>
+  <div class="loading-text">正在计算最优切除面…</div>
+  <div class="loading-sub">Bézier 曲面优化 · 约需 30 秒</div>
   <button id="cancel-resection-computation" type="button">取消计算</button>
 </div>
 
@@ -2877,10 +3004,10 @@ def _make_threejs_html(title="3D Segmentation Visualization",
 <div id="view-3d" class="view-container active"></div>
 <div id="view-slice" class="view-container">
   <div id="slice-viewer">
-    <img id="slice-img" src="" alt="CT Slice" />
+    <img id="slice-img" src="" alt="CT 切片" />
     <div id="slice-controls">
       <button id="slice-prev">\u25c0</button>
-      <span id="slice-label">No slices</span>
+      <span id="slice-label">暂无切片</span>
       <button id="slice-next">\u25b6</button>
     </div>
   </div>
@@ -2888,26 +3015,26 @@ def _make_threejs_html(title="3D Segmentation Visualization",
 <div id="view-combined" class="view-container">
   <div id="combined-3d"></div>
   <div id="combined-slice">
-    <img id="combined-slice-img" src="" alt="CT Slice" />
+    <img id="combined-slice-img" src="" alt="CT 切片" />
   </div>
 </div>
 
 <!-- Measurement status bar -->
-<div id="measure-status">MEASURE · Select the first point</div>
-<button id="measure-clear-btn">Clear measurements</button>
+<div id="measure-status">测量 · 请选择第一个点</div>
+<button id="measure-clear-btn">清除测量</button>
 
 <!-- Annotation UI -->
 <div id="annotation-input-wrap" style="display:none;">
   <div id="annotation-input-box">
-    <textarea id="annotation-text" rows="2" placeholder="Enter annotation..." maxlength="200"></textarea>
+    <textarea id="annotation-text" rows="2" placeholder="请输入标注…" maxlength="200"></textarea>
     <div id="annotation-input-actions">
-      <button id="annotation-confirm">Confirm</button>
-      <button id="annotation-cancel">Cancel</button>
+      <button id="annotation-confirm">确认</button>
+      <button id="annotation-cancel">取消</button>
     </div>
   </div>
 </div>
-<div id="annotation-status">ANNOTATE · Select an organ surface</div>
-<button id="annotation-clear-btn">Clear annotations</button>
+<div id="annotation-status">标注 · 请选择器官表面</div>
+<button id="annotation-clear-btn">清除标注</button>
 
 <script>
   // Normalize toolbar icons while preserving the existing button actions.
@@ -2923,15 +3050,15 @@ def _make_threejs_html(title="3D Segmentation Visualization",
     'btn-help': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.5 2c-.8.5-1.3 1-1.3 2"/><path d="M12 17h.01"/></svg>'
   }};
   const toolbarLabels = {{
-    'btn-zoom-in': 'Zoom in',
-    'btn-zoom-out': 'Zoom out',
-    'btn-reset': 'Reset view',
-    'btn-rotate': 'Auto rotate',
-    'btn-bg': 'Toggle background',
-    'btn-screenshot': 'Screenshot',
-    'btn-measure': 'Measure distance',
-    'btn-annotate': 'Annotate',
-    'btn-help': 'Navigation help'
+    'btn-zoom-in': '放大',
+    'btn-zoom-out': '缩小',
+    'btn-reset': '重置视图',
+    'btn-rotate': '自动旋转',
+    'btn-bg': '切换背景',
+    'btn-screenshot': '截图',
+    'btn-measure': '测量距离',
+    'btn-annotate': '标注',
+    'btn-help': '操作帮助'
   }};
   Object.entries(toolbarIcons).forEach(([id, icon]) => {{
     const button = document.getElementById(id);
@@ -2947,13 +3074,13 @@ def _make_threejs_html(title="3D Segmentation Visualization",
     }}
   }});
 
-  // Keep legacy toolbar labels consistent with the English interface.
-  const englishToolbarLabels = {{
-    'btn-screenshot': ['Screenshot', 'Screenshot'],
-    'btn-measure': ['Measure distance', 'Measure distance'],
-    'btn-annotate': ['Annotate', 'Annotate']
+  // 保持旧版工具栏按钮与中文界面一致。
+  const chineseToolbarLabels = {{
+    'btn-screenshot': ['截图', '截图'],
+    'btn-measure': ['测量距离', '测量距离'],
+    'btn-annotate': ['标注', '标注']
   }};
-  Object.entries(englishToolbarLabels).forEach(([id, labels]) => {{
+  Object.entries(chineseToolbarLabels).forEach(([id, labels]) => {{
     const button = document.getElementById(id);
     if (button) {{
       button.title = labels[0];
@@ -2993,7 +3120,7 @@ def _make_threejs_html(title="3D Segmentation Visualization",
     document.body.classList.toggle('structures-collapsed', collapsed);
     structurePanelToggle?.setAttribute('aria-expanded', String(!collapsed));
     structurePanelToggle?.setAttribute(
-      'aria-label', collapsed ? 'Expand structures panel' : 'Collapse structures panel');
+      'aria-label', collapsed ? '展开结构面板' : '收起结构面板');
     // Collapsing changes the panel dimensions and responsive transforms. Offset
     // that layout delta so the user-selected top-left anchor stays unchanged.
     if (structurePanel && before) {{
@@ -3071,7 +3198,7 @@ def _make_threejs_html(title="3D Segmentation Visualization",
     legend.classList.toggle('collapsed', collapsed);
     toggle.setAttribute('aria-expanded', String(!collapsed));
     toggle.setAttribute(
-      'aria-label', collapsed ? 'Expand distance panel' : 'Collapse distance panel');
+      'aria-label', collapsed ? '展开距离面板' : '收起距离面板');
     // Preserve the dragged top-left anchor while the legend body changes size.
     if (wasDragged) {{
       const after = legend.getBoundingClientRect();
@@ -3094,8 +3221,8 @@ def _make_threejs_html(title="3D Segmentation Visualization",
     toggle.setAttribute('aria-expanded', String(!collapsed));
     toggle.setAttribute(
       'aria-label', collapsed
-        ? 'Expand resection plane panel'
-        : 'Collapse resection plane panel');
+        ? '展开切除面面板'
+        : '收起切除面面板');
     // Preserve the dragged top-left anchor while the controls change height.
     if (wasDragged) {{
       const after = selector.getBoundingClientRect();
@@ -3201,7 +3328,7 @@ def _make_threejs_html(title="3D Segmentation Visualization",
       collapseButton.innerHTML = collapsed
         ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>'
         : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
-      collapseButton.setAttribute('aria-label', collapsed ? 'Expand panel' : 'Collapse panel');
+      collapseButton.setAttribute('aria-label', collapsed ? '展开面板' : '收起面板');
     }});
   }}
 </script>
@@ -3215,6 +3342,9 @@ import {{ OrbitControls }} from 'three/addons/controls/OrbitControls.js';
 </script>
 </body>
 </html>"""
+    html = html.replace("截图导出 (Screenshot)", "截图导出")
+    html = html.replace("测量距离 (Measure)", "测量距离")
+    html = html.replace("标注 (Annotate)", "标注")
     return html
 
 

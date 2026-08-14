@@ -44,8 +44,10 @@ outputs:
       items:
         type: object
         properties:
-          tumor_id: { type: string }
-          vessel_name: { type: string }
-          min_distance_mm: { type: number }
-          interpretation: { type: string }
-          tumor_contacts_vessel: { type: boolean }
+          tumor_id: { type: string, description: "肿瘤标识" }
+          vessel_name: { type: string, description: "血管名" }
+          mask_variant: { type: string, description: "血管掩码来源（raw/downsampled 等）" }
+          min_distance_mm: { type: number, description: "肿瘤到血管的最短距离 (mm)" }
+          interpretation: { type: string, description: "临床释义（<1mm 高度可疑…≥20mm 距离充足）" }
+          tumor_contacts_vessel: { type: boolean, description: "肿瘤是否与血管直接接触" }
+          tumor_voxels: { type: integer, description: "参与计算的肿瘤体素数" }

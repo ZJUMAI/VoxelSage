@@ -441,44 +441,6 @@ export default function App() {
   const prevCaseIdRef = useRef<string | null>(null);
   const initialLoadDoneRef = useRef(false);
 
-  // Submitting 2D Slice Viewer dedicated query
-  const handleSliceQuerySend = () => {
-    if (!sliceQuery.trim()) return;
-    const textToSend = sliceQuery.trim();
-    setSliceQuery('');
-    
-    // Add user message to chat stream
-    const userMsg: ChatMessage = {
-      id: `user_slice_${Date.now()}`,
-      sender: 'user',
-      text: `🔍 **[2D断层切片聚焦提问]** (当前第 **${currentSliceIndex}** 层切片):\n\n${textToSend}`,
-      timestamp: new Date().toLocaleTimeString(),
-    };
-    setChatMessages((prev) => [...prev, userMsg]);
-    
-    // Trigger diagnostics
-    startDiagnostics(textToSend);
-  };
-
-  // Submitting 3D Spatial Reconstruction dedicated query
-  const handleMeshQuerySend = () => {
-    if (!meshQuery.trim()) return;
-    const textToSend = meshQuery.trim();
-    setMeshQuery('');
-
-    // Add user message to chat stream
-    const userMsg: ChatMessage = {
-      id: `user_mesh_${Date.now()}`,
-      sender: 'user',
-      text: `🧊 **[3D空间重建聚焦提问]** (目标脏器: **${currentCase ? currentCase.organ : '未知'}**):\n\n${textToSend}`,
-      timestamp: new Date().toLocaleTimeString(),
-    };
-    setChatMessages((prev) => [...prev, userMsg]);
-
-    // Trigger diagnostics
-    startDiagnostics(textToSend);
-  };
-
   // Deleting a custom patient record
   const handleDeleteCase = (idToDelete: string) => {
     const updated = cases.filter((c) => c.id !== idToDelete);
@@ -656,7 +618,7 @@ export default function App() {
         {
           id: 'welcome',
           sender: 'agent',
-          text: `👋 您好！我是 GeoSurge 智能临床辅助诊断系统。\n\n当前系统中没有任何患者病例档案。\n\n- 请点击上方 **「开启新诊断 (录入病例)」** 按钮录入您手头的真实临床病例及问题，并上传 NIfTI / DICOM 医学影像。`,
+          text: `👋 您好！我是 VoxelSage 智能临床辅助诊断系统。\n\n当前系统中没有任何患者病例档案。\n\n- 请点击上方 **「开启新诊断 (录入病例)」** 按钮录入您手头的真实临床病例及问题，并上传 NIfTI / DICOM 医学影像。`,
           timestamp: new Date().toLocaleTimeString(),
         }
       ]);
@@ -729,7 +691,7 @@ export default function App() {
           {
             id: 'welcome',
             sender: 'agent',
-            text: `您好，我是 GeoSurge 智能临床辅助诊断系统。我已成功载入您录入的真实患者 **${currentCase.name}** (${currentCase.gender === 'M' ? '男' : '女'}, ${currentCase.age}岁) 的临床档案。\n\n**临床背景描述**：${currentCase.clinicalHistory}\n\n*请在下方会诊终端中输入您的提问，或通过切片区域或终端上传/拖入该患者的真实多维影像文件。*`,
+            text: `您好，我是 VoxelSage 智能临床辅助诊断系统。我已成功载入您录入的真实患者 **${currentCase.name}** (${currentCase.gender === 'M' ? '男' : '女'}, ${currentCase.age}岁) 的临床档案。\n\n**临床背景描述**：${currentCase.clinicalHistory}\n\n*请在下方会诊终端中输入您的提问，或通过切片区域或终端上传/拖入该患者的真实多维影像文件。*`,
             timestamp: new Date().toLocaleTimeString(),
           }
         ]);
@@ -740,7 +702,7 @@ export default function App() {
         {
           id: 'welcome',
           sender: 'agent',
-          text: `您好，我是 GeoSurge 智能临床辅助诊断系统。我已成功载入您录入的真实患者 **${currentCase.name}** (${currentCase.gender === 'M' ? '男' : '女'}, ${currentCase.age}岁) 的临床档案。\n\n**临床背景描述**：${currentCase.clinicalHistory}\n\n*请在下方会诊终端中输入您的提问，或通过切片区域或终端上传/拖入该患者的真实多维影像文件。*`,
+          text: `您好，我是 VoxelSage 智能临床辅助诊断系统。我已成功载入您录入的真实患者 **${currentCase.name}** (${currentCase.gender === 'M' ? '男' : '女'}, ${currentCase.age}岁) 的临床档案。\n\n**临床背景描述**：${currentCase.clinicalHistory}\n\n*请在下方会诊终端中输入您的提问，或通过切片区域或终端上传/拖入该患者的真实多维影像文件。*`,
           timestamp: new Date().toLocaleTimeString(),
         }
       ]);
@@ -1797,7 +1759,7 @@ export default function App() {
 
       {/* 3. 页脚信息 */}
       <footer className="py-3 border-t border-slate-200 bg-white text-center text-[10px] text-slate-550 font-mono flex flex-col sm:flex-row justify-between px-6 gap-2 flex-shrink-0">
-        <div>GeoSurge AI 临床辅助诊断协同终端 | 仅用于医学科研与决策辅助，不可直接作为临床治疗决策依据</div>
+        <div>VoxelSage AI 临床辅助诊断协同终端 | 仅用于医学科研与决策辅助，不可直接作为临床治疗决策依据</div>
         <div className="flex justify-center items-center gap-4 text-slate-500">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span>后端连接: 已配置</span>

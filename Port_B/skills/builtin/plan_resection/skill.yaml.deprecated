@@ -2,7 +2,7 @@ name: plan_resection
 version: 1.0.0
 description: >
   计算肝脏手术最优切除剖面（Bézier 曲面）。
-  基于 GeoSurge 引擎，从分割掩码生成 4x4 控制点定义的
+  基于 VoxelSage 引擎，从分割掩码生成 4x4 控制点定义的
   Bézier 切除曲面，包含安全切缘评估和距离可视化数据。
   结果追加到已有的 3D 可视化 JSON 文件中，刷新 HTML 即见。
 
@@ -25,7 +25,7 @@ inputs:
     required: true
   case_name:
     type: string
-    description: "病例名（用于查找 GeoSurge 数据和 3D JSON 文件）"
+    description: "病例名（用于查找 VoxelSage 数据和 3D JSON 文件）"
     source: context
     required: false
   tumor_margin_mm:

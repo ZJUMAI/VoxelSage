@@ -42,31 +42,68 @@ class SkillManifest:
         """从 outputs schema 生成一段描述返回值主要结构的文本。
 
         追加到 tool description 末尾，让 LLM 提前知道调用结果的结构。
+        递归展开嵌套 object / additionalProperties / array items 的子字段。
         """
         if not self.outputs:
             return ""
         props = self.outputs.get("properties", {})
         if not props:
             return ""
-        lines = []
+        lines = ["返回:"]
         for name, schema in props.items():
-            ptype = schema.get("type", "any")
-            desc = schema.get("description", "")
-            if desc:
-                lines.append(f"  {name} ({ptype}): {desc}")
+            lines.append(self._describe_schema(name, schema, indent=2))
+        return "\n".join(lines)
+
+    def _describe_schema(self, name: str, schema: Dict[str, Any], indent: int) -> str:
+        """递归渲染单个 schema 节点为一行（可能多行）文本。
+
+        - object → 展开 properties；无 properties 时展开 additionalProperties（键名任意）
+        - array → 展开 items 的 properties
+        返回文本可包含多行，子节点用缩进体现层级。
+        """
+        ptype = schema.get("type", "any")
+        desc = schema.get("description", "")
+        line = f"{' ' * indent}{name} ({ptype})"
+        if desc:
+            line += f": {desc}"
+        lines = [line]
+        child_indent = indent + 2
+
+        if ptype == "array":
+            items = schema.get("items", {})
+            items_desc = items.get("description", "")
+            if items_desc:
+                lines[0] += f" — {items_desc}"
+            items_props = items.get("properties", {})
+            if items_props:
+                lines[0] += f" 每项包含: {', '.join(sorted(items_props.keys()))}"
+                for cname, cschema in items_props.items():
+                    lines.append(self._describe_schema(cname, cschema, child_indent))
             else:
-                lines.append(f"  {name} ({ptype})")
-            # array items 的子结构简要提示
-            if ptype == "array" and "items" in schema:
-                items = schema["items"]
-                items_desc = items.get("description", "")
-                if items_desc:
-                    lines[-1] += f" — {items_desc}"
-                items_props = items.get("properties", {})
-                if items_props:
-                    keys = sorted(items_props.keys())
-                    lines[-1] += f" 每项包含: {', '.join(keys)}"
-        return "返回:\n" + "\n".join(lines)
+                lines.append(self._describe_additional_props(items, child_indent))
+        elif ptype == "object":
+            props = schema.get("properties", {})
+            if props:
+                for cname, cschema in props.items():
+                    lines.append(self._describe_schema(cname, cschema, child_indent))
+            else:
+                lines.append(self._describe_additional_props(schema, child_indent))
+
+        return "\n".join(lines)
+
+    def _describe_additional_props(self, schema: Dict[str, Any], indent: int) -> str:
+        """渲染 dict-like 结构（additionalProperties）的子节点。
+
+        键名任意，用其 description 作为占位名（避免与 description 重复）。
+        无 additionalProperties 时返回空字符串。
+        """
+        ap = schema.get("additionalProperties", {})
+        if not ap.get("type"):
+            return ""
+        ap_name = ap.get("description") or "item"
+        child = dict(ap)
+        child.pop("description", None)
+        return self._describe_schema(ap_name, child, indent)
 
     def to_function_calling_schema(self) -> Dict[str, Any]:
         """转换为 OpenAI-compatible function calling tool schema。
@@ -74,16 +111,25 @@ class SkillManifest:
         供 Port A 的 LLM 识别和调用此 Skill。
         description 末尾自动追加返回值结构概要，让 LLM 提前知道返回内容。
         """
+        # 透传给 function calling schema 的参数键（白名单）。
+        # default/enum/items 让 LLM 提前知道可选参数的默认值、取值集合和数组元素类型，
+        # 避免 LLM 传错类型或把带空格的默认值（如 "hepatic tumor"）改写成别的拼写。
+        _ALLOWED_PARAM_KEYS = ("type", "description", "default", "enum", "items")
+
         parameters = {"type": "object", "properties": {}, "required": []}
         for param_name, param_schema in self.inputs.items():
             source = param_schema.get("source", "")
             # source=context 的参数由框架自动注入，不需要 LLM 传
             if source == "context":
                 continue
-            parameters["properties"][param_name] = {
+            prop = {
                 "type": param_schema.get("type", "string"),
                 "description": param_schema.get("description", ""),
             }
+            for key in _ALLOWED_PARAM_KEYS[2:]:
+                if key in param_schema:
+                    prop[key] = param_schema[key]
+            parameters["properties"][param_name] = prop
             if param_schema.get("required", False):
                 parameters["required"].append(param_name)
 

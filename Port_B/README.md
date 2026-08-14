@@ -19,6 +19,8 @@ third-party model source trees.
 Use Python 3.10+ in a clean virtual environment:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -30,7 +32,9 @@ python file_proxy.py --port 8898
 ```
 
 Set `PUBLIC_BASE_URL` when the proxy is served from another host or port. The
-default is `http://127.0.0.1:8898`.
+default is `http://127.0.0.1:8898`. Set `VOXELSAGE_OUTPUT_DIR` to place runtime
+outputs outside the source tree. The variables in `.env.example` are examples;
+export them in the service environment before startup.
 
 ## Segmentation backends
 
@@ -53,7 +57,7 @@ medical-image formats are excluded by `.gitignore`.
 
 ## Licence and contributions
 
-The repository's Apache License 2.0 applies to code authored for GeoSurge; see
+The repository's Apache License 2.0 applies to code authored for VoxelSage; see
 the root-level `LICENSE` and `NOTICE`. It does not relicense external software,
 model weights, or datasets. Contributions must be compatible with Apache 2.0
 and must not include protected health information, credentials, or material

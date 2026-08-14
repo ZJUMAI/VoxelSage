@@ -1,5 +1,5 @@
 """
-Shared segmentation utilities for the GeoSurge Port B pipeline.
+Shared segmentation utilities for the VoxelSage Port B pipeline.
 
 Used by segmentation.py (batch) and API.py (single-case / HTTP API)
 to avoid duplicating organ lists, label-dict loading, mask extraction,

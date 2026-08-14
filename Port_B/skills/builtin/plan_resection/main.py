@@ -1,6 +1,6 @@
 """plan_resection: 肝脏手术最优切除剖面生成。
 
-从分割掩码直接计算 Bézier 切除剖面（不依赖 GeoSurge 预计算数据），
+从分割掩码直接计算 Bézier 切除剖面（不依赖 VoxelSage 预计算数据），
 并将结果追加到已有的 3D 可视化 JSON 文件中。
 
 使用流程:
@@ -346,15 +346,18 @@ def _fit_surface_to_liver_intersection(
     liver_xyz,
     band_mm=2.0,
     cell_size_mm=4.0,
+    padding_cells=3,
 ):
-    """Crop a surface to outward-aligned cells around its liver intersection."""
+    """Fit a grid around the liver cut and retain a safety border of cells."""
+    if padding_cells < 0:
+        raise ValueError("padding_cells must be non-negative")
     intersection_xyz = _surface_liver_intersection_points(
         surf, liver_xyz, band_mm=band_mm,
     )
     return _fit_surface_to_liver_projection(
         surf,
         intersection_xyz,
-        padding_mm=0.0,
+        padding_mm=float(padding_cells) * float(cell_size_mm),
         grid_alignment_mm=cell_size_mm,
     )
 
@@ -369,6 +372,57 @@ def _surface_resolution_for_cell_size(surf, cell_size_mm=4.0):
     cells_u = max(1, int(round((u1 - u0) / cell_size_mm)))
     cells_v = max(1, int(round((v1 - v0) / cell_size_mm)))
     return [cells_u + 1, cells_v + 1]
+
+
+def _select_refinement_candidates(candidates, scored, selected_index, max_candidates=12):
+    """Keep a small, diverse set of promising candidates for expensive refinement.
+
+    The rule planner can create hundreds of candidates.  Full margin-constrained
+    Bézier refinement is deliberately more expensive than screening, so running
+    it on every candidate makes an interactive request scale with the entire
+    candidate bank rather than with the few alternatives presented to users.
+    """
+    if len(candidates) != len(scored):
+        raise ValueError("candidates and scored entries must have the same length")
+    if not candidates or max_candidates < 1:
+        return []
+
+    limit = min(int(max_candidates), len(candidates))
+    ordered = sorted(
+        range(len(candidates)),
+        key=lambda index: float(scored[index].get("score", float("-inf"))),
+        reverse=True,
+    )
+    selected = []
+    seen_families = set()
+    if 0 <= selected_index < len(candidates):
+        selected.append(selected_index)
+        seen_families.add(scored[selected_index].get("candidate_family", "other"))
+
+    # Preserve the leading member of each anatomical candidate family before
+    # filling the remaining places globally by score.
+    for index in ordered:
+        family = scored[index].get("candidate_family", "other")
+        if family not in seen_families:
+            selected.append(index)
+            seen_families.add(family)
+        if len(dict.fromkeys(selected)) >= limit:
+            break
+    for index in ordered:
+        selected.append(index)
+        if len(dict.fromkeys(selected)) >= limit:
+            break
+
+    selected = list(dict.fromkeys(selected))[:limit]
+    return [(index, candidates[index]) for index in selected]
+
+
+def _even_subsample(points, max_points):
+    """Deterministically cap point clouds used only for candidate ranking."""
+    if len(points) <= max_points:
+        return points
+    indices = np.linspace(0, len(points) - 1, num=max_points, dtype=np.int64)
+    return points[indices]
 
 
 def _invalidate_previous_resection_state(json_data):
@@ -391,7 +445,7 @@ def run(ctx):
 
     # ---- 1. Read center_offset from existing 3D JSON ----
     # This is the SAME offset used to center the mesh vertices.
-    # We MUST use this same offset for GeoSurge to ensure alignment.
+    # We MUST use this same offset for VoxelSage to ensure alignment.
     json_path = output_dir / f"{case_name}_3d.json"
     if not json_path.exists():
         fallback = list(output_dir.glob("*_3d.json"))
@@ -423,7 +477,7 @@ def run(ctx):
 
     # ---- CRITICAL: center data by mesh center_offset ----
     # Mesh vertices in the 3D JSON are centered by center_offset.
-    # GeoSurge also needs centered data. Use the SAME offset.
+    # VoxelSage also needs centered data. Use the SAME offset.
     liver_xyz -= center_offset
 
     # Load tumor masks (tumor_1, tumor_2, ...)
@@ -464,16 +518,16 @@ def run(ctx):
     sample_idx = np.sort(rng.choice(len(liver_xyz), size=sample_n, replace=False))
     liver_sample_xyz = liver_xyz[sample_idx]
 
-    # ---- 3. Import GeoSurge planner functions ----
+    # ---- 3. Import VoxelSage planner functions ----
     project_root = Path(__file__).resolve().parents[3]
-    # Use glob to discover GeoSurge directory (avoids date-stamp fragility)
-    geo_surge_dirs = sorted(project_root.glob("data/GeoSurge_*/切面算法/surface_planner"))
-    if not geo_surge_dirs:
+    # Use glob to discover VoxelSage directory (avoids date-stamp fragility)
+    voxel_sage_dirs = sorted(project_root.glob("data/VoxelSage_*/切面算法/surface_planner"))
+    if not voxel_sage_dirs:
         raise FileNotFoundError(
-            f"GeoSurge surface_planner not found under {project_root / 'data/GeoSurge_*'}. "
-            "Expected: data/GeoSurge_<date>/切面算法/surface_planner/"
+            f"VoxelSage surface_planner not found under {project_root / 'data/VoxelSage_*'}. "
+            "Expected: data/VoxelSage_<date>/切面算法/surface_planner/"
         )
-    planner_dir = str(geo_surge_dirs[-1])  # take the latest version
+    planner_dir = str(voxel_sage_dirs[-1])  # take the latest version
     if planner_dir not in sys.path:
         sys.path.insert(0, planner_dir)
 
@@ -513,31 +567,40 @@ def run(ctx):
         n_tumor_components, target_ratio,
     )
 
-    # Establish the final full-liver parameter domain before scoring and
-    # margin refinement.  Expanding a small refined patch afterwards requires
-    # cubic extrapolation and can turn a gentle local surface into an extreme
-    # fold.  Refining in the final domain avoids that failure mode entirely.
-    for candidate in original_candidates:
-        for surface in candidate["surfaces"]:
-            _fit_surface_to_liver_projection(surface, liver_xyz, padding_mm=5.0)
-
-    # ---- 7. Score and select parent ----
-    stability_points = min(20000, len(liver_xyz))
-    _, parent_index, _ = score_and_select_candidates(
-        original_candidates, liver_sample_xyz, tumor_xyz,
-        hepatic_xyz, portal_xyz,
+    # ---- 7. Cheap screening before full Bézier refinement ----
+    # Full stability evaluation on every candidate used to dominate latency:
+    # candidate banks can exceed 300 entries when both vessel trees exist.
+    # Screen with a compact liver sample and no perturbation stability pass,
+    # then reserve the full procedure for a diverse short list.
+    screening_liver_xyz = _even_subsample(liver_sample_xyz, 8000)
+    scoring_hepatic_xyz = _even_subsample(hepatic_xyz, 1200)
+    scoring_portal_xyz = _even_subsample(portal_xyz, 1200)
+    screening_scored, parent_index, _ = score_and_select_candidates(
+        original_candidates, screening_liver_xyz, tumor_xyz,
+        scoring_hepatic_xyz, scoring_portal_xyz,
         target_ratio=target_ratio, predicted_scale=scale,
         predicted_surface_count=predicted_surface_count,
         n_tumor_components=n_tumor_components,
         tumor_liver_ratio=tumor_liver_ratio,
-        stability_points=stability_points,
+        stability_points=0,
     )
+    refinement_candidates = _select_refinement_candidates(
+        original_candidates, screening_scored, parent_index, max_candidates=12,
+    )
+    ctx.log(f"  Screening selected {len(refinement_candidates)}/{len(original_candidates)} candidates")
     ctx.log(f"  Parent candidate: {original_candidates[parent_index]['name']}")
+
+    # Establish the final full-liver parameter domain only for candidates that
+    # passed screening. This must happen before refinement to avoid unsafe
+    # Bézier extrapolation, but it need not be repeated for discarded options.
+    for _, candidate in refinement_candidates:
+        for surface in candidate["surfaces"]:
+            _fit_surface_to_liver_projection(surface, liver_xyz, padding_mm=5.0)
 
     # ---- 8. Refine candidates with margin constraints ----
     ctx.log("Refining surfaces with margin constraints...")
     refined_candidates = []
-    for candidate in original_candidates:
+    for _, candidate in refinement_candidates:
         refined, refinement = refine_candidate(
             candidate, tumor_boundary,
             margin_mm=margin_mm,
@@ -554,14 +617,15 @@ def run(ctx):
 
     # ---- 9. Score refined candidates and select best ----
     ctx.log(f"  {len(refined_candidates)} candidates passed margin check")
+    final_stability_points = min(6000, len(liver_sample_xyz))
     refined_scored, reward_index, selection_info = score_and_select_candidates(
         refined_candidates, liver_sample_xyz, tumor_xyz,
-        hepatic_xyz, portal_xyz,
+        scoring_hepatic_xyz, scoring_portal_xyz,
         target_ratio=target_ratio, predicted_scale=scale,
         predicted_surface_count=predicted_surface_count,
         n_tumor_components=n_tumor_components,
         tumor_liver_ratio=tumor_liver_ratio,
-        stability_points=stability_points,
+        stability_points=final_stability_points,
     )
 
     reward_cand = refined_candidates[reward_index]
@@ -569,7 +633,7 @@ def run(ctx):
 
     # ---- 10. Select 3 candidates: 2 raw (diverse ratio) + 1 refined (major) ----
     # Use original (unrefined) candidates for ratio diversity.
-    # Then use the refined GeoSurge best as the major option.
+    # Then use the refined VoxelSage best as the major option.
     def _extract_ratio(cand):
         import re
         m = re.search(r'_r([0-9.]+)', cand["name"])
@@ -592,7 +656,7 @@ def run(ctx):
     for orig_idx, orig_cand in pick_orig:
         r = _extract_ratio(orig_cand)
         ctx.log(f"    Raw #{orig_idx}: {orig_cand['name'][:60]} (ratio={r:.3f})")
-    ctx.log(f"    Refined: {best_refined['name'][:60]} (GeoSurge optimized)")
+    ctx.log(f"    Refined: {best_refined['name'][:60]} (VoxelSage optimized)")
 
     # ---- 11. Build entries: 2 raw + 1 refined ----
     all_to_build = [c for _, c in pick_orig[:2]] + [best_refined]
@@ -607,16 +671,17 @@ def run(ctx):
     intersection_band_mm = max(1.5, half_voxel_diagonal)
     resection_cell_size_mm = 4.0
     for rank, cand in enumerate(all_to_build):
-        # Crop the browser geometry to the actual liver/surface intersection.
-        # The optimisation used a full-liver domain above; restricting that
-        # finished patch is an exact Bézier reparameterisation and therefore
-        # changes only its finite extent, not the cutting geometry.
+        # Fit the browser geometry to the actual liver/surface intersection,
+        # while retaining three complete grid cells on every edge.  The extra
+        # border prevents the finite Bézier patch from ending inside the liver
+        # because of voxel sampling or a near-tangent intersection.
         fitted_control_points = [
             _fit_surface_to_liver_intersection(
                 surf,
                 liver_xyz,
                 band_mm=intersection_band_mm,
                 cell_size_mm=resection_cell_size_mm,
+                padding_cells=3,
             )
             for surf in cand["surfaces"]
         ]
@@ -671,6 +736,11 @@ def run(ctx):
                 }),
                 "height_control_4x4_mm": surf.get("height_control_4x4_mm", []),
                 "control_points_3d": cp3d,
+                # Keep an immutable optimizer-produced baseline so the 3D
+                # editor can discard even previously saved manual drags.
+                "original_control_points_3d": [
+                    [list(point) for point in row] for row in cp3d
+                ],
                 "surface_resolution": surface_resolution,
                 "cell_size_mm": resection_cell_size_mm,
                 "semantics": surf.get("semantics", {

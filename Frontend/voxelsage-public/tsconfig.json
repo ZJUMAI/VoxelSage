@@ -11,6 +11,9 @@
     ],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
+    "types": [
+      "vite/client"
+    ],
     "isolatedModules": true,
     "moduleDetection": "force",
     "allowJs": true,

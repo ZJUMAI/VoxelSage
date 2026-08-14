@@ -25,7 +25,7 @@ def run(ctx):
     """创建编辑器会话并返回 Web UI URL。
 
     参数（通过 ctx.params 传入）:
-        mask_name: 要编辑的掩码名称（可选，默认使用第一个掩码）
+        mask_name: 要编辑的掩码名称（可选，默认使用 liver）
 
     返回:
         dict: {editor_url, session_id, mask_name, num_slices, image_size}
@@ -63,7 +63,7 @@ def run(ctx):
 
     # 默认选中 "liver"（如果存在），否则选第一个
     default_mask = "liver" if "liver" in masks else masks[0]
-    mask_name = ctx.params.get("mask_name", default_mask)
+    mask_name = ctx.params.get("mask_name") or default_mask
     if mask_name not in masks:
         return {
             "status": "error",

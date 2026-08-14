@@ -232,7 +232,9 @@ export default function SliceViewer({
     if (!el) return;
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const { inlineSize, blockSize } = entry.borderBoxSize?.[0] || entry.contentRect;
+        const boxSize = entry.borderBoxSize?.[0];
+        const inlineSize = boxSize?.inlineSize ?? entry.contentRect.width;
+        const blockSize = boxSize?.blockSize ?? entry.contentRect.height;
         setViewportSize((prev) => {
           const w = Math.round(inlineSize);
           const h = Math.round(blockSize);
