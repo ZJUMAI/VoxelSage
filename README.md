@@ -106,10 +106,10 @@ source .venv/bin/activate
 pip install -r Port_B/requirements.txt
 pip install -r Port_A/requirements.txt
 
-cd Frontend/voxelsage-public
+cd Frontend
 npm ci
 cp .env.example .env.local
-cd ../..
+cd ..
 ```
 
 ### 2. Configure the agent
@@ -124,7 +124,7 @@ export DASHSCOPE_BASE_URL="https://your-llm-endpoint.example.com/v1"
 
 Port A connects to Port B at `http://localhost:8765` by default. For a custom
 deployment, also set `PORT_B_INTERNAL` and the frontend URLs described in
-[`Frontend/voxelsage-public/.env.example`](Frontend/voxelsage-public/.env.example).
+[`Frontend/.env.example`](Frontend/.env.example).
 
 ### 3. Start the services
 
@@ -164,7 +164,7 @@ cd Port_A
 <summary><strong>Terminal 4 · Web app</strong></summary>
 
 ```bash
-cd Frontend/voxelsage-public
+cd Frontend
 npm run dev
 ```
 
@@ -189,14 +189,14 @@ Then open **<http://localhost:3000>**.
 | `VISTA3D_ROOT` | Port B | Optional upstream VISTA3D source directory | Unset |
 
 For HTTPS or remote deployments, set all three `VITE_*` values in
-`Frontend/voxelsage-public/.env.local` before building. Use `https://` and
+`Frontend/.env.local` before building. Use `https://` and
 `wss://` endpoints, or route the services through a same-origin reverse proxy.
 
 ## Repository layout
 
 ```text
 VoxelSage/
-├── Frontend/voxelsage-public/   # React 19 + TypeScript + Vite web app
+├── Frontend/                    # React 19 + TypeScript + Vite web app
 ├── Port_A/                      # LLM agent and WebSocket orchestration
 │   ├── core/                    # Agent loop, validation, and recovery
 │   ├── docs/                    # Port A architecture notes
@@ -224,7 +224,7 @@ cd Port_B
 cd ../Port_A
 ../.venv/bin/python tests/test_p0_optimizations.py
 
-cd ../Frontend/voxelsage-public
+cd ../Frontend
 npm run lint
 npm run build
 ```

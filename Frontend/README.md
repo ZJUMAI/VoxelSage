@@ -23,7 +23,7 @@
 ## 快速开始
 
 ```bash
-cd Frontend/voxelsage-public
+cd Frontend
 npm ci
 cp .env.example .env.local
 npm run dev

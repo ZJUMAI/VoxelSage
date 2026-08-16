@@ -100,10 +100,10 @@ source .venv/bin/activate
 pip install -r Port_B/requirements.txt
 pip install -r Port_A/requirements.txt
 
-cd Frontend/voxelsage-public
+cd Frontend
 npm ci
 cp .env.example .env.local
-cd ../..
+cd ..
 ```
 
 ### 2. 配置智能体
@@ -117,7 +117,7 @@ export DASHSCOPE_BASE_URL="https://your-llm-endpoint.example.com/v1"
 
 Port A 默认连接 `http://localhost:8765` 上的 Port B。自定义部署时，还需设置
 `PORT_B_INTERNAL` 以及
-[`Frontend/voxelsage-public/.env.example`](Frontend/voxelsage-public/.env.example)
+[`Frontend/.env.example`](Frontend/.env.example)
 中说明的前端地址。
 
 ### 3. 启动服务
@@ -158,7 +158,7 @@ cd Port_A
 <summary><strong>终端 4 · Web 前端</strong></summary>
 
 ```bash
-cd Frontend/voxelsage-public
+cd Frontend
 npm run dev
 ```
 
@@ -183,14 +183,14 @@ npm run dev
 | `VISTA3D_ROOT` | Port B | 可选的 VISTA3D 上游源码目录 | 未设置 |
 
 使用 HTTPS 或远程部署时，请在构建前设置
-`Frontend/voxelsage-public/.env.local` 中的三个 `VITE_*` 变量，并使用
+`Frontend/.env.local` 中的三个 `VITE_*` 变量，并使用
 `https://`、`wss://` 地址，或通过同源反向代理转发服务。
 
 ## 仓库结构
 
 ```text
 VoxelSage/
-├── Frontend/voxelsage-public/   # React 19 + TypeScript + Vite 前端
+├── Frontend/                    # React 19 + TypeScript + Vite 前端
 ├── Port_A/                      # LLM 智能体与 WebSocket 编排
 │   ├── core/                    # 智能体循环、校验和恢复机制
 │   ├── docs/                    # Port A 架构文档
@@ -218,7 +218,7 @@ cd Port_B
 cd ../Port_A
 ../.venv/bin/python tests/test_p0_optimizations.py
 
-cd ../Frontend/voxelsage-public
+cd ../Frontend
 npm run lint
 npm run build
 ```
