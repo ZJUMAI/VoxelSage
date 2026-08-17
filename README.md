@@ -2,6 +2,8 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
+<img src="docs/assets/voxelsage-logo.png" alt="VoxelSage logo" width="128">
+
 # VoxelSage
 
 ### CT analysis without stitching together segmentation, agents, and 3D tools
@@ -27,17 +29,6 @@ to measurements, key slices, and interactive 3D review in one place.
 </p>
 
 <p align="center"><em>One case, one conversation, and the imaging evidence beside it.</em></p>
-
-<p align="center">
-  If VoxelSage fits your research workflow, consider
-  <a href="https://github.com/ZJUMAI/VoxelSage">starring the repository</a>—it helps other researchers find the project.
-</p>
-
-<p align="center">
-  <a href="https://github.com/ZJUMAI/VoxelSage">
-    <img src="docs/assets/star-demo.gif" alt="Star VoxelSage on GitHub" width="560">
-  </a>
-</p>
 
 > [!CAUTION]
 > VoxelSage is experimental research software—not a medical device. Do not use
@@ -280,7 +271,3 @@ are not relicensed by this project; see [`NOTICE`](NOTICE) and
 Port B was informed by the 3DMedAgent project and published work on
 Bézier-surface liver-resection planning. VoxelSage is not affiliated with or
 endorsed by those upstream authors.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ZJUMAI/VoxelSage&type=Date)](https://star-history.com/#ZJUMAI/VoxelSage&Date)

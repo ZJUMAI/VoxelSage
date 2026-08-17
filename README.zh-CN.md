@@ -2,6 +2,8 @@
 
 [English](README.md) | **简体中文**
 
+<img src="docs/assets/voxelsage-logo.png" alt="VoxelSage 标志" width="128">
+
 # VoxelSage
 
 ### 无需拼接分割、智能体与 3D 工具的 CT 分析工作台
@@ -26,17 +28,6 @@
 </p>
 
 <p align="center"><em>同一病例、同一段对话，影像证据始终就在旁边。</em></p>
-
-<p align="center">
-  如果 VoxelSage 适合你的研究工作流，欢迎
-  <a href="https://github.com/ZJUMAI/VoxelSage">为仓库点亮 Star</a>，帮助更多研究人员发现本项目。
-</p>
-
-<p align="center">
-  <a href="https://github.com/ZJUMAI/VoxelSage">
-    <img src="docs/assets/star-demo.gif" alt="在 GitHub 上为 VoxelSage 点亮 Star" width="560">
-  </a>
-</p>
 
 > [!CAUTION]
 > VoxelSage 是实验性科研软件，并非医疗器械。请勿将其用于临床诊断、
@@ -265,7 +256,3 @@ VoxelSage 原创代码采用 [Apache License 2.0](LICENSE) 许可。外部软件
 
 Port B 的设计受到 3DMedAgent 项目及 Bézier 曲面肝切除规划相关公开工作的
 启发。VoxelSage 与相关上游作者不存在隶属或背书关系。
-
-## Star 趋势
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ZJUMAI/VoxelSage&type=Date)](https://star-history.com/#ZJUMAI/VoxelSage&Date)
