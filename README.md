@@ -2,136 +2,71 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
+<img src="docs/assets/voxelsage-logo.png" alt="VoxelSage logo" width="128">
+
 # VoxelSage
 
-### An agentic workspace for 3D medical-imaging research
+### CT analysis without stitching together segmentation, agents, and 3D tools
 
-Upload abdominal CT data, explore 2D and 3D results, and let an LLM agent
-orchestrate segmentation and quantitative analysis Skills through one web
-interface.
+Self-hosted medical-imaging workspace for abdominal CT research. Upload DICOM
+or NIfTI data, ask questions in natural language, and move from segmentation
+to measurements, key slices, and interactive 3D review in one place.
 
+[![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
+[![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi)
-![Status](https://img.shields.io/badge/status-experimental-orange)
 
-[Features](#features) · [Architecture](#architecture) · [Quick start](#quick-start) · [Documentation](#documentation) · [License](#license)
+[Quick Start](#quick-start) · [What You Can Do](#what-you-can-do) · [How It Works](#how-it-works) · [Skills API](#skills-api--ai-agent-integration) · [Documentation](#documentation)
 
 </div>
 
 <p align="center">
   <a href="docs/assets/web_overview.png">
-    <img src="docs/assets/web_overview.png" alt="VoxelSage web workspace showing the agent conversation and interactive 3D liver reconstruction" width="100%">
+    <img src="docs/assets/web_overview.png" alt="VoxelSage workspace showing an agent conversation beside an interactive 3D liver reconstruction" width="100%">
   </a>
 </p>
 
-<p align="center"><em>From conversational analysis to interactive 3D reconstruction in one workspace.</em></p>
+<p align="center"><em>One case, one conversation, and the imaging evidence beside it.</em></p>
 
 > [!CAUTION]
 > VoxelSage is experimental research software—not a medical device. Do not use
 > it for clinical diagnosis, treatment decisions, or any other clinical purpose.
 
-## Overview
-
-VoxelSage brings the imaging pipeline and the conversational interface into a
-single research workspace. Its three services separate user interaction, agent
-orchestration, and compute-intensive imaging operations, so each layer can be
-developed and deployed independently.
-
-| Component | Role | Default endpoint |
-| --- | --- | --- |
-| **Web app** | Case management, chat, 2D slice review, and 3D result display | `http://localhost:3000` |
-| **Port A · Agent** | LLM loop, tool selection, result validation, reflection, and streaming | `http://localhost:8900` |
-| **Port B · Imaging** | Segmentation, measurements, structured results, and built-in Skills | `http://localhost:8765` |
-| **Output proxy** | Browser-accessible generated files | `http://localhost:8898` |
-
-## Features
-
-- **Medical-image workspace** — upload NIfTI or DICOM data, organize cases,
-  browse axial slices, and inspect voxel values.
-- **Agent-guided analysis** — ask questions in natural language while the agent
-  selects and runs the relevant imaging Skills.
-- **Segmentation orchestration** — use TotalSegmentator by default, with
-  optional VISTA3D integration for separately licensed installations.
-- **Quantitative Skills** — run liver analysis, tumor-diameter measurement,
-  tumor-to-vessel distance, vessel-volume analysis, and key-slice selection.
-- **Interactive visualization** — inspect segmentation outputs through the 2D
-  viewer and generated Three.js reconstructions.
-- **Resilient execution** — reuse case results, filter redundant tool calls,
-  validate measurements, and apply recovery strategies when a Skill fails.
-- **Extensible Skill layer** — expose analysis routines through a common
-  function-calling-compatible interface.
-
-## Architecture
-
-```mermaid
-flowchart LR
-    U["Researcher"] --> F["React web app<br/>:3000"]
-    F <-->|"HTTP + WebSocket"| A["Port A · Agent service<br/>:8900"]
-    A --> L["LLM endpoint"]
-    A <-->|"process-lite + Skills API"| B["Port B · Imaging service<br/>:8765"]
-    B --> S["Segmentation backends"]
-    B --> K["Analysis Skills"]
-    B --> O["Reports · slices · 3D outputs"]
-    O --> P["Output proxy<br/>:8898"]
-    P --> F
-```
-
-The core workflow is:
-
-```text
-DICOM / NIfTI → segmentation → post-processing → quantitative Skills
-               → structured results → 2D / 3D visualization → agent response
-```
-
-## Quick start
+## Quick Start
 
 ### Prerequisites
 
 - Python 3.10+
 - Node.js 20+ and npm
 - An OpenAI-compatible LLM endpoint
-- Enough CPU, memory, disk space, and—when required by the selected
-  segmentation backend—a compatible CUDA GPU
+- Enough CPU, memory, and disk space for the selected segmentation backend;
+  some backends also require a compatible CUDA GPU
 
-### 1. Install dependencies
-
-From the repository root:
+### Install
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-
-pip install -r Port_B/requirements.txt
-pip install -r Port_A/requirements.txt
-
-cd Frontend
-npm ci
-cp .env.example .env.local
-cd ..
+git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
+python -m venv .venv && source .venv/bin/activate
+pip install -r Port_B/requirements.txt -r Port_A/requirements.txt
+npm --prefix Frontend ci
+cp Frontend/.env.example Frontend/.env.local
 ```
 
-### 2. Configure the agent
-
-Export the credentials and base URL for your LLM endpoint. Never commit real
-credentials to the repository.
+Configure the LLM endpoint in the same shell used to start Port A:
 
 ```bash
 export DASHSCOPE_API_KEY="your-api-key"
 export DASHSCOPE_BASE_URL="https://your-llm-endpoint.example.com/v1"
 ```
 
-Port A connects to Port B at `http://localhost:8765` by default. For a custom
-deployment, also set `PORT_B_INTERNAL` and the frontend URLs described in
-[`Frontend/.env.example`](Frontend/.env.example).
+### Run
 
-### 3. Start the services
-
-Open four terminals at the repository root.
+Open four terminals from the repository root:
 
 <details open>
-<summary><strong>Terminal 1 · Port B imaging API</strong></summary>
+<summary><strong>1 · Imaging API</strong> — segmentation and analysis on <code>:8765</code></summary>
 
 ```bash
 cd Port_B
@@ -141,7 +76,7 @@ cd Port_B
 </details>
 
 <details open>
-<summary><strong>Terminal 2 · Output proxy</strong></summary>
+<summary><strong>2 · Output proxy</strong> — generated files on <code>:8898</code></summary>
 
 ```bash
 cd Port_B
@@ -151,7 +86,7 @@ cd Port_B
 </details>
 
 <details open>
-<summary><strong>Terminal 3 · Port A agent service</strong></summary>
+<summary><strong>3 · Agent service</strong> — LLM orchestration on <code>:8900</code></summary>
 
 ```bash
 cd Port_A
@@ -161,21 +96,95 @@ cd Port_A
 </details>
 
 <details open>
-<summary><strong>Terminal 4 · Web app</strong></summary>
+<summary><strong>4 · Web app</strong> — research workspace on <code>:3000</code></summary>
 
 ```bash
-cd Frontend
-npm run dev
+npm --prefix Frontend run dev
 ```
 
 </details>
 
-Then open **<http://localhost:3000>**.
+Open **<http://localhost:3000>**. The first TotalSegmentator run may download
+model assets. Optional VISTA3D support requires a separate upstream checkout,
+configuration, and model assets; see the
+[Port B guide](Port_B/README.md#segmentation-backends).
 
-> [!NOTE]
-> The first TotalSegmentator run may download model assets. VISTA3D is optional
-> and requires a separate upstream checkout, configuration, and model assets;
-> see the [Port B guide](Port_B/README.md#segmentation-backends).
+## What You Can Do
+
+- **Keep the case in one workspace** — upload NIfTI or DICOM data, organize
+  cases, inspect axial slices, and open generated 3D results without switching
+  applications.
+- **Ask questions instead of wiring pipelines** — the agent selects relevant
+  imaging Skills and streams progress and results back to the browser.
+- **Turn masks into evidence** — measure tumor diameter, tumor-to-vessel
+  distance, vessel volume, and liver-related quantities through reusable Skills.
+- **Review results spatially** — connect key slices, segmentation overlays, and
+  interactive Three.js reconstructions to the same analysis session.
+- **Avoid repeating expensive work** — reuse case outputs, filter redundant
+  tool calls, validate measurements, and apply recovery strategies after errors.
+- **Extend the analysis layer** — register additional Skills behind a common,
+  function-calling-compatible interface.
+
+## How It Works
+
+```mermaid
+flowchart LR
+    U["Imaging researcher"] --> F["Web workspace<br/>:3000"]
+    F <-->|"HTTP + WebSocket"| A["Agent service<br/>:8900"]
+    A --> L["LLM endpoint"]
+    A <-->|"process-lite + Skills"| B["Imaging API<br/>:8765"]
+    B --> S["Segmentation backends"]
+    B --> K["Quantitative Skills"]
+    B --> P["Reports · slices · 3D files<br/>:8898"]
+    P --> F
+```
+
+```text
+DICOM / NIfTI → segmentation → post-processing → quantitative Skills
+               → structured results → 2D / 3D review → agent response
+```
+
+| Service | Responsibility | Default endpoint |
+| --- | --- | --- |
+| **Frontend** | Case management, chat, 2D slices, and 3D result display | `http://localhost:3000` |
+| **Port A** | LLM loop, tool selection, validation, recovery, and streaming | `http://localhost:8900` |
+| **Port B** | Segmentation, measurements, structured output, and Skills | `http://localhost:8765` |
+| **Output proxy** | Browser-accessible generated files | `http://localhost:8898` |
+
+## Skills API & AI Agent Integration
+
+Port B exposes its analysis routines as function-calling-compatible tools. An
+external agent can discover available Skills at runtime and invoke only the
+analysis needed for a case:
+
+1. `POST /api/process-lite` — prepare, segment, and post-process a case.
+2. `GET /api/skills/list` — return registered Skills as tool definitions.
+3. `POST /api/skills/run` — execute one Skill against the returned `case_id`.
+
+With Port B running, inspect the live tool catalog:
+
+```bash
+curl http://localhost:8765/api/skills/list
+```
+
+Built-in Skills include liver analysis, key-slice selection, 3D reconstruction,
+tumor diameter, tumor-to-vessel distance, vessel volume, and segmentation
+modification. Port A already implements the iterative LLM-to-Skills loop for
+the web application.
+
+## Deployment
+
+| Method | Status | Best for |
+| --- | --- | --- |
+| [Local source](#quick-start) | Available | Research, development, and controlled environments |
+| Hosted demo | **TODO: add public URL** | Trying the interface without local setup |
+| Docker / one-click deploy | Not provided yet | Reproducible self-hosting |
+
+For HTTPS or remote deployments, set all three `VITE_*` values in
+`Frontend/.env.local` before building. Use `https://` and `wss://` endpoints,
+or route the services through a same-origin reverse proxy.
+
+<!-- TODO(owner): Replace the hosted-demo placeholder when a public deployment is ready. -->
 
 ## Configuration
 
@@ -188,18 +197,18 @@ Then open **<http://localhost:3000>**.
 | `VOXELSAGE_OUTPUT_DIR` | Port B | Runtime output directory | `Port_B/output` |
 | `VISTA3D_ROOT` | Port B | Optional upstream VISTA3D source directory | Unset |
 
-For HTTPS or remote deployments, set all three `VITE_*` values in
-`Frontend/.env.local` before building. Use `https://` and
-`wss://` endpoints, or route the services through a same-origin reverse proxy.
+See [`Frontend/.env.example`](Frontend/.env.example) for browser-facing service
+URLs and [`Port_B/.env.example`](Port_B/.env.example) for optional imaging
+runtime settings.
 
-## Repository layout
+## Repository Layout
 
 ```text
 VoxelSage/
-├── Frontend/                    # React 19 + TypeScript + Vite web app
+├── Frontend/                    # React 19 + TypeScript + Vite workspace
 ├── Port_A/                      # LLM agent and WebSocket orchestration
 │   ├── core/                    # Agent loop, validation, and recovery
-│   ├── docs/                    # Port A architecture notes
+│   ├── docs/                    # Architecture notes
 │   └── tests/
 ├── Port_B/                      # Imaging API and analysis runtime
 │   ├── SegAgent/                # Segmentation backend adapters
@@ -215,18 +224,10 @@ VoxelSage/
 
 ## Verification
 
-Run the backend tests and check the production frontend build:
-
 ```bash
-cd Port_B
-../.venv/bin/python -m pytest -q
-
-cd ../Port_A
-../.venv/bin/python tests/test_p0_optimizations.py
-
-cd ../Frontend
-npm run lint
-npm run build
+cd Port_B && ../.venv/bin/python -m pytest -q
+cd ../Port_A && ../.venv/bin/python tests/test_p0_optimizations.py
+cd ../Frontend && npm run lint && npm run build
 ```
 
 ## Documentation
@@ -237,31 +238,36 @@ npm run build
 - [Port B guide](Port_B/README.md) — imaging service, model backends, and data
   handling
 - [Frontend guide](Frontend/README.md) — UI features, configuration, and build
-- [Third-party notices](THIRD_PARTY_NOTICES.md) — dependency and provenance
-  information
+- [Third-party notices](THIRD_PARTY_NOTICES.md) — dependencies and provenance
 
-## Data, models, and responsible use
+## Contributing & Support
 
-- Use only data you are authorized to process, and remove DICOM identifiers and
+Pull requests are welcome. Before opening one, run the checks in
+[Verification](#verification) and make sure no patient data, credentials, model
+weights, or generated medical artifacts are included.
+
+- **Bug reports:** [GitHub Issues](https://github.com/ZJUMAI/VoxelSage/issues)
+- **Research questions and feature ideas:** use GitHub Issues until Discussions
+  is enabled
+- **Private security reports:** [binghong.25@intl.zju.edu.cn](mailto:binghong.25@intl.zju.edu.cn)
+
+## Responsible Use
+
+- Process only data you are authorized to use, and remove DICOM identifiers and
   other protected health information before sharing any artifact.
 - Patient data, model weights, generated outputs, and common medical-image
   formats are intentionally excluded from version control.
-- Model weights and datasets are not distributed with this repository. Each
-  external model, dataset, and dependency remains subject to its own licence.
+- External models, datasets, and dependencies retain their original licences.
 - Treat every segmentation, measurement, report, and agent response as an
   experimental result that requires qualified human review.
 
-## License
+## License & Acknowledgments
 
 Code authored for VoxelSage is available under the
 [Apache License 2.0](LICENSE). External software, model weights, and datasets
-retain their original licences and are not relicensed by this project. See
-[`NOTICE`](NOTICE) and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for
-details.
-
-## Acknowledgments
+are not relicensed by this project; see [`NOTICE`](NOTICE) and
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 Port B was informed by the 3DMedAgent project and published work on
 Bézier-surface liver-resection planning. VoxelSage is not affiliated with or
-endorsed by those upstream authors; detailed attribution is maintained in
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+endorsed by those upstream authors.
