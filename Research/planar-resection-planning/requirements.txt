@@ -1,0 +1,12 @@
+fastapi>=0.110,<1
+gymnasium>=0.29,<2
+matplotlib>=3.8,<4
+numpy>=1.26,<3
+optuna>=3.6,<5
+pytest>=8,<9
+scikit-learn>=1.4,<2
+scipy>=1.12,<2
+stable-baselines3>=2.3,<3
+sb3-contrib>=2.3,<3
+torch>=2.2
+uvicorn>=0.29,<1

@@ -1,0 +1,484 @@
+{
+  "version": "clinical-v1071-sensitivity-statistics-v1",
+  "n_per_condition": 128,
+  "margin_ml": 16.07054347826075,
+  "baseline_contract": "same-condition C0 + fixed margin",
+  "conditions": {
+    "S0": {
+      "condition_config": {
+        "max_clamp_minutes": 15.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 1.0
+      },
+      "baseline_file": "baseline_S0.json",
+      "baseline_file_sha256": "f53755ba8b9e0dba4542776a99e12738714e1bfbd5ed8ca7c083a6d5b587b969",
+      "baseline_mean_T_min": 33.69184782608696,
+      "baseline_mean_B_ml": 292.714130434781,
+      "c0_identity": {
+        "mean_delta_T_min": 0.0,
+        "mean_delta_B_ml": 0.0,
+        "overrun_count": 0,
+        "count": 128
+      },
+      "controller_summary": {
+        "C2": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": 2.791847826087053,
+          "delta_T_95_ci": [
+            2.283695652173998,
+            3.33043478260881
+          ],
+          "delta_T_cohens_dz": 0.9256044915071417,
+          "mean_delta_B_ml": -134.29538043481205,
+          "delta_B_95_ci": [
+            -166.65012228263998,
+            -103.44511548915297
+          ],
+          "max_delta_B_ml": 14.486956521709658,
+          "upper_cvar10_delta_T_min": 8.470903010033785,
+          "upper_cvar10_delta_B_ml": 10.984615384563618,
+          "mean_abs_T_min": 36.48369565217402,
+          "mean_abs_B_ml": 158.418749999969,
+          "shield_intervention_action_rate": 0.06466428685328932
+        },
+        "C4": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": -0.9635869565217611,
+          "delta_T_95_ci": [
+            -1.0630434782608968,
+            -0.8684782608695854
+          ],
+          "delta_T_cohens_dz": -1.7082550601308324,
+          "mean_delta_B_ml": -120.63301630434668,
+          "delta_B_95_ci": [
+            -147.50543138586357,
+            -96.26671535325815
+          ],
+          "max_delta_B_ml": 0.0,
+          "upper_cvar10_delta_T_min": -0.10702341137123848,
+          "upper_cvar10_delta_B_ml": 0.0,
+          "mean_abs_T_min": 32.728260869565204,
+          "mean_abs_B_ml": 172.08111413043434,
+          "shield_intervention_action_rate": 0.0008464268315289156
+        }
+      },
+      "C4_minus_C0": {
+        "mean_delta_T_min": -0.9635869565217611,
+        "delta_T_95_ci": [
+          -1.0625000000000246,
+          -0.8679347826087147
+        ],
+        "mean_delta_B_ml": -120.63301630434668,
+        "max_delta_B_ml": 0.0
+      },
+      "C4_minus_C2": {
+        "mean_delta_T_min": -3.7554347826088144,
+        "delta_T_95_ci": [
+          -4.251114130434923,
+          -3.2641032608696756
+        ],
+        "delta_T_cohens_dz": -1.3111975447847681
+      },
+      "gate": {
+        "decision": "PASS",
+        "conditions": {
+          "completion_legal": true,
+          "invariants_zero": true,
+          "overruns_zero": true,
+          "max_delta_B_le_margin": true,
+          "time_ci_upper_lt_zero": true
+        }
+      }
+    },
+    "S1": {
+      "condition_config": {
+        "max_clamp_minutes": 12.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 1.0
+      },
+      "baseline_file": "baseline_S1.json",
+      "baseline_file_sha256": "d12d7baddb3982343c58362305ffb291695374f0a6b2c557881c74ecfac579bb",
+      "baseline_mean_T_min": 33.69184782608697,
+      "baseline_mean_B_ml": 410.0972826086945,
+      "c0_identity": {
+        "mean_delta_T_min": 0.0,
+        "mean_delta_B_ml": 0.0,
+        "overrun_count": 0,
+        "count": 128
+      },
+      "controller_summary": {
+        "C2": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": 3.378804347826193,
+          "delta_T_95_ci": [
+            2.8950951086957373,
+            3.8962092391305587
+          ],
+          "delta_T_cohens_dz": 1.1628712154203849,
+          "mean_delta_B_ml": -177.40054347829812,
+          "delta_B_95_ci": [
+            -218.61399456525515,
+            -138.2231080163503
+          ],
+          "max_delta_B_ml": 12.417391304296642,
+          "upper_cvar10_delta_T_min": 9.642809364548857,
+          "upper_cvar10_delta_B_ml": 5.890301003282689,
+          "mean_abs_T_min": 37.07065217391316,
+          "mean_abs_B_ml": 232.6967391303964,
+          "shield_intervention_action_rate": 0.06754287223114047
+        },
+        "C4": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": -0.9630434782608907,
+          "delta_T_95_ci": [
+            -1.0750000000000215,
+            -0.8581521739130621
+          ],
+          "delta_T_cohens_dz": -1.5487790066057603,
+          "mean_delta_B_ml": -166.8425271739119,
+          "delta_B_95_ci": [
+            -204.3554177989097,
+            -132.12840013587373
+          ],
+          "max_delta_B_ml": 0.0,
+          "upper_cvar10_delta_T_min": -0.10167224080267691,
+          "upper_cvar10_delta_B_ml": 0.0,
+          "mean_abs_T_min": 32.72880434782607,
+          "mean_abs_B_ml": 243.25475543478262,
+          "shield_intervention_action_rate": 0.0009625578031575244
+        }
+      },
+      "C4_minus_C0": {
+        "mean_delta_T_min": -0.9630434782608907,
+        "delta_T_95_ci": [
+          -1.0777173913043732,
+          -0.8592391304348012
+        ],
+        "mean_delta_B_ml": -166.8425271739119,
+        "max_delta_B_ml": 0.0
+      },
+      "C4_minus_C2": {
+        "mean_delta_T_min": -4.341847826087084,
+        "delta_T_95_ci": [
+          -4.853872282608849,
+          -3.8494429347827097
+        ],
+        "delta_T_cohens_dz": -1.504891714207063
+      },
+      "gate": {
+        "decision": "PASS",
+        "conditions": {
+          "completion_legal": true,
+          "invariants_zero": true,
+          "overruns_zero": true,
+          "max_delta_B_le_margin": true,
+          "time_ci_upper_lt_zero": true
+        }
+      }
+    },
+    "S2": {
+      "condition_config": {
+        "max_clamp_minutes": 10.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 1.0
+      },
+      "baseline_file": "baseline_S2.json",
+      "baseline_file_sha256": "9bd44ad2755d30a5ced3596220e826eac07de1ec1b3b699f1110ef47d6a7a3ed",
+      "baseline_mean_T_min": 33.69184782608697,
+      "baseline_mean_B_ml": 459.4919836956508,
+      "c0_identity": {
+        "mean_delta_T_min": 0.0,
+        "mean_delta_B_ml": 0.0,
+        "overrun_count": 0,
+        "count": 128
+      },
+      "controller_summary": {
+        "C2": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": 3.3472826086957572,
+          "delta_T_95_ci": [
+            2.801059782608773,
+            3.91796195652187
+          ],
+          "delta_T_cohens_dz": 1.0383320082592296,
+          "mean_delta_B_ml": -205.4690217391526,
+          "delta_B_95_ci": [
+            -253.31276154893075,
+            -160.4385971467558
+          ],
+          "max_delta_B_ml": 14.486956521693845,
+          "upper_cvar10_delta_T_min": 10.129765886288064,
+          "upper_cvar10_delta_B_ml": 5.731103678885801,
+          "mean_abs_T_min": 37.03913043478273,
+          "mean_abs_B_ml": 254.02296195649822,
+          "shield_intervention_action_rate": 0.07028145199593255
+        },
+        "C4": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": -0.9271739130434995,
+          "delta_T_95_ci": [
+            -1.0244565217391548,
+            -0.8309782608695838
+          ],
+          "delta_T_cohens_dz": -1.6590678490580208,
+          "mean_delta_B_ml": -176.01005434782428,
+          "delta_B_95_ci": [
+            -209.0268953804312,
+            -145.53166440216998
+          ],
+          "max_delta_B_ml": 8.278260869597716,
+          "upper_cvar10_delta_T_min": -0.06421404682274101,
+          "upper_cvar10_delta_B_ml": 0.6367892976613627,
+          "mean_abs_T_min": 32.76467391304347,
+          "mean_abs_B_ml": 283.4819293478265,
+          "shield_intervention_action_rate": 0.0011176381858606806
+        }
+      },
+      "C4_minus_C0": {
+        "mean_delta_T_min": -0.9271739130434995,
+        "delta_T_95_ci": [
+          -1.0271739130435054,
+          -0.8331521739130613
+        ],
+        "mean_delta_B_ml": -176.01005434782428,
+        "max_delta_B_ml": 8.278260869597716
+      },
+      "C4_minus_C2": {
+        "mean_delta_T_min": -4.274456521739257,
+        "delta_T_95_ci": [
+          -4.846209239130584,
+          -3.732038043478373
+        ],
+        "delta_T_cohens_dz": -1.3196615858620697
+      },
+      "gate": {
+        "decision": "PASS",
+        "conditions": {
+          "completion_legal": true,
+          "invariants_zero": true,
+          "overruns_zero": true,
+          "max_delta_B_le_margin": true,
+          "time_ci_upper_lt_zero": true
+        }
+      }
+    },
+    "S3": {
+      "condition_config": {
+        "max_clamp_minutes": 15.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 0.5
+      },
+      "baseline_file": "baseline_S3.json",
+      "baseline_file_sha256": "ae0786c43d20c45a51401e7a8bfcc1936f08ec1f9a0f780088526fae829ec532",
+      "baseline_mean_T_min": 33.69184782608696,
+      "baseline_mean_B_ml": 146.3570652173905,
+      "c0_identity": {
+        "mean_delta_T_min": 0.0,
+        "mean_delta_B_ml": 0.0,
+        "overrun_count": 0,
+        "count": 128
+      },
+      "controller_summary": {
+        "C2": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": 2.932608695652273,
+          "delta_T_95_ci": [
+            2.427173913043559,
+            3.454904891304477
+          ],
+          "delta_T_cohens_dz": 0.986658712028108,
+          "mean_delta_B_ml": -64.05951086958072,
+          "delta_B_95_ci": [
+            -81.83675271740535,
+            -47.898712635885225
+          ],
+          "max_delta_B_ml": 14.486956521680469,
+          "upper_cvar10_delta_T_min": 8.481605351170899,
+          "upper_cvar10_delta_B_ml": 11.143812709001525,
+          "mean_abs_T_min": 36.62445652173923,
+          "mean_abs_B_ml": 82.29755434780982,
+          "shield_intervention_action_rate": 0.0647506478613942
+        },
+        "C4": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": -0.9592391304348046,
+          "delta_T_95_ci": [
+            -1.054904891304374,
+            -0.8641304347826263
+          ],
+          "delta_T_cohens_dz": -1.7008400256719092,
+          "mean_delta_B_ml": -60.30033967391237,
+          "delta_B_95_ci": [
+            -73.62356997282639,
+            -47.688724524453306
+          ],
+          "max_delta_B_ml": 0.0,
+          "upper_cvar10_delta_T_min": -0.10702341137123848,
+          "upper_cvar10_delta_B_ml": 0.0,
+          "mean_abs_T_min": 32.73260869565216,
+          "mean_abs_B_ml": 86.05672554347815,
+          "shield_intervention_action_rate": 0.00077439245108915
+        }
+      },
+      "C4_minus_C0": {
+        "mean_delta_T_min": -0.9592391304348046,
+        "delta_T_95_ci": [
+          -1.05597826086959,
+          -0.8625000000000225
+        ],
+        "mean_delta_B_ml": -60.30033967391237,
+        "max_delta_B_ml": 0.0
+      },
+      "C4_minus_C2": {
+        "mean_delta_T_min": -3.8918478260870772,
+        "delta_T_95_ci": [
+          -4.389701086956661,
+          -3.4010869565218402
+        ],
+        "delta_T_cohens_dz": -1.3810976938131947
+      },
+      "gate": {
+        "decision": "PASS",
+        "conditions": {
+          "completion_legal": true,
+          "invariants_zero": true,
+          "overruns_zero": true,
+          "max_delta_B_le_margin": true,
+          "time_ci_upper_lt_zero": true
+        }
+      }
+    },
+    "S4": {
+      "condition_config": {
+        "max_clamp_minutes": 15.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 0.25
+      },
+      "baseline_file": "baseline_S4.json",
+      "baseline_file_sha256": "414cd202414b0dfdbea34c8b7daffcb7aa935834602039febbe77527319cca18",
+      "baseline_mean_T_min": 33.69184782608696,
+      "baseline_mean_B_ml": 73.17853260869525,
+      "c0_identity": {
+        "mean_delta_T_min": 0.0,
+        "mean_delta_B_ml": 0.0,
+        "overrun_count": 0,
+        "count": 128
+      },
+      "controller_summary": {
+        "C2": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": 3.1826086956522786,
+          "delta_T_95_ci": [
+            2.6869429347826923,
+            3.6896739130436034
+          ],
+          "delta_T_cohens_dz": 1.0859076258285612,
+          "mean_delta_B_ml": -29.264945652183066,
+          "delta_B_95_ci": [
+            -38.5701069972925,
+            -20.59449813180491
+          ],
+          "max_delta_B_ml": 15.521739130427678,
+          "upper_cvar10_delta_T_min": 9.059531772575601,
+          "upper_cvar10_delta_B_ml": 13.929765886270522,
+          "mean_abs_T_min": 36.87445652173925,
+          "mean_abs_B_ml": 43.913586956512205,
+          "shield_intervention_action_rate": 0.06305461226520001
+        },
+        "C4": {
+          "n": 128,
+          "failures": 0,
+          "invariants": 0,
+          "legal_count": 128,
+          "overrun_count": 0,
+          "mean_delta_T_min": -0.9625000000000222,
+          "delta_T_95_ci": [
+            -1.0559918478261163,
+            -0.8690217391304552
+          ],
+          "delta_T_cohens_dz": -1.7874373587175327,
+          "mean_delta_B_ml": -29.40641983695624,
+          "delta_B_95_ci": [
+            -35.78084239130315,
+            -23.395484884509766
+          ],
+          "max_delta_B_ml": 4.139130434775389,
+          "upper_cvar10_delta_T_min": -0.11772575250836106,
+          "upper_cvar10_delta_B_ml": 0.3183946488288761,
+          "mean_abs_T_min": 32.729347826086936,
+          "mean_abs_B_ml": 43.77211277173902,
+          "shield_intervention_action_rate": 0.0006334359523165445
+        }
+      },
+      "C4_minus_C0": {
+        "mean_delta_T_min": -0.9625000000000222,
+        "delta_T_95_ci": [
+          -1.0565217391304604,
+          -0.8695652173913243
+        ],
+        "mean_delta_B_ml": -29.40641983695624,
+        "max_delta_B_ml": 4.139130434775389
+      },
+      "C4_minus_C2": {
+        "mean_delta_T_min": -4.145108695652301,
+        "delta_T_95_ci": [
+          -4.639673913043621,
+          -3.6619565217392367
+        ],
+        "delta_T_cohens_dz": -1.4713519965203619
+      },
+      "gate": {
+        "decision": "PASS",
+        "conditions": {
+          "completion_legal": true,
+          "invariants_zero": true,
+          "overruns_zero": true,
+          "max_delta_B_le_margin": true,
+          "time_ci_upper_lt_zero": true
+        }
+      }
+    }
+  },
+  "robustness": {
+    "classification": "robustness GO",
+    "perturbation_passes": 4,
+    "perturbation_total": 4
+  },
+  "tail_definition": "upper CVaR10 = mean of largest ceil(10%) paired deltas"
+}

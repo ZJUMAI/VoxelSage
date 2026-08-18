@@ -1,0 +1,47 @@
+{
+  "version": "v10.7-formal-candidate-manifest-v1",
+  "status": "frozen_after_gate_b",
+  "created_utc": "2026-08-16T12:25:28.078062+00:00",
+  "checkpoint": "results/clinical_window_v10_6_shielded_learning/runs/bc/config_05_seed_2026081603/epoch_05.pt",
+  "checkpoint_sha256": "c07904502d6b71a74484adb1c27971c77cdf6a61bb20b04f1f39d786d61a70be",
+  "margin_ml": 16.07054347826075,
+  "master_seed": 2026081707,
+  "bootstrap_seed": 202608170704,
+  "controllers": [
+    "C0",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5"
+  ],
+  "primary_comparison": "C4 vs C0",
+  "learning_specificity_comparison": "C4 vs C2",
+  "primary_endpoint": "paired delta-T C4 - C0 on replication-256",
+  "teacher_reference": "C3",
+  "sensitivity_controllers": [
+    "C0",
+    "C2",
+    "C4"
+  ],
+  "no_further_implementation_changes": true,
+  "hashed_code": {
+    "confirmation_controllers_v107.py": "15512ff208f7186087b15230ee46f2e331994dbb30a27760690d2716370a8e77",
+    "evaluate_confirmation_v107.py": "2aa6078b7ffb806aa271108e60137d64cd34b279d94516f73ad09eb0d78e770f",
+    "aggregate_confirmation_v107.py": "f63b22dcaaf89947b78c17bb2297d8f1832a0d0f76e7bf1ebb95c36d7e3a9811",
+    "evaluate_sensitivity_v107.py": "17b218e9847fcedb4ece5293366791fbeb9ba0c9a207a4fb6348ad9b01df8c23",
+    "replay_tension_v107.py": "67e3233fdd39c306fe05cb1c9a5f8080bc4d768554b311ea0c871b188b4eccb6",
+    "report_confirmation_v107.py": "8dd96f1fbafe7405678d33417002d688ae8fd450a38aea527736056a4ebc3ddf",
+    "prepare_clinical_v107_confirmation.py": "89fbaee20295ac259fca1ed23275adfdc9d5f7269cd6da1b02c5934c79e80460",
+    "tests/test_clinical_v107_confirmation.py": "c5d832dc60673fc2f5e9c3b551b8644acd15bf692fa854881a433f84fa6d259b",
+    "clinical_macro_environment.py": "383de8c34d1be341b88a855c766e9e1dbd3c1012326f875e8edc0102d00ea481",
+    "clinical_window_environment.py": "ed310ce1ebe8eb0d6f5c093e3629869148cc7869f22eb05b929d719311d7faed",
+    "clinical_target_order_features_v106.py": "715db4802ae99587e78a045feacd4d14337039a412c0fc6de5a7f7081ba08a82",
+    "clinical_target_order_policy_v106.py": "79d1b663b34b6d9e4c34be9b24bfa2496b7f279002a6158afc268a6eaa2730df",
+    "clinical_safety_shield_v106.py": "0da2d73ef18bff581854daf4b88d70f14bbd3a8beeb217e0a0be63568a8d53e9",
+    "plan_target_order_v104.py": "18d7b085385a93b2b3420855951a81547c9b164f434214fba76f641aefe21b3c",
+    "plan_target_order_v105.py": "e5229eeab97106e9e75b35a758004f8de7d4216cb3f6722afd0d8874e8f3cf63"
+  },
+  "replication_accessed": false,
+  "sensitivity_accessed": false
+}

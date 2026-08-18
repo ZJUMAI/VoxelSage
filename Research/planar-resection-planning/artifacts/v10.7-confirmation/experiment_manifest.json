@@ -1,0 +1,74 @@
+{
+  "version": "clinical-v107-confirmation-splits-v1",
+  "formal": true,
+  "created_utc": "2026-08-16T11:58:19.824662+00:00",
+  "master_seed": 2026081707,
+  "split_seeds": {
+    "dev_smoke": 202608170701,
+    "replication": 202608170702,
+    "sensitivity_base": 202608170703
+  },
+  "bootstrap_seed": 202608170704,
+  "counts": {
+    "dev_smoke": 32,
+    "replication": 256,
+    "sensitivity_base": 128
+  },
+  "uses": {
+    "dev_smoke": "code/controller/statistics debugging only; never enters formal results",
+    "replication": "one-shot primary confirmatory experiment; never retraining",
+    "sensitivity_base": "geometric scenes shared by five frozen sensitivity conditions"
+  },
+  "margin_ml": 16.07054347826075,
+  "margin_source": "frozen v10.6 margin; reused verbatim, never recomputed",
+  "clinical_config": {
+    "max_clamp_minutes": 15.0,
+    "unclamp_minutes": 5.0,
+    "bleeding_probability": 1.0,
+    "early_end_mode": "disabled",
+    "early_end_minutes": 0.0,
+    "large_vessel_min_cells": 2.0,
+    "large_vessel_time_multiplier": 3.0
+  },
+  "sensitivity_conditions": {
+    "S0": {
+      "id": "S0",
+      "max_clamp_minutes": 15.0,
+      "unclamp_minutes": 5.0,
+      "bleeding_probability": 1.0,
+      "explanation": "main condition replication"
+    },
+    "S1": {
+      "id": "S1",
+      "max_clamp_minutes": 12.0,
+      "unclamp_minutes": 5.0,
+      "bleeding_probability": 1.0,
+      "explanation": "shorter clamp ceiling"
+    },
+    "S2": {
+      "id": "S2",
+      "max_clamp_minutes": 10.0,
+      "unclamp_minutes": 5.0,
+      "bleeding_probability": 1.0,
+      "explanation": "even shorter clamp ceiling"
+    },
+    "S3": {
+      "id": "S3",
+      "max_clamp_minutes": 15.0,
+      "unclamp_minutes": 5.0,
+      "bleeding_probability": 0.5,
+      "explanation": "moderate uniform bleeding coefficient"
+    },
+    "S4": {
+      "id": "S4",
+      "max_clamp_minutes": 15.0,
+      "unclamp_minutes": 5.0,
+      "bleeding_probability": 0.25,
+      "explanation": "lower uniform bleeding coefficient"
+    }
+  },
+  "historical_v105_planner_gate_file": "results/clinical_window_v10_4_target_order/pilot_gate_a/gate_a_splits_v104.json",
+  "historical_v105_planner_gate_sha256": "d13ac5f67ba8c196a088676782c970d87f49ee26ebd04f7f9f8ce468f7197ae0",
+  "v106_master_file": "results/clinical_window_v10_6_shielded_learning/frozen/splits_v10_6.json",
+  "historical_overlap_count": 0
+}

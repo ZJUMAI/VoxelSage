@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planar Resection Simulator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172236;
+      --muted: #607086;
+      --line: #d8e0ea;
+      --panel: rgba(255, 255, 255, .96);
+      --brand: #1d5f91;
+      --brand-dark: #12466d;
+      --outside: #172334;
+      --tissue: #eef3f7;
+      --vessel: #ef8b2c;
+      --released: #28b8bd;
+      --cut: #7d8793;
+      --current: #ee3b46;
+      --start: #2468d1;
+      --selectable: #36a85b;
+      --unstable: #d02f8a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink);
+      font: 14px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 25% 10%, #f4f9ff 0, #e9eff6 42%, #dde6ef 100%);
+    }
+    button, input { font: inherit; }
+    button {
+      min-height: 34px; padding: 7px 11px; border: 1px solid #c9d5e2;
+      border-radius: 7px; color: #29415c; background: #fff; cursor: pointer; font-weight: 650;
+    }
+    button:hover:not(:disabled) { border-color: #7ca8cd; background: #f3f8fd; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    button.primary { color: #fff; border-color: var(--brand); background: var(--brand); }
+    button.primary:hover:not(:disabled) { border-color: var(--brand-dark); background: var(--brand-dark); }
+    button.active { color: #fff; border-color: var(--brand); background: var(--brand); }
+    input, select {
+      min-height: 32px; width: 92px; padding: 5px 7px; color: var(--ink);
+      border: 1px solid #c9d5e2; border-radius: 6px; background: #fff;
+    }
+    .app {
+      display: grid; grid-template-columns: minmax(0, 1fr) 304px;
+      gap: 16px; width: min(1400px, 100%); min-height: 100vh; margin: 0 auto; padding: 16px;
+    }
+    .workspace, .panel {
+      border: 1px solid rgba(143, 161, 182, .48); border-radius: 14px;
+      background: var(--panel); box-shadow: 0 16px 48px rgba(29, 54, 82, .12);
+    }
+    .workspace { display: flex; flex-direction: column; min-height: calc(100vh - 32px); overflow: hidden; }
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 14px 18px; border-bottom: 1px solid var(--line);
+    }
+    h1 { margin: 0; font-size: 18px; letter-spacing: -.01em; }
+    .subtitle { margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .stage-pill {
+      flex: 0 0 auto; padding: 5px 9px; border: 1px solid #c9dbeb;
+      border-radius: 999px; color: #255a84; background: #edf6fd; font-size: 12px; font-weight: 750;
+    }
+    .header-actions { display: flex; align-items: center; gap: 9px; }
+    .mode-switch { display: flex; padding: 3px; border: 1px solid #cbd8e5; border-radius: 9px; background: #f4f7fa; }
+    .mode-switch button { min-height: 29px; padding: 4px 8px; border: 0; background: transparent; font-size: 11px; }
+    .mode-switch button.active { color: #fff; background: var(--brand); }
+    .canvas-wrap {
+      position: relative; display: grid; place-items: center; flex: 1; min-height: 480px;
+      padding: 18px; overflow: hidden; background:
+        linear-gradient(rgba(255,255,255,.62), rgba(255,255,255,.62)),
+        repeating-linear-gradient(0deg, transparent 0 23px, rgba(62,91,120,.035) 24px),
+        repeating-linear-gradient(90deg, transparent 0 23px, rgba(62,91,120,.035) 24px);
+    }
+    canvas {
+      display: block; max-width: 100%; max-height: 100%; border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(32, 53, 76, .12); touch-action: none;
+    }
+    .workspace-footer {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      min-height: 44px; padding: 9px 16px; border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 12px;
+    }
+    .panel { align-self: start; max-height: calc(100vh - 32px); overflow: auto; padding: 14px; }
+    .section { padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .section:first-child { padding-top: 0; }
+    .section:last-child { border-bottom: 0; padding-bottom: 0; }
+    .section-title {
+      margin-bottom: 9px; color: #30475f; font-size: 11px; font-weight: 800;
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+    .row { display: flex; align-items: center; gap: 7px; margin-top: 7px; }
+    .row:first-child { margin-top: 0; }
+    .row > button { flex: 1; }
+    #algorithm-row { flex-wrap: wrap; }
+    #algorithm-row .alg-label { font-weight: 600; color: var(--text-secondary, #6b7280); }
+    #algorithm-row .alg-option { display: inline-flex; align-items: center; gap: 3px; cursor: pointer; white-space: nowrap; }
+    #algorithm-row .alg-option input { margin: 0; accent-color: var(--brand, #3d5874); }
+    label { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; color: var(--muted); }
+    label input[type="checkbox"] { width: 16px; min-height: 16px; }
+    .size-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 7px; }
+    .size-inputs label { display: grid; gap: 3px; }
+    .size-inputs input { width: 100%; }
+    details { margin-top: 8px; }
+    summary { color: #47617b; cursor: pointer; font-weight: 700; user-select: none; }
+    .weights { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+    .weights label { display: grid; gap: 3px; font-size: 12px; }
+    .weights input { width: 100%; }
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .mechanics-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+    .mechanics-inputs label { display: grid; gap: 3px; font-size: 11px; }
+    .mechanics-inputs input, .mechanics-inputs select { width: 100%; }
+    .tension-note { margin-top: 8px; padding: 8px; border-left: 3px solid #e5a739; color: #6c5831; background: #fff9e9; font-size: 11px; }
+    .playback { display: grid; grid-template-columns: auto 1fr auto; gap: 6px; align-items: center; }
+    #timeline { width: 100%; accent-color: var(--brand); }
+    .status {
+      min-height: 42px; margin-top: 9px; padding: 8px 9px; border-radius: 7px;
+      color: #3d5874; background: #f1f6fb; font-size: 12px;
+    }
+    .model-warning { margin-top: 8px; padding: 8px; border-left: 3px solid #d78a2f; color: #6c4c24; background: #fff8e9; font-size: 11px; }
+    .reward-panel { margin-top: 10px; }
+    .reward-chart {
+      display: block; width: 100%; height: auto; margin-top: 6px;
+      border: 1px solid #dde6ef; border-radius: 7px; background: #fff;
+    }
+    .reward-axis { stroke: #aebdcb; stroke-width: 1; }
+    .reward-zero { stroke: #d6a2a7; stroke-width: 1; stroke-dasharray: 3 3; }
+    .reward-line { fill: none; stroke: var(--brand); stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .reward-label { fill: #607086; font: 9px ui-sans-serif, system-ui, sans-serif; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .metric { padding: 7px 8px; border: 1px solid #dde6ef; border-radius: 7px; background: #fafcfe; }
+    .metric span { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; }
+    .metric strong { display: block; margin-top: 1px; font-size: 14px; }
+    .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 10px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; color: #51677e; font-size: 11px; }
+    .swatch { width: 12px; height: 12px; border: 1px solid rgba(0,0,0,.15); border-radius: 3px; }
+    .help { color: var(--muted); font-size: 12px; }
+    .hidden { display: none !important; }
+    @media (max-width: 850px) {
+      .app { grid-template-columns: 1fr; padding: 8px; }
+      .workspace { min-height: 65vh; }
+      .panel { max-height: none; }
+      .canvas-wrap { min-height: 400px; }
+      .header-actions { align-items: flex-end; flex-direction: column-reverse; }
+    }
+  </style>
+</head>
+<body>
+<main class="app">
+  <section class="workspace">
+    <header>
+      <div>
+        <h1>Planar Resection Simulator</h1>
+        <div class="subtitle">Dynamic frontier planning with vessel release</div>
+      </div>
+      <div class="header-actions">
+        <div class="mode-switch" aria-label="Simulator mode">
+          <button id="mode-planning" class="active">Path planning</button>
+          <button id="mode-tension">Tension sandbox</button>
+        </div>
+        <div class="stage-pill" id="stage-pill">Obstacle editing</div>
+      </div>
+    </header>
+    <div class="canvas-wrap" id="canvas-wrap">
+      <canvas id="grid" aria-label="Planar resection grid"></canvas>
+    </div>
+    <div class="workspace-footer" id="workspace-footer">
+      <span id="hint">Click an interior cell to add or remove a vessel obstacle.</span>
+      <span id="grid-summary">Generating domain…</span>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <div class="section">
+      <div class="section-title">Random domain</div>
+      <label>Seed <input id="seed" type="number" step="1" placeholder="Random"></label>
+      <label class="row"><span>Random size</span><input id="random-size" type="checkbox" checked></label>
+      <div class="size-inputs">
+        <label>Rows <input id="rows" type="number" min="10" max="50" value="24" disabled></label>
+        <label>Columns <input id="cols" type="number" min="10" max="50" value="24" disabled></label>
+      </div>
+      <div class="row">
+        <button id="regenerate">Regenerate</button>
+        <button id="new-random">New random</button>
+      </div>
+    </div>
+
+    <div class="section planning-only">
+      <div class="section-title">Setup</div>
+      <div class="help" id="setup-help">Paint one or more vessel blocks, then lock the obstacles.</div>
+      <div class="row">
+        <button id="edit-obstacles" class="hidden">Edit obstacles</button>
+        <button id="lock-obstacles" class="primary">Lock obstacles</button>
+      </div>
+      <div class="row" id="algorithm-row">
+        <span class="alg-label">Algorithm:</span>
+        <label class="alg-option"><input type="radio" name="algorithm" value="serpentine"> A · Serpentine Baseline</label>
+        <label class="alg-option"><input type="radio" name="algorithm" value="planner"> B · Rule-based Planner</label>
+        <label class="alg-option"><input type="radio" name="algorithm" value="clinical-v104" checked> C · v10.4 BC Model</label>
+      </div>
+      <div class="row">
+        <button id="run-plan" class="primary" disabled>Run planning</button>
+      </div>
+      <div class="help" id="algorithm-help">Checking the current v10.4 checkpoint…</div>
+      <div class="model-warning" id="clinical-model-warning">Gate B NO-GO: this model is available for research simulation, not clinical planning.</div>
+      <details id="weights-panel">
+        <summary>Advanced weights</summary>
+        <div class="weights">
+          <label>Movement <input class="weight" id="weight-distance" type="number" min="0" step="0.05" value="1"></label>
+          <label>Vessel risk <input class="weight" id="weight-risk" type="number" min="0" step="0.05" value="2"></label>
+          <label>Shape <input class="weight" id="weight-shape" type="number" min="0" step="0.05" value="1"></label>
+          <label>Exposure <input class="weight" id="weight-exposure" type="number" min="0" step="0.05" value="0.75"></label>
+        </div>
+      </details>
+    </div>
+
+    <div class="section tension-only hidden">
+      <div class="section-title">Tension sandbox</div>
+      <div class="help" id="tension-help">Select vessel cells and cut cells. The 2.5D model computes normal tension automatically.</div>
+      <div class="tool-grid">
+        <button id="tension-tool-vessel" class="tension-tool active">Vessel</button>
+        <button id="tension-tool-cut" class="tension-tool">Cut</button>
+      </div>
+      <div class="mechanics-inputs">
+        <label>Heatmap
+          <select id="tension-heatmap">
+            <option value="front">Front tension</option>
+            <option value="normal">Normal tension</option>
+            <option value="shear">Shear tension</option>
+            <option value="organ">Organ energy</option>
+            <option value="vessel">Vessel strain</option>
+          </select>
+        </label>
+        <label>Deformation ×<input id="deformation-scale" type="number" min="0" max="10" step="0.25" value="2"></label>
+      </div>
+      <div class="row">
+        <button id="reset-tension-cuts">Reset cuts</button>
+        <button id="recalculate-tension" class="primary">Recalculate</button>
+      </div>
+      <details>
+        <summary>Mechanical parameters</summary>
+        <div class="weights">
+          <label>Organ stiffness<input class="mechanics-param" id="mechanics-organ" type="number" min="0.01" step="0.1" value="1"></label>
+          <label>Vessel stiffness<input class="mechanics-param" id="mechanics-vessel" type="number" min="0.01" step="0.1" value="3"></label>
+          <label>Attachment<input class="mechanics-param" id="mechanics-attachment" type="number" min="0.01" step="0.1" value="1.5"></label>
+          <label>Diagonal factor<input class="mechanics-param" id="mechanics-diagonal" type="number" min="0" step="0.1" value="0.5"></label>
+          <label>Shear stiffness<input class="mechanics-param" id="mechanics-shear" type="number" min="0.01" step="0.1" value="0.5"></label>
+          <label>Lateral prestrain<input class="mechanics-param" id="mechanics-lateral-prestrain" type="number" min="0" max="0.99" step="0.01" value="0.03"></label>
+          <label>Safe strain<input class="mechanics-param" id="mechanics-safe" type="number" min="0" step="0.01" value="0.12"></label>
+          <label>Tear strain<input class="mechanics-param" id="mechanics-tear" type="number" min="0.01" step="0.01" value="0.25"></label>
+        </div>
+      </details>
+      <div class="tension-note">Dimensionless quasi-static model for algorithm development, not a calibrated clinical prediction.</div>
+    </div>
+
+    <div class="section tension-only hidden">
+      <div class="section-title">Mechanical response</div>
+      <div class="status" id="tension-status">Select vessels or cuts, then inspect the computed heatmap.</div>
+      <div class="metrics">
+        <div class="metric"><span>Normal tension</span><strong id="metric-normal-tension">—</strong></div>
+        <div class="metric"><span>Shear tension</span><strong id="metric-shear-tension">—</strong></div>
+        <div class="metric"><span>Front tension</span><strong id="metric-front-tension">—</strong></div>
+        <div class="metric"><span>Vessel strain</span><strong id="metric-vessel-strain">—</strong></div>
+        <div class="metric"><span>Vessel state</span><strong id="metric-vessel-state">—</strong></div>
+        <div class="metric"><span>Organ CVaR 95%</span><strong id="metric-organ-cvar">—</strong></div>
+        <div class="metric"><span>Unstable cells</span><strong id="metric-unstable">—</strong></div>
+        <div class="metric"><span>Max displacement</span><strong id="metric-displacement">—</strong></div>
+        <div class="metric"><span>Springs</span><strong id="metric-springs">—</strong></div>
+      </div>
+    </div>
+
+    <div class="section planning-only">
+      <div class="section-title">Playback</div>
+      <div class="playback">
+        <button id="previous" disabled title="Previous step">Previous</button>
+        <input id="timeline" type="range" min="-1" max="-1" value="-1" disabled>
+        <button id="next" disabled title="Next step">Next</button>
+      </div>
+      <div class="row"><button id="play" disabled>Play</button></div>
+      <div class="status" id="status">Generate a domain to begin.</div>
+      <div class="metrics">
+        <div class="metric"><span>Coverage</span><strong id="metric-coverage">—</strong></div>
+        <div class="metric"><span>Cut cells</span><strong id="metric-cut">—</strong></div>
+        <div class="metric"><span>Transfers</span><strong id="metric-transfer">—</strong></div>
+        <div class="metric"><span>Exposed vessels</span><strong id="metric-release">—</strong></div>
+      </div>
+      <div class="metrics hidden" id="clinical-metrics">
+        <div class="metric"><span>Total time</span><strong id="metric-clinical-time">—</strong></div>
+        <div class="metric"><span>Blood loss</span><strong id="metric-clinical-blood">—</strong></div>
+        <div class="metric"><span>Total reward</span><strong id="metric-clinical-reward">—</strong></div>
+        <div class="metric"><span>Clamp cycles</span><strong id="metric-clinical-cycles">—</strong></div>
+      </div>
+      <div class="reward-panel hidden" id="reward-panel">
+        <div class="section-title">Rollout reward by macro step</div>
+        <svg class="reward-chart" id="reward-chart" viewBox="0 0 280 150" role="img" aria-label="Immediate environment reward by macro step"></svg>
+        <div class="help" id="reward-note"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Legend</div>
+      <div class="legend">
+        <div class="legend-item"><i class="swatch" style="background:var(--tissue)"></i>Uncut tissue</div>
+        <div class="legend-item"><i class="swatch" style="background:var(--vessel)"></i>Active vessel</div>
+        <div class="legend-item"><i class="swatch" style="background:var(--released)"></i>Released vessel</div>
+        <div class="legend-item"><i class="swatch" style="background:var(--cut)"></i>Cut</div>
+        <div class="legend-item"><i class="swatch" style="background:var(--current)"></i>Current</div>
+        <div class="legend-item"><i class="swatch" style="background:var(--start)"></i>Start</div>
+        <div class="legend-item"><i class="swatch" style="background:var(--selectable)"></i>Valid start</div>
+        <div class="legend-item"><i class="swatch" style="background:var(--outside)"></i>Outside</div>
+        <div class="legend-item tension-only hidden"><i class="swatch" style="background:var(--unstable)"></i>Unstable</div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script>
+  const COLORS = {
+    outside: '#172334', tissue: '#eef3f7', vessel: '#ef8b2c', released: '#28b8bd',
+    cut: '#7d8793', current: '#ee3b46', start: '#2468d1', selectable: '#36a85b',
+    unstable: '#d02f8a'
+  };
+  const state = {
+    rows: 0, cols: 0, seed: null, domain: new Set(), boundary: new Set(),
+    obstacles: new Set(), start: null, stage: 'obstacles', result: null,
+    eventIndex: -1, timer: null, componentsByCell: new Map(),
+    mode: 'planning', tensionTool: 'vessel', tensionCuts: new Set(),
+    tensionResult: null,
+    tensionCells: new Map(), tensionRequest: 0,
+    clinicalPolicyStatus: null
+  };
+  const $ = id => document.getElementById(id);
+  const canvas = $('grid');
+  const ctx = canvas.getContext('2d');
+  const key = (r, c) => `${r},${c}`;
+  const parseKey = value => value.split(',').map(Number);
+  const asCells = set => [...set].map(parseKey);
+
+  function setMessage(message, error = false) {
+    $('status').textContent = message;
+    $('status').style.color = error ? '#a52c35' : '#3d5874';
+    $('status').style.background = error ? '#fff0f1' : '#f1f6fb';
+  }
+
+  function setStage(stage) {
+    if (state.mode === 'tension') {
+      $('stage-pill').textContent = 'Tension sandbox';
+      $('hint').textContent = {
+        vessel: 'Click tissue cells to add or remove vessel material.',
+        cut: 'Click ordinary tissue to remove it and recalculate tension.'
+      }[state.tensionTool];
+      draw();
+      return;
+    }
+    state.stage = stage;
+    const settings = {
+      obstacles: ['Obstacle editing', 'Click an interior cell to add or remove a vessel obstacle.'],
+      start: ['Start selection', 'Green boundary cells are valid starting points. Click one to select.'],
+      ready: ['Ready to plan', 'Run the planner or edit the setup.'],
+      planned: ['Path playback', 'Use Play or the timeline to inspect each event.']
+    };
+    $('stage-pill').textContent = settings[stage][0];
+    $('hint').textContent = settings[stage][1];
+    $('lock-obstacles').classList.toggle('hidden', stage !== 'obstacles');
+    $('edit-obstacles').classList.toggle('hidden', stage === 'obstacles');
+    updateRunButton();
+    $('setup-help').textContent = stage === 'obstacles'
+      ? 'Paint one or more vessel blocks, then lock the obstacles.'
+      : state.start ? `Start cell: ${state.start}` : 'Choose one of the highlighted boundary cells.';
+    draw();
+  }
+
+  function setTensionMessage(message, error = false) {
+    $('tension-status').textContent = message;
+    $('tension-status').style.color = error ? '#a52c35' : '#3d5874';
+    $('tension-status').style.background = error ? '#fff0f1' : '#f1f6fb';
+  }
+
+  function setMode(mode) {
+    state.mode = mode;
+    stopPlayback();
+    $('mode-planning').classList.toggle('active', mode === 'planning');
+    $('mode-tension').classList.toggle('active', mode === 'tension');
+    document.querySelectorAll('.planning-only').forEach(element => {
+      element.classList.toggle('hidden', mode !== 'planning');
+    });
+    document.querySelectorAll('.tension-only').forEach(element => {
+      element.classList.toggle('hidden', mode !== 'tension');
+    });
+    document.querySelector('.subtitle').textContent = {
+      planning: 'Dynamic frontier planning with vessel release',
+      tension: 'Dimensionless quasi-static tissue and vessel mechanics'
+    }[mode];
+    if (mode === 'planning') {
+      setStage(state.stage);
+    } else if (mode === 'tension') {
+      setStage('tension');
+      runTension();
+    }
+    resizeCanvas();
+  }
+
+  async function getJson(url) {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || `Request failed (${response.status})`);
+    return data;
+  }
+
+  async function loadClinicalPolicyStatus() {
+    try {
+      state.clinicalPolicyStatus = await getJson('/api/policy/clinical-v104/status');
+    } catch (error) {
+      state.clinicalPolicyStatus = {available: false, quality_note: error.message};
+    }
+    updateAlgorithmUi();
+  }
+
+  function setTensionTool(tool) {
+    state.tensionTool = tool;
+    document.querySelectorAll('.tension-tool').forEach(button => {
+      button.classList.toggle('active', button.id === `tension-tool-${tool}`);
+    });
+    setStage('tension');
+  }
+
+  function mechanicsParameters() {
+    return {
+      organ_stiffness: Number($('mechanics-organ').value),
+      vessel_stiffness: Number($('mechanics-vessel').value),
+      attachment_stiffness: Number($('mechanics-attachment').value),
+      diagonal_factor: Number($('mechanics-diagonal').value),
+      shear_stiffness: Number($('mechanics-shear').value),
+      lateral_prestrain: Number($('mechanics-lateral-prestrain').value),
+      safe_vessel_strain: Number($('mechanics-safe').value),
+      tear_vessel_strain: Number($('mechanics-tear').value)
+    };
+  }
+
+  function clearTensionResult(message = 'Mechanical setup changed.') {
+    state.tensionResult = null;
+    state.tensionCells.clear();
+    ['normal-tension', 'shear-tension', 'front-tension', 'vessel-strain', 'vessel-state', 'organ-cvar', 'unstable', 'displacement', 'springs']
+      .forEach(name => $(`metric-${name}`).textContent = '—');
+    setTensionMessage(message);
+    draw();
+  }
+
+  async function runTension() {
+    if (state.mode !== 'tension' || !state.domain.size) return;
+    const request = ++state.tensionRequest;
+    setTensionMessage('Solving quasi-static equilibrium…');
+    try {
+      const result = await post('/api/tension', {
+        rows: state.rows,
+        cols: state.cols,
+        domain_cells: asCells(state.domain),
+        vessel_cells: asCells(state.obstacles),
+        cut_cells: asCells(state.tensionCuts),
+        parameters: mechanicsParameters()
+      });
+      if (request !== state.tensionRequest) return;
+      state.tensionResult = result;
+      state.tensionCells = new Map(result.cells.map(item => [key(...item.cell), item]));
+      $('metric-normal-tension').textContent = result.peak_normal_tension.toFixed(4);
+      $('metric-shear-tension').textContent = result.peak_shear_tension.toFixed(4);
+      $('metric-front-tension').textContent = result.peak_front_tension.toFixed(4);
+      $('metric-vessel-strain').textContent = result.peak_vessel_strain.toFixed(4);
+      $('metric-vessel-state').textContent = result.vessel_status;
+      $('metric-vessel-state').style.color = result.vessel_status === 'tear-risk'
+        ? '#b2212e' : result.vessel_status === 'warning' ? '#aa6b00' : '#238044';
+      $('metric-organ-cvar').textContent = result.organ_cvar95_energy.toFixed(4);
+      $('metric-unstable').textContent = result.unstable_cell_count;
+      $('metric-displacement').textContent = result.max_displacement.toFixed(4);
+      $('metric-springs').textContent = result.spring_count;
+      const setup = `${state.obstacles.size} vessels · ${state.tensionCuts.size} cuts`;
+      if (result.unstable_cell_count) {
+        setTensionMessage(`${setup}. ${result.unstable_cell_count} cells are mechanically detached.`, true);
+      } else {
+        setTensionMessage(`${setup}. Front tension computed without external pull.`);
+      }
+      draw();
+    } catch (error) {
+      if (request !== state.tensionRequest) return;
+      clearTensionResult(error.message);
+      setTensionMessage(error.message, true);
+    }
+  }
+
+  function stopPlayback() {
+    if (state.timer) clearInterval(state.timer);
+    state.timer = null;
+    $('play').textContent = 'Play';
+  }
+
+  function invalidatePlan(message = 'Setup changed. Run planning again.') {
+    stopPlayback();
+    state.result = null;
+    state.eventIndex = -1;
+    state.componentsByCell.clear();
+    $('timeline').disabled = true;
+    $('timeline').min = -1;
+    $('timeline').max = -1;
+    $('timeline').value = -1;
+    ['play', 'previous', 'next'].forEach(id => $(id).disabled = true);
+    ['coverage', 'cut', 'transfer', 'release'].forEach(name => $(`metric-${name}`).textContent = '—');
+    ['clinical-time', 'clinical-blood', 'clinical-reward', 'clinical-cycles']
+      .forEach(name => $(`metric-${name}`).textContent = '—');
+    $('clinical-metrics').classList.add('hidden');
+    $('reward-panel').classList.add('hidden');
+    $('reward-chart').replaceChildren();
+    if (state.stage !== 'obstacles') {
+      const nextStage = state.start ? 'ready' : 'start';
+      if (state.mode === 'tension') state.stage = nextStage;
+      else setStage(nextStage);
+    }
+    setMessage(message);
+    draw();
+  }
+
+  async function post(url, payload) {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || `Request failed (${response.status})`);
+    return data;
+  }
+
+  async function generateDomain(newSeed = false) {
+    stopPlayback();
+    const randomSize = $('random-size').checked;
+    const seedText = newSeed ? '' : $('seed').value.trim();
+    const payload = {};
+    if (seedText !== '') payload.seed = Number(seedText);
+    if (!randomSize) {
+      payload.rows = Number($('rows').value);
+      payload.cols = Number($('cols').value);
+    } else if (selectedAlgorithm() === 'clinical-v104') {
+      payload.rows = 10 + Math.floor(Math.random() * 21);
+      payload.cols = 10 + Math.floor(Math.random() * 31);
+    }
+    setMessage('Generating connected domain…');
+    try {
+      const data = await post('/api/generate', payload);
+      state.rows = data.rows;
+      state.cols = data.cols;
+      state.seed = data.seed;
+      state.domain = new Set(data.domain_cells.map(cell => key(...cell)));
+      state.boundary = new Set(data.boundary_cells.map(cell => key(...cell)));
+      state.obstacles = new Set();
+      state.start = null;
+      state.result = null;
+      state.eventIndex = -1;
+      state.stage = 'obstacles';
+      state.tensionCuts = new Set();
+      state.tensionResult = null;
+      state.tensionCells.clear();
+      $('seed').value = data.seed;
+      $('rows').value = data.rows;
+      $('cols').value = data.cols;
+      $('grid-summary').textContent = `${data.rows} × ${data.cols} · ${data.cell_count} tissue cells · seed ${data.seed}`;
+      invalidatePlan('Domain generated. Paint vessel obstacles, then lock them.');
+      setStage('obstacles');
+      resizeCanvas();
+      if (state.mode === 'tension') runTension();
+    } catch (error) {
+      setMessage(error.message, true);
+    }
+  }
+
+  function weights() {
+    return {
+      distance: Number($('weight-distance').value),
+      vessel_risk: Number($('weight-risk').value),
+      shape: Number($('weight-shape').value),
+      exposure: Number($('weight-exposure').value)
+    };
+  }
+
+  function svgElement(name, attributes = {}, text = '') {
+    const element = document.createElementNS('http://www.w3.org/2000/svg', name);
+    Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+    if (text) element.textContent = text;
+    return element;
+  }
+
+  function renderRewardTrace(trace, note) {
+    const panel = $('reward-panel');
+    const svg = $('reward-chart');
+    svg.replaceChildren();
+    if (!trace || !trace.length) {
+      panel.classList.add('hidden');
+      return;
+    }
+    panel.classList.remove('hidden');
+    const width = 280, height = 150;
+    const margin = {left: 34, right: 10, top: 12, bottom: 24};
+    const values = trace.map(item => Number(item.reward));
+    let low = Math.min(...values, 0), high = Math.max(...values, 0);
+    if (Math.abs(high - low) < 1e-9) { low -= 1; high += 1; }
+    const x = index => margin.left + index / Math.max(1, values.length - 1)
+      * (width - margin.left - margin.right);
+    const y = value => margin.top + (high - value) / (high - low)
+      * (height - margin.top - margin.bottom);
+    svg.appendChild(svgElement('line', {
+      x1: margin.left, y1: height - margin.bottom,
+      x2: width - margin.right, y2: height - margin.bottom, class: 'reward-axis'
+    }));
+    svg.appendChild(svgElement('line', {
+      x1: margin.left, y1: margin.top,
+      x2: margin.left, y2: height - margin.bottom, class: 'reward-axis'
+    }));
+    if (low <= 0 && high >= 0) {
+      svg.appendChild(svgElement('line', {
+        x1: margin.left, y1: y(0), x2: width - margin.right, y2: y(0), class: 'reward-zero'
+      }));
+    }
+    svg.appendChild(svgElement('polyline', {
+      points: values.map((value, index) => `${x(index).toFixed(2)},${y(value).toFixed(2)}`).join(' '),
+      class: 'reward-line'
+    }));
+    svg.appendChild(svgElement('text', {x: 2, y: margin.top + 3, class: 'reward-label'}, high.toFixed(2)));
+    svg.appendChild(svgElement('text', {x: 2, y: height - margin.bottom, class: 'reward-label'}, low.toFixed(2)));
+    svg.appendChild(svgElement('text', {x: margin.left, y: height - 7, class: 'reward-label'}, '1'));
+    svg.appendChild(svgElement('text', {x: width - margin.right - 20, y: height - 7, class: 'reward-label'}, String(values.length)));
+    svg.appendChild(svgElement('text', {x: width / 2 - 22, y: height - 7, class: 'reward-label'}, 'macro step'));
+    $('reward-note').textContent = `${values.length} macro actions · ${note}`;
+  }
+
+  function presentPlan(result, source) {
+    state.result = result;
+    state.eventIndex = -1;
+    state.componentsByCell.clear();
+    state.result.components.forEach(component => {
+      component.cells.forEach(cell => state.componentsByCell.set(key(...cell), component.id));
+    });
+    $('timeline').disabled = false;
+    $('timeline').min = -1;
+    $('timeline').max = state.result.events.length - 1;
+    $('timeline').value = -1;
+    ['play', 'next'].forEach(id => $(id).disabled = false);
+    $('previous').disabled = true;
+    $('metric-coverage').textContent = `${(state.result.coverage * 100).toFixed(1)}%`;
+    $('metric-cut').textContent = state.result.cut_count;
+    $('metric-transfer').textContent = state.result.transfer_count;
+    $('metric-release').textContent = state.result.release_count;
+    const clinical = Array.isArray(state.result.reward_trace);
+    $('clinical-metrics').classList.toggle('hidden', !clinical);
+    if (clinical) {
+      $('metric-clinical-time').textContent = `${state.result.elapsed_minutes.toFixed(2)} min`;
+      $('metric-clinical-blood').textContent = `${state.result.expected_blood_loss_ml.toFixed(1)} mL`;
+      $('metric-clinical-reward').textContent = state.result.total_reward.toFixed(3);
+      $('metric-clinical-cycles').textContent = state.result.clamp_cycle_count;
+      renderRewardTrace(state.result.reward_trace, state.result.reward_trace_note);
+    } else {
+      $('reward-panel').classList.add('hidden');
+    }
+    setStage('planned');
+    setMessage(state.result.status === 'ok'
+      ? `${source} ready: ${state.result.events.length} events.${clinical ? ' Gate B NO-GO research checkpoint.' : ''}`
+      : `${source} partial: ${state.result.failure_reason}`, state.result.status !== 'ok');
+    draw();
+  }
+
+  async function runPlanning() {
+    if (!state.start) return;
+    stopPlayback();
+    $('run-plan').disabled = true;
+    $('run-plan').textContent = 'Running…';
+    const algo = selectedAlgorithm();
+    setMessage(`Running ${algorithmLabel(algo)}…`);
+    try {
+      const base = {
+        rows: state.rows,
+        cols: state.cols,
+        domain_cells: asCells(state.domain),
+        obstacle_cells: asCells(state.obstacles),
+        start_cell: parseKey(state.start)
+      };
+      let result;
+      if (algo === 'serpentine') {
+        result = await post('/api/plan/serpentine', base);
+      } else if (algo === 'planner') {
+        result = await post('/api/plan', { ...base, weights: weights() });
+      } else if (algo === 'clinical-v104') {
+        result = await post('/api/policy/clinical-v104/plan', base);
+      } else {
+        throw new Error(`Unknown algorithm: ${algo}`);
+      }
+      presentPlan(result, algorithmLabel(algo));
+    } catch (error) {
+      setMessage(error.message, true);
+    } finally {
+      $('run-plan').textContent = 'Run planning';
+      updateRunButton();
+    }
+  }
+
+  function selectedAlgorithm() {
+    const el = document.querySelector('input[name="algorithm"]:checked');
+    return el ? el.value : 'clinical-v104';
+  }
+
+  function algorithmLabel(algo) {
+    if (algo === 'serpentine') return 'Serpentine baseline';
+    if (algo === 'planner') return 'Rule plan';
+    if (algo === 'clinical-v104') return 'v10.4 BC model';
+    return algo;
+  }
+
+  function updateAlgorithmUi() {
+    const algo = selectedAlgorithm();
+    $('weights-panel').style.display = algo === 'planner' ? '' : 'none';
+    const clinicalMode = algo === 'clinical-v104';
+    $('rows').max = clinicalMode ? 30 : 50;
+    $('cols').max = clinicalMode ? 40 : 50;
+    $('clinical-model-warning').classList.toggle('hidden', !clinicalMode);
+    $('algorithm-help').textContent = clinicalMode
+      ? state.clinicalPolicyStatus
+        ? state.clinicalPolicyStatus.available
+          ? 'Current checkpoint ready. Macro-target inference uses deterministic transfer and fixed automatic 15/5 clamping.'
+          : `Current checkpoint unavailable: ${state.clinicalPolicyStatus.quality_note}`
+        : 'Checking the current v10.4 checkpoint…'
+      : algo === 'planner'
+        ? 'The rule planner uses four adjustable baseline weights and supports domains up to 50×50.'
+        : 'The fixed S-form baseline supports connected regular or irregular domains up to 50×50.';
+    if (state.result) invalidatePlan('Algorithm changed. Run planning again.');
+    if (state.rows && !algorithmSizeValid()) {
+      const limits = algorithmLimits();
+      setMessage(`Current canvas exceeds the ${limits.rows}×${limits.cols} limit for ${algorithmLabel(algo)}. Regenerate a valid domain.`, true);
+    }
+    updateRunButton();
+  }
+
+  function algorithmLimits() {
+    return selectedAlgorithm() === 'clinical-v104' ? {rows: 30, cols: 40} : {rows: 50, cols: 50};
+  }
+
+  function algorithmSizeValid() {
+    const limits = algorithmLimits();
+    return state.rows > 0 && state.cols > 0
+      && state.rows <= limits.rows && state.cols <= limits.cols;
+  }
+
+  function updateRunButton() {
+    const modelUnavailable = selectedAlgorithm() === 'clinical-v104'
+      && state.clinicalPolicyStatus?.available !== true;
+    $('run-plan').disabled = !state.start || state.stage === 'obstacles'
+      || !algorithmSizeValid() || modelUnavailable;
+  }
+
+  function playbackState() {
+    const cut = new Set();
+    const released = new Set();
+    let current = null;
+    let currentAction = null;
+    if (state.result) {
+      for (let index = 0; index <= state.eventIndex; index++) {
+        const event = state.result.events[index];
+        if (event.action === 'cut') cut.add(key(...event.cell));
+        if (event.action === 'seal_and_cut_vessel') {
+          (event.cells || []).forEach(cell => cut.add(key(...cell)));
+        }
+        if (event.action === 'release' || event.action === 'expose_vessel') {
+          released.add(event.component_id);
+        }
+        if (event.cell) current = key(...event.cell);
+        currentAction = event.action;
+      }
+    }
+    return {cut, released, current, currentAction};
+  }
+
+  function eventDescription(event, index) {
+    const prefix = `Event ${index + 1}/${state.result.events.length}: `;
+    if (event.action === 'release') {
+      return `${prefix}vessel block ${event.component_id} released.`;
+    }
+    if (event.action === 'expose_vessel') {
+      return `${prefix}vessel block ${event.component_id} exposed.`;
+    }
+    if (event.action === 'seal_and_cut_vessel') {
+      return `${prefix}vessel block ${event.component_id} sealed and cut at [${event.cell.join(', ')}].`;
+    }
+    if (event.action === 'phase_change') {
+      return `${prefix}clamp phase changed to ${event.phase} (${event.reason}).`;
+    }
+    if (event.action === 'end_clamp_early') {
+      return `${prefix}clamp ended early.`;
+    }
+    if (event.cell) {
+      const score = event.score == null ? '' : ` · score ${event.score.toFixed(3)}`;
+      return `${prefix}${event.action} [${event.cell.join(', ')}]${score}`;
+    }
+    return `${prefix}${event.action}.`;
+  }
+
+  function showEvent(index) {
+    if (!state.result) return;
+    stopPlayback();
+    state.eventIndex = Math.max(-1, Math.min(index, state.result.events.length - 1));
+    $('timeline').value = state.eventIndex;
+    $('previous').disabled = state.eventIndex <= -1;
+    $('next').disabled = state.eventIndex >= state.result.events.length - 1;
+    if (state.eventIndex < 0) {
+      setMessage('Initial state before the first cut.');
+    } else {
+      const event = state.result.events[state.eventIndex];
+      setMessage(eventDescription(event, state.eventIndex));
+    }
+    draw();
+  }
+
+  function togglePlay() {
+    if (!state.result) return;
+    if (state.timer) {
+      stopPlayback();
+      return;
+    }
+    if (state.eventIndex >= state.result.events.length - 1) state.eventIndex = -1;
+    $('play').textContent = 'Pause';
+    state.timer = setInterval(() => {
+      if (state.eventIndex >= state.result.events.length - 1) {
+        stopPlayback();
+        return;
+      }
+      const nextIndex = state.eventIndex + 1;
+      state.eventIndex = nextIndex;
+      $('timeline').value = nextIndex;
+      $('previous').disabled = false;
+      $('next').disabled = nextIndex >= state.result.events.length - 1;
+      const event = state.result.events[nextIndex];
+      setMessage(eventDescription(event, nextIndex));
+      draw();
+    }, 100);
+  }
+
+  function resizeCanvas() {
+    if (!state.rows || !state.cols) return;
+    const wrap = $('canvas-wrap').getBoundingClientRect();
+    const availableWidth = Math.max(300, wrap.width - 36);
+    const availableHeight = Math.max(300, wrap.height - 36);
+    const cellSize = Math.max(8, Math.floor(Math.min(availableWidth / state.cols, availableHeight / state.rows)));
+    const ratio = window.devicePixelRatio || 1;
+    canvas.style.width = `${cellSize * state.cols}px`;
+    canvas.style.height = `${cellSize * state.rows}px`;
+    canvas.width = cellSize * state.cols * ratio;
+    canvas.height = cellSize * state.rows * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    canvas.dataset.cellSize = cellSize;
+    draw();
+  }
+
+  function heatColor(value, maximum) {
+    const normalized = maximum > 0 ? Math.min(1, Math.sqrt(Math.max(0, value) / maximum)) : 0;
+    const hue = 205 - 205 * normalized;
+    const lightness = 92 - 42 * normalized;
+    return `hsl(${hue} 78% ${lightness}%)`;
+  }
+
+  function tensionPoint(cellKey, size) {
+    const [r, c] = parseKey(cellKey);
+    return [
+      (c + .5) * size,
+      (r + .5) * size
+    ];
+  }
+
+  function drawTensionOverlay(size) {
+    if (!state.tensionResult) return;
+    ctx.save();
+    for (const spring of state.tensionResult.springs) {
+      const from = tensionPoint(key(...spring.from), size);
+      const to = tensionPoint(key(...spring.to), size);
+      const danger = Math.min(1, spring.strain / Math.max(.000001, state.tensionResult.parameters.tear_vessel_strain));
+      ctx.strokeStyle = spring.kind === 'lateral'
+        ? `rgba(28, 60, 88, ${.10 + .35 * danger})`
+        : `rgba(225, 92, 29, ${.20 + .55 * danger})`;
+      ctx.lineWidth = spring.kind === 'lateral' ? .7 : 1.1;
+      ctx.beginPath();
+      ctx.moveTo(from[0], from[1]);
+      ctx.lineTo(to[0], to[1]);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function draw() {
+    if (!state.rows || !state.cols) return;
+    const size = Number(canvas.dataset.cellSize || 20);
+    const playback = state.mode === 'planning'
+      ? playbackState()
+      : {cut: new Set(), released: new Set(), current: null, currentAction: null};
+    const organMax = state.tensionResult
+      ? Math.max(state.tensionResult.peak_organ_energy, state.tensionResult.organ_cvar95_energy, .00000001)
+      : 0;
+    const vesselMax = state.tensionResult
+      ? Math.max(state.tensionResult.parameters.tear_vessel_strain, state.tensionResult.peak_vessel_strain, .00000001)
+      : 0;
+    const normalMax = state.tensionResult
+      ? Math.max(state.tensionResult.peak_normal_tension, .00000001)
+      : 0;
+    const shearMax = state.tensionResult
+      ? Math.max(state.tensionResult.peak_shear_tension, .00000001)
+      : 0;
+    const frontMax = state.tensionResult
+      ? Math.max(state.tensionResult.peak_front_tension, .00000001)
+      : 0;
+    ctx.clearRect(0, 0, state.cols * size, state.rows * size);
+    ctx.fillStyle = COLORS.outside;
+    ctx.fillRect(0, 0, state.cols * size, state.rows * size);
+
+    for (const cellKey of state.domain) {
+      const [r, c] = parseKey(cellKey);
+      let color = COLORS.tissue;
+      const componentId = state.componentsByCell.get(cellKey);
+      const tensionMetric = state.tensionCells.get(cellKey);
+      if (state.mode === 'tension' && state.tensionCuts.has(cellKey)) {
+        color = COLORS.cut;
+      } else if (state.mode === 'tension' && tensionMetric?.unstable) {
+        color = COLORS.unstable;
+      } else if (state.mode === 'tension' && tensionMetric) {
+        if ($('tension-heatmap').value === 'front') {
+          color = tensionMetric.is_cut ? COLORS.cut
+            : tensionMetric.is_front ? heatColor(tensionMetric.front_tension, frontMax) : '#f4f6f8';
+        } else if ($('tension-heatmap').value === 'shear') {
+          color = tensionMetric.is_cut ? COLORS.cut : heatColor(tensionMetric.shear_tension, shearMax);
+        } else if ($('tension-heatmap').value === 'normal') {
+          color = tensionMetric.is_cut ? COLORS.cut : heatColor(tensionMetric.normal_tension, normalMax);
+        } else if ($('tension-heatmap').value === 'vessel') {
+          color = tensionMetric.is_vessel
+            ? heatColor(tensionMetric.vessel_strain, vesselMax)
+            : '#f4f6f8';
+        } else {
+          color = tensionMetric.is_vessel
+            ? COLORS.vessel
+            : heatColor(tensionMetric.organ_energy, organMax);
+        }
+      } else if (state.obstacles.has(cellKey)) {
+        color = playback.released.has(componentId) ? COLORS.released : COLORS.vessel;
+      }
+      if (state.mode === 'planning' && playback.cut.has(cellKey)) color = COLORS.cut;
+      if (state.mode === 'planning' && state.stage === 'start' && state.boundary.has(cellKey) && !state.obstacles.has(cellKey)) {
+        color = COLORS.selectable;
+      }
+      if (state.mode === 'planning' && cellKey === playback.current) color = COLORS.current;
+      ctx.fillStyle = color;
+      ctx.fillRect(c * size + 1, r * size + 1, size - 2, size - 2);
+      ctx.strokeStyle = 'rgba(34, 50, 68, .20)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(c * size + .5, r * size + .5, size - 1, size - 1);
+    }
+    if (state.mode === 'tension') {
+      drawTensionOverlay(size);
+    }
+    if (state.mode === 'planning' && state.start) {
+      const [r, c] = parseKey(state.start);
+      ctx.strokeStyle = COLORS.start;
+      ctx.lineWidth = Math.max(2, size * .14);
+      ctx.strokeRect(c * size + 2, r * size + 2, size - 4, size - 4);
+    }
+  }
+
+  canvas.addEventListener('pointerup', event => {
+    if (!state.rows) return;
+    const rect = canvas.getBoundingClientRect();
+    const c = Math.floor((event.clientX - rect.left) / rect.width * state.cols);
+    const r = Math.floor((event.clientY - rect.top) / rect.height * state.rows);
+    const cellKey = key(r, c);
+    if (!state.domain.has(cellKey)) return;
+    if (state.mode === 'tension') {
+      if (state.tensionTool === 'vessel') {
+        if (state.boundary.has(cellKey)) {
+          setTensionMessage('Vessel cells remain restricted to the domain interior.', true);
+          return;
+        }
+        if (state.tensionCuts.has(cellKey)) {
+          setTensionMessage('Restore the cell before changing vessel material.', true);
+          return;
+        }
+        if (state.obstacles.has(cellKey)) state.obstacles.delete(cellKey);
+        else state.obstacles.add(cellKey);
+        invalidatePlan('Vessel layout changed in the tension sandbox.');
+        runTension();
+        return;
+      }
+      if (state.tensionTool === 'cut') {
+        if (state.tensionCuts.has(cellKey)) {
+          state.tensionCuts.delete(cellKey);
+          runTension();
+          return;
+        }
+        if (state.obstacles.has(cellKey)) {
+          setTensionMessage('Vessel material cannot be cut in this sandbox.', true);
+          return;
+        }
+        state.tensionCuts.add(cellKey);
+        runTension();
+        return;
+      }
+    }
+    if (state.stage === 'obstacles') {
+      if (state.boundary.has(cellKey)) {
+        setMessage('Vessel obstacles cannot be placed on the domain boundary.', true);
+        return;
+      }
+      if (state.obstacles.has(cellKey)) state.obstacles.delete(cellKey);
+      else state.obstacles.add(cellKey);
+      invalidatePlan(`${state.obstacles.size} obstacle cells selected.`);
+      setStage('obstacles');
+    } else if (state.stage === 'start') {
+      if (!state.boundary.has(cellKey) || state.obstacles.has(cellKey)) return;
+      state.start = cellKey;
+      invalidatePlan(`Start cell [${r}, ${c}] selected.`);
+      setStage('ready');
+    }
+  });
+
+  $('random-size').addEventListener('change', () => {
+    const disabled = $('random-size').checked;
+    $('rows').disabled = disabled;
+    $('cols').disabled = disabled;
+  });
+  $('regenerate').addEventListener('click', () => generateDomain(false));
+  $('new-random').addEventListener('click', () => generateDomain(true));
+  $('lock-obstacles').addEventListener('click', () => {
+    state.start = null;
+    invalidatePlan('Obstacles locked. Choose a green boundary start cell.');
+    setStage('start');
+  });
+  $('edit-obstacles').addEventListener('click', () => {
+    state.start = null;
+    invalidatePlan('Obstacle editing enabled.');
+    setStage('obstacles');
+  });
+  $('run-plan').addEventListener('click', runPlanning);
+  document.querySelectorAll('input[name="algorithm"]').forEach(el =>
+    el.addEventListener('change', updateAlgorithmUi));
+  updateAlgorithmUi();
+  $('timeline').addEventListener('input', () => showEvent(Number($('timeline').value)));
+  $('previous').addEventListener('click', () => showEvent(state.eventIndex - 1));
+  $('next').addEventListener('click', () => showEvent(state.eventIndex + 1));
+  $('play').addEventListener('click', togglePlay);
+  $('mode-planning').addEventListener('click', () => setMode('planning'));
+  $('mode-tension').addEventListener('click', () => setMode('tension'));
+  ['vessel', 'cut'].forEach(tool => {
+    $(`tension-tool-${tool}`).addEventListener('click', () => setTensionTool(tool));
+  });
+  $('reset-tension-cuts').addEventListener('click', () => {
+    state.tensionCuts.clear();
+    runTension();
+  });
+  $('recalculate-tension').addEventListener('click', runTension);
+  $('tension-heatmap').addEventListener('change', draw);
+  $('deformation-scale').addEventListener('input', draw);
+  document.querySelectorAll('.mechanics-param').forEach(input => {
+    input.addEventListener('change', runTension);
+  });
+  document.querySelectorAll('.weight').forEach(input => {
+    input.addEventListener('change', () => {
+      if (state.result) invalidatePlan('Weights changed. Run planning again.');
+    });
+  });
+  window.addEventListener('resize', resizeCanvas);
+
+  loadClinicalPolicyStatus();
+  generateDomain(true);
+</script>
+</body>
+</html>

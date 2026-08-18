@@ -1,0 +1,26 @@
+{
+  "version": "v1071-shard-integrity-audit-v1",
+  "errors": [],
+  "error_count": 0,
+  "total_shards": 1280,
+  "per_condition": {
+    "S0": {"C2": 128, "C4": 128},
+    "S1": {"C2": 128, "C4": 128},
+    "S2": {"C2": 128, "C4": 128},
+    "S3": {"C2": 128, "C4": 128},
+    "S4": {"C2": 128, "C4": 128}
+  },
+  "checks": {
+    "unique_scenario_ids_per_controller_condition": true,
+    "condition_and_controller_identity_match": true,
+    "scenario_hash_match": true,
+    "condition_baseline_file_hash_match": true,
+    "checkpoint_hash_match": true,
+    "budget_equals_same_condition_baseline_plus_margin": true,
+    "maximum_budget_equation_error": 0.0,
+    "completion_all": true,
+    "legal_action_rate_all_one": true,
+    "safety_invariant_violations": 0,
+    "budget_overruns": 0
+  }
+}
