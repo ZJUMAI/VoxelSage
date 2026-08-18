@@ -124,6 +124,9 @@ configuration, and model assets; see the
   tool calls, validate measurements, and apply recovery strategies after errors.
 - **Extend the analysis layer** — register additional Skills behind a common,
   function-calling-compatible interface.
+- **Reproduce planar planning research** — explore the standalone 2D resection
+  simulator, learned target ranking, masked-PPO baselines, and exact safety
+  shielding under `Research/planar-resection-planning`.
 
 ## How It Works
 
@@ -172,20 +175,6 @@ tumor diameter, tumor-to-vessel distance, vessel volume, and segmentation
 modification. Port A already implements the iterative LLM-to-Skills loop for
 the web application.
 
-## Deployment
-
-| Method | Status | Best for |
-| --- | --- | --- |
-| [Local source](#quick-start) | Available | Research, development, and controlled environments |
-| Hosted demo | **TODO: add public URL** | Trying the interface without local setup |
-| Docker / one-click deploy | Not provided yet | Reproducible self-hosting |
-
-For HTTPS or remote deployments, set all three `VITE_*` values in
-`Frontend/.env.local` before building. Use `https://` and `wss://` endpoints,
-or route the services through a same-origin reverse proxy.
-
-<!-- TODO(owner): Replace the hosted-demo placeholder when a public deployment is ready. -->
-
 ## Configuration
 
 | Variable | Service | Purpose | Default |
@@ -217,6 +206,8 @@ VoxelSage/
 │   ├── Visualization/           # Slice and Three.js output generation
 │   ├── skills/                  # Built-in and user-registered Skills
 │   └── tests/
+├── Research/
+│   └── planar-resection-planning/ # 2D planning and learning simulator
 ├── LICENSE
 ├── NOTICE
 └── THIRD_PARTY_NOTICES.md
@@ -238,6 +229,8 @@ cd ../Frontend && npm run lint && npm run build
 - [Port B guide](Port_B/README.md) — imaging service, model backends, and data
   handling
 - [Frontend guide](Frontend/README.md) — UI features, configuration, and build
+- [Planar resection planning research](Research/planar-resection-planning/README.md)
+  — simulator, BC/PPO experiments, exact shield, and confirmatory results
 - [Third-party notices](THIRD_PARTY_NOTICES.md) — dependencies and provenance
 
 ## Contributing & Support
