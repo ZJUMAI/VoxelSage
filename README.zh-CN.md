@@ -120,6 +120,9 @@ npm --prefix Frontend run dev
 - **避免重复执行高成本任务** — 复用病例结果、过滤冗余工具调用、校验测量值，
   并在发生错误后应用恢复策略。
 - **扩展分析能力** — 通过统一、兼容函数调用的接口注册新的分析技能。
+- **比较受约束的规划策略** — 默认使用确定性三维曲面基线，也可显式启用
+  冻结学习排序器与模拟器安全盾，并在 `Research/planar-resection-planning`
+  复现其二维实验依据。
 
 ## 工作原理
 
@@ -176,6 +179,7 @@ curl http://localhost:8765/api/skills/list
 | `PUBLIC_BASE_URL` | Port B | 输出代理的公开基础地址 | `http://127.0.0.1:8898` |
 | `VOXELSAGE_OUTPUT_DIR` | Port B | 运行时输出目录 | `Port_B/output` |
 | `VISTA3D_ROOT` | Port B | 可选的 VISTA3D 上游源码目录 | 未设置 |
+| `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B | 经授权的冻结 v10.6 规划权重 | 未设置 |
 
 浏览器端服务地址见 [`Frontend/.env.example`](Frontend/.env.example)，可选影像
 运行时配置见 [`Port_B/.env.example`](Port_B/.env.example)。
@@ -216,6 +220,10 @@ cd ../Frontend && npm run lint && npm run build
   和前端协议
 - [Port B 使用说明](Port_B/README.md) — 影像服务、模型后端和数据处理
 - [前端使用说明](Frontend/README.md) — UI 功能、配置和构建
+- [学习排序器与安全盾三维 Skill](docs/LEARNED_RESECTION_SEQUENCE.md) — 实验模式配置、
+  权重哈希、失败行为和范围限制
+- [二维序贯规划研究](Research/planar-resection-planning/README.md) — 模拟器、训练、
+  精确安全盾和确认结果
 - [第三方声明](THIRD_PARTY_NOTICES.md) — 依赖与来源信息
 
 ## 贡献与支持

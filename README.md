@@ -124,9 +124,10 @@ configuration, and model assets; see the
   tool calls, validate measurements, and apply recovery strategies after errors.
 - **Extend the analysis layer** — register additional Skills behind a common,
   function-calling-compatible interface.
-- **Reproduce planar planning research** — explore the standalone 2D resection
-  simulator, learned target ranking, masked-PPO baselines, and exact safety
-  shielding under `Research/planar-resection-planning`.
+- **Compare constrained planning strategies** — keep deterministic 3D surface
+  baselines as the default, explicitly opt into the frozen learned ranker plus
+  simulator shield, and reproduce its 2D evidence under
+  `Research/planar-resection-planning`.
 
 ## How It Works
 
@@ -185,6 +186,7 @@ the web application.
 | `PUBLIC_BASE_URL` | Port B | Public output-proxy base URL | `http://127.0.0.1:8898` |
 | `VOXELSAGE_OUTPUT_DIR` | Port B | Runtime output directory | `Port_B/output` |
 | `VISTA3D_ROOT` | Port B | Optional upstream VISTA3D source directory | Unset |
+| `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B | Authorized frozen v10.6 planning checkpoint | Unset |
 
 See [`Frontend/.env.example`](Frontend/.env.example) for browser-facing service
 URLs and [`Port_B/.env.example`](Port_B/.env.example) for optional imaging
@@ -229,6 +231,8 @@ cd ../Frontend && npm run lint && npm run build
 - [Port B guide](Port_B/README.md) — imaging service, model backends, and data
   handling
 - [Frontend guide](Frontend/README.md) — UI features, configuration, and build
+- [Learned, shielded 3D sequence Skill](docs/LEARNED_RESECTION_SEQUENCE.md)
+  — opt-in setup, frozen-hash check, failure behavior, and scope limits
 - [Planar resection planning research](Research/planar-resection-planning/README.md)
   — simulator, BC/PPO experiments, exact shield, and confirmatory results
 - [Third-party notices](THIRD_PARTY_NOTICES.md) — dependencies and provenance

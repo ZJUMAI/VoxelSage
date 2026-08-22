@@ -1073,9 +1073,11 @@ fetch(DATA_URL)
           }
           const vascularDistance = Number(document.getElementById('path-vascular-distance').value);
           const liverSamples = Number(document.getElementById('path-liver-samples').value);
+          const selectedAlgorithm = document.getElementById('path-algorithm').value;
           const previewKey = [
             activePlane,
             po.planeData.saved_at || '',
+            selectedAlgorithm,
             vascularDistance,
             liverSamples,
             JSON.stringify(po.planeData.control_points_3d || []),
@@ -1103,6 +1105,7 @@ fetch(DATA_URL)
               case_id: cd.dataset.caseName || '',
               params: {
                 preview_only: true,
+                algorithm: selectedAlgorithm,
                 vascular_safe_distance_mm: vascularDistance,
                 liver_intersection_min_samples: liverSamples
               }
@@ -1160,7 +1163,10 @@ fetch(DATA_URL)
           if (label) {
             const actionNames = { cut: '切除', transfer: '转移', move: '移动' };
             const action = actionNames[steps[resectionPathStep].action] || steps[resectionPathStep].action;
-            const coverageText = `步骤 ${resectionPathStep + 1}/${steps.length} · ${action} · 覆盖率 ${((new Set(steps.slice(0, resectionPathStep + 1).map(s => s.cell)).size / (resectionSequence.target_cell_count || 1)) * 100).toFixed(1)}%`;
+            const currentStep = steps[resectionPathStep];
+            const coveredCount = currentStep.covered_cell_count
+              || new Set(steps.slice(0, resectionPathStep + 1).map(s => s.cell)).size;
+            const coverageText = `步骤 ${resectionPathStep + 1}/${steps.length} · ${action} · 覆盖率 ${((coveredCount / (resectionSequence.target_cell_count || 1)) * 100).toFixed(1)}%`;
             label.textContent = resectionSequence.status === 'partial'
               ? `${coverageText} · ${resectionSequence.failure_reason || '部分覆盖'}`
               : coverageText;
@@ -2974,7 +2980,7 @@ def _make_threejs_html(title="三维分割可视化",
     <details id="path-advanced">
       <summary>高级设置</summary>
       <div class="path-panel-section">
-        <label title="规划算法">算法 <select id="path-algorithm"><option value="nearest">最近邻</option><option value="dfs">深度优先</option><option value="spanning_tree">生成树</option></select></label>
+        <label title="规划算法">算法 <select id="path-algorithm"><option value="nearest">最近邻</option><option value="dfs">深度优先</option><option value="spanning_tree">生成树</option><option value="learned_shielded">冻结学习排序 + 模拟盾（实验）</option></select></label>
         <label title="血管排除距离">血管距离 <input id="path-vascular-distance" type="number" min="0" step="0.5" value="5"> <span>mm</span></label>
         <label title="最小肝脏相交采样数">肝脏采样 <input id="path-liver-samples" type="number" min="1" max="5" step="1" value="1"></label>
         <label title="每步预计时间">单步时间 <input id="path-step-time" type="number" min="0.01" step="0.1" value="1"> <span>秒</span></label>
@@ -3172,6 +3178,13 @@ def _make_threejs_html(title="三维分割可视化",
   pathPlanningToggle?.addEventListener('change', event => {{
     event.stopPropagation();
     setPathPlanningRequested(pathPlanningToggle.checked);
+  }});
+  document.getElementById('path-algorithm')?.addEventListener('change', () => {{
+    // Deterministic and learned modes may use different surface grids. A start
+    // selected on the previous grid must never be silently reused.
+    selectedStartCell = null;
+    startCellPreviewCache.clear();
+    clearDisplayedSequence('算法已更改，请重新选择起始网格。');
   }});
 
   const widePanelMedia = window.matchMedia('(min-width: 821px)');
