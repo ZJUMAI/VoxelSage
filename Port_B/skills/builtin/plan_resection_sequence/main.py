@@ -1,8 +1,8 @@
-"""Saved resection-plane sequence planning baseline.
+"""Saved resection-plane sequence planning.
 
-This is deliberately a small, deterministic integration baseline. It consumes
-only a plane explicitly saved by the 3D editor and leaves dynamic clinical
-frontier rules for the next research phase.
+Deterministic baselines remain the default.  The optional ``learned_shielded``
+algorithm maps the saved 3D surface to its two-dimensional parameter grid and
+invokes the frozen v10.6 C4 ranker plus exact simulator shield.
 """
 
 from __future__ import annotations
@@ -31,6 +31,21 @@ def _surface_positions(cp: np.ndarray, n_u: int, n_v: int) -> np.ndarray:
             bv = np.array([(1-v)**3, 3*v*(1-v)**2, 3*v*v*(1-v), v**3])
             b[i, j] = np.einsum("i,j,ijc->c", bu, bv, cp)
     return b
+
+
+def _learned_surface_resolution(cp: np.ndarray, cell_side_mm: float = 4.0) -> List[int]:
+    """Choose an approximately 4-mm parameter grid for the frozen model."""
+    probe = _surface_positions(cp, 33, 33)
+    u_lengths = np.linalg.norm(np.diff(probe, axis=0), axis=2).sum(axis=0)
+    v_lengths = np.linalg.norm(np.diff(probe, axis=1), axis=2).sum(axis=1)
+    u_cells = max(1, int(np.ceil(float(np.mean(u_lengths)) / float(cell_side_mm))))
+    v_cells = max(1, int(np.ceil(float(np.mean(v_lengths)) / float(cell_side_mm))))
+    if u_cells > 30 or v_cells > 40:
+        raise ValueError(
+            "保存剖面按 4-mm 单元离散后超过冻结模型的 30x40 上限："
+            f"{u_cells}x{v_cells}"
+        )
+    return [u_cells + 1, v_cells + 1]
 
 
 def _cells(n_u: int, n_v: int) -> Iterable[Tuple[int, int, int]]:
@@ -252,10 +267,28 @@ def run(ctx) -> Dict[str, Any]:
     if cp.shape != (4, 4, 3):
         raise ValueError("已保存剖面的 control_points_3d 不是 4x4x3")
 
-    # By default use exactly the surface resolution used by the saved plane.
-    # A custom resolution is allowed for experiments; the viewer will switch
-    # its reference grid to the same resolution when displaying that result.
-    resolution = ctx.params.get("grid_resolution") or plane.get("surface_resolution") or [20, 20]
+    algorithm = str(ctx.params.get("algorithm", "nearest")).lower()
+    if algorithm not in {"nearest", "dfs", "spanning_tree", "learned_shielded"}:
+        raise ValueError(
+            f"不支持的算法 '{algorithm}'，可选值为 nearest、dfs、spanning_tree、learned_shielded"
+        )
+    learned_cell_side_mm = float(ctx.params.get("learned_cell_side_mm", 4.0))
+    # The frozen model was trained on 4-mm cells, so its default grid is
+    # derived from physical surface length. Deterministic baselines preserve
+    # the saved browser resolution unless the caller explicitly overrides it.
+    if algorithm == "learned_shielded":
+        if abs(learned_cell_side_mm - 4.0) > 1e-6:
+            raise ValueError("冻结模型只验证过 4.0-mm 面单元")
+        learned_resolution = _learned_surface_resolution(cp, learned_cell_side_mm)
+        if ctx.params.get("grid_resolution") and list(ctx.params["grid_resolution"]) != learned_resolution:
+            raise ValueError(
+                "learned_shielded 不接受与 4-mm 物理网格不一致的 grid_resolution"
+            )
+        resolution = learned_resolution
+    elif ctx.params.get("grid_resolution"):
+        resolution = ctx.params["grid_resolution"]
+    else:
+        resolution = plane.get("surface_resolution") or [20, 20]
     n_u, n_v = max(2, int(resolution[0])), max(2, int(resolution[1]))
     positions = _surface_positions(cp, n_u, n_v)
     cell_samples = np.asarray([
@@ -334,30 +367,49 @@ def run(ctx) -> Dict[str, Any]:
             "liver_intersection_cell_count": int(liver_target.sum()),
             "outside_liver_cell_count": int((~liver_target).sum()),
             "vascular_excluded_cell_count": int((liver_target & ~vascular_safe).sum()),
-            "target_cell_count": int(safe.sum()),
+            "target_cell_count": int(liver_target.sum()) if algorithm == "learned_shielded" else int(safe.sum()),
             "start_candidate_count": int(start_selectable.sum()),
+            "algorithm": algorithm,
         }
-    algorithm = str(ctx.params.get("algorithm", "nearest")).lower()
-    if algorithm not in {"nearest", "dfs", "spanning_tree"}:
-        raise ValueError(
-            f"不支持的算法 '{algorithm}'，可选值为 nearest、dfs、spanning_tree"
+    learned = None
+    if algorithm == "learned_shielded":
+        from .learned_shielded import plan_learned_shielded
+
+        learned = plan_learned_shielded(
+            liver_target,
+            vascular_safe,
+            start=start,
+            rows=rows,
+            cols=cols,
+            cell_side_mm=learned_cell_side_mm,
         )
-    if algorithm == "dfs":
+        path = [int(step["cell"]) for step in learned["path"]]
+    elif algorithm == "dfs":
         path = _dfs_path(start, safe, rows, cols)
     elif algorithm == "spanning_tree":
         path = _spanning_tree_path(start, safe, rows, cols)
     else:
         path = _nearest_path(start, safe, rows, cols)
-    covered = sorted(set(path))
+    covered = (
+        sorted(int(cell) for cell in learned["covered_cells"])
+        if learned is not None else sorted(set(path))
+    )
     covered_set = set(covered)
-    target_cells = set(np.flatnonzero(liver_target).tolist())
-    safe_cells = set(np.flatnonzero(safe).tolist())
+    # The learned simulator plans the complete connected Liver intersection,
+    # including vessel-proxy cells. Deterministic baselines keep excluding the
+    # configured vascular-risk cells.
+    target_mask = liver_target if learned is not None else safe
+    safe_cells = set(np.flatnonzero(target_mask).tolist())
     unreachable_cells = sorted(safe_cells - covered_set)
     cell_states = []
     for cell in range(len(safe)):
         if not liver_target[cell]:
             state = "outside_liver"
-        elif not vascular_safe[cell]:
+        elif learned is None and not vascular_safe[cell]:
+            state = "vascular_risk"
+        elif learned is not None and not learned["component_mask"][cell]:
+            state = "unreachable"
+        elif learned is not None and not vascular_safe[cell]:
             state = "vascular_risk"
         elif cell in unreachable_cells:
             state = "unreachable"
@@ -368,15 +420,18 @@ def run(ctx) -> Dict[str, Any]:
             "grid_ij": [cell // cols, cell % cols],
             "state": state,
         })
-    steps = []
-    seen = set()
     step_time = float(ctx.params.get("step_time_seconds", 1.0))
-    for t, cell in enumerate(path):
-        action = "cut" if cell not in seen else "transfer"
-        seen.add(cell)
-        steps.append({"step": t, "cell": int(cell), "action": action,
-                      "time_seconds": round(t * step_time, 6),
-                      "grid_ij": [int(cell // cols), int(cell % cols)]})
+    if learned is not None:
+        steps = learned["path"]
+    else:
+        steps = []
+        seen = set()
+        for t, cell in enumerate(path):
+            action = "cut" if cell not in seen else "transfer"
+            seen.add(cell)
+            steps.append({"step": t, "cell": int(cell), "action": action,
+                          "time_seconds": round(t * step_time, 6),
+                          "grid_ij": [int(cell // cols), int(cell % cols)]})
     result_path = _sequence_result_path(ctx.output_dir, json_path, case_name)
     result = {
         "status": "ok" if not unreachable_cells else "partial",
@@ -390,7 +445,8 @@ def run(ctx) -> Dict[str, Any]:
         "grid": {"vertex_resolution": [n_u, n_v], "cell_rows": rows, "cell_cols": cols},
         "parameters": {"algorithm": algorithm, "vascular_safe_distance_mm": float(ctx.params.get("vascular_safe_distance_mm", 5.0)),
                        "liver_intersection_min_samples": int(ctx.params.get("liver_intersection_min_samples", 1)),
-                       "step_time_seconds": step_time},
+                       "step_time_seconds": step_time,
+                       "learned_cell_side_mm": learned_cell_side_mm if learned is not None else None},
         "vessel_mask_variants": vessel_mask_variants,
         "path": steps,
         "path_length": max(0, len(path) - 1),
@@ -401,14 +457,26 @@ def run(ctx) -> Dict[str, Any]:
         "liver_intersection_cell_count": int(liver_target.sum()),
         "outside_liver_cell_count": int((~liver_target).sum()),
         "vascular_excluded_cell_count": int((liver_target & ~vascular_safe).sum()),
-        "target_cell_count": int(safe.sum()),
+        "target_cell_count": int(target_mask.sum()),
         "failure_reason": (
-            f"有 {len(unreachable_cells)} 个满足 Liver 和血管约束的单元从起点不可达"
+            (
+                f"有 {len(unreachable_cells)} 个 Liver∩剖面单元不在起点连通分量内"
+                if learned is not None else
+                f"有 {len(unreachable_cells)} 个满足 Liver 和血管约束的单元从起点不可达"
+            )
             if unreachable_cells else None
         ),
-        "coverage": round(len(covered) / max(int(safe.sum()), 1), 6),
+        "coverage": round(len(covered_set & safe_cells) / max(int(target_mask.sum()), 1), 6),
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
+    if learned is not None:
+        result.update({
+            "policy_id": learned["policy_id"],
+            "checkpoint_sha256": learned["checkpoint_sha256"],
+            "simulator": learned["simulator"],
+            "scope_warning": learned["scope_warning"],
+            "learned_surface_adapter": "confirmed_3d_bezier_surface_to_2d_parameter_grid",
+        })
     with open(result_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
     # Let the viewer avoid probing a missing sidecar (and avoid a noisy 404)
@@ -416,9 +484,17 @@ def run(ctx) -> Dict[str, Any]:
     data["resection_sequence_available"] = True
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
-    return {"status": result["status"], "result_path": str(result_path),
-            "path_length": result["path_length"], "coverage": result["coverage"],
-            "algorithm": algorithm, "saved_plane_index": saved_index,
-            "vessel_mask_variants": vessel_mask_variants,
-            "start_cell": start, "uncovered_cells": unreachable_cells,
-            "failure_reason": result["failure_reason"]}
+    response = {"status": result["status"], "result_path": str(result_path),
+                "path_length": result["path_length"], "coverage": result["coverage"],
+                "algorithm": algorithm, "saved_plane_index": saved_index,
+                "vessel_mask_variants": vessel_mask_variants,
+                "start_cell": start, "uncovered_cells": unreachable_cells,
+                "failure_reason": result["failure_reason"]}
+    if learned is not None:
+        response.update({
+            "policy_id": result["policy_id"],
+            "checkpoint_sha256": result["checkpoint_sha256"],
+            "simulator": result["simulator"],
+            "scope_warning": result["scope_warning"],
+        })
+    return response
