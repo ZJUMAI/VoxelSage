@@ -8,6 +8,8 @@
 
 <p align="center"><em>One case, one conversation, and the imaging evidence beside it.</em></p>
 
+</div>
+
 > [!CAUTION]
 > VoxelSage is experimental research software—not a medical device. Do not use
 > it for clinical diagnosis, treatment decisions, or any other clinical purpose.
