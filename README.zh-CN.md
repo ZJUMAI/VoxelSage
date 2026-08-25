@@ -1,5 +1,27 @@
 <div align="center">
 
+[English](README.md) | **简体中文**
+
+<img src="docs/assets/voxelsage-logo-v2.png" alt="VoxelSage 标志" width="128">
+
+# VoxelSage
+
+### 一站式腹部 CT 工作台：三维重建、Agent 驱动分析与术前规划
+
+VoxelSage 是面向腹部 CT 研究的自托管医学影像工作台。上传 DICOM 或 NIfTI
+数据后，即可通过自然语言与 Agent 交互，在同一工作台中完成影像分割、定量
+测量与关键切片选取，查看交互式三维重建结果，并开展术前规划。
+
+[![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
+[![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+
+[快速开始](#快速开始) · [核心能力](#核心能力) · [工作原理](#工作原理) · [Skills API](#skills-api--ai-智能体接入) · [项目文档](#项目文档)
+
+</div>
+
 <p align="center">
   <a href="docs/assets/web_overview.png">
     <img src="docs/assets/web_overview.png" alt="VoxelSage 工作台：智能体对话与交互式肝脏三维重建并排展示" width="100%">
@@ -7,8 +29,6 @@
 </p>
 
 <p align="center"><em>同一病例、同一段对话，影像证据始终就在旁边。</em></p>
-
-</div>
 
 > [!CAUTION]
 > VoxelSage 是实验性科研软件，并非医疗器械。请勿将其用于临床诊断、
