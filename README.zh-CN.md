@@ -16,7 +16,8 @@
 
 ### 环境要求
 
-- Python 3.10、3.11 或 3.12
+- 无需提前准备特定版本的系统 Python。安装脚本会优先复用 Python 3.10–3.12；
+  如果没有可用兼容版本，例如系统中只有 Python 3.14 时，会自动下载兼容的 Python 3.12。
 - Node.js 20+ 和 npm
 - 兼容 OpenAI API 的 LLM 服务
 - 满足所选分割后端要求的 CPU、内存和磁盘空间（10 GB+）；默认 VISTA3D
@@ -30,7 +31,9 @@ git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
 ./scripts/setup.sh
 ```
 
-安装脚本会创建 `.venv`、安装 Python 与前端依赖、将 VISTA 官方仓库克隆到
+安装脚本会创建使用 Python 3.10–3.12 的 `.venv`（需要时通过
+[`uv`](https://docs.astral.sh/uv/) 自动下载并管理 Python 3.12）、安装 Python
+与前端依赖、将 VISTA 官方仓库克隆到
 `third_party/`，并通过交互提示依次收集三项必需的 LLM 配置（API Key 输入时
 不会显示在终端中）。默认安装**不会**安装 TotalSegmentator。
 

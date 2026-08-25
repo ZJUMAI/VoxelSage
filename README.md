@@ -16,7 +16,8 @@
 
 ### Prerequisites
 
-- Python 3.10, 3.11, or 3.12
+- No exact system Python version is required. The setup script reuses Python
+  3.10–3.12 when available and automatically downloads a compatible Python 3.12 in case no compatible Python is found, for example, the system only has Python 3.14.
 - Node.js 20+ and npm
 - An OpenAI-compatible LLM endpoint with image processing capabilities (recommend GPT, Qwen and DeepSeek; for DeepSeek, please choose `deepseek-v4-flash-vision-exp` or similar models in the future)
 - At least 10 GB of free disk space, plus enough CPU and memory for the selected
@@ -30,10 +31,11 @@ git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
 ./scripts/setup.sh
 ```
 
-The setup script creates `.venv`, installs the Python and frontend dependencies,
-clones the official VISTA repository into `third_party/`, and interactively asks
-for the three required LLM settings. The API key is not echoed. It does **not**
-install TotalSegmentator.
+The setup script creates a Python 3.10–3.12 `.venv` (downloading a managed
+Python 3.12 with [`uv`](https://docs.astral.sh/uv/) when needed), installs the
+Python and frontend dependencies, clones the official VISTA repository into
+`third_party/`, and interactively asks for the three required LLM settings. The
+API key is not echoed. It does **not** install TotalSegmentator.
 
 Even with a good connection, the first installation can take tens of minutes.
 In one tested WSL environment, `.venv` occupied about 6.7 GB. Access to GitHub,
