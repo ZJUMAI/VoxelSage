@@ -52,19 +52,26 @@ git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
 ```
 
 安装脚本会创建 `.venv`、安装 Python 与前端依赖、将 VISTA 官方仓库克隆到
-`third_party/`，并在需要时根据 [`.env.example`](.env.example) 创建 `.env`。
-默认安装**不会**安装 TotalSegmentator。
+`third_party/`，并通过交互提示依次收集三项必需的 LLM 配置（API Key 输入时
+不会显示在终端中）。默认安装**不会**安装 TotalSegmentator。
 
 即便网络良好，首次安装也可能需要数十分钟。在一次经过测试的 WSL 环境中，
 `.venv` 约占 6.7 GB。安装过程需要访问 GitHub、PyPI/npm 与 Hugging Face，
 也可以配置合适的镜像站。
 
-编辑 `.env`，配置 LLM 服务：
+之后如需配置或更换 LLM 服务，可重新运行交互式配置脚本：
+
+```bash
+./scripts/configure.sh
+```
+
+脚本只会更新 `.env` 中的三个 LLM 字段，其他部署配置会保留。例如（以下 Key
+已经打码，无法实际使用）：
 
 ```dotenv
-DASHSCOPE_API_KEY=your-api-key
-DASHSCOPE_BASE_URL=https://your-llm-endpoint.example.com/v1
-LLM_MODEL_NAME=your-endpoint-model-name
+DASHSCOPE_API_KEY=sk-cc8d****c840
+DASHSCOPE_BASE_URL=https://api.deepseek.com
+LLM_MODEL_NAME=deepseek-v4-flash-vision-exp
 ```
 
 ### 启动

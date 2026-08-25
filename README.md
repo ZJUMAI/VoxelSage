@@ -55,20 +55,27 @@ git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
 ```
 
 The setup script creates `.venv`, installs the Python and frontend dependencies,
-clones the official VISTA repository into `third_party/`, and creates `.env`
-from [`.env.example`](.env.example) if needed. It does **not** install
-TotalSegmentator.
+clones the official VISTA repository into `third_party/`, and interactively asks
+for the three required LLM settings. The API key is not echoed. It does **not**
+install TotalSegmentator.
 
 Even with a good connection, the first installation can take tens of minutes.
 In one tested WSL environment, `.venv` occupied about 6.7 GB. Access to GitHub,
 PyPI/npm, and Hugging Face—or suitable mirrors—is required.
 
-Edit `.env` and set the LLM endpoint:
+To configure or change the LLM endpoint later, rerun the interactive helper:
+
+```bash
+./scripts/configure.sh
+```
+
+It updates only the three LLM fields in `.env` and preserves the other settings.
+For example (the key below is masked and is not usable):
 
 ```dotenv
-DASHSCOPE_API_KEY=your-api-key
-DASHSCOPE_BASE_URL=https://your-llm-endpoint.example.com/v1
-LLM_MODEL_NAME=your-endpoint-model-name
+DASHSCOPE_API_KEY=sk-cc8d****c840
+DASHSCOPE_BASE_URL=https://api.deepseek.com
+LLM_MODEL_NAME=deepseek-v4-flash-vision-exp
 ```
 
 ### Run

@@ -67,11 +67,15 @@ npm --prefix "${REPO_ROOT}/Frontend" ci
 if [[ ! -f "${REPO_ROOT}/Frontend/.env.local" ]]; then
   cp "${REPO_ROOT}/Frontend/.env.example" "${REPO_ROOT}/Frontend/.env.local"
 fi
-if [[ ! -f "${REPO_ROOT}/.env" ]]; then
+if [[ -t 0 ]]; then
+  echo
+  "${REPO_ROOT}/scripts/configure.sh"
+elif [[ ! -f "${REPO_ROOT}/.env" ]]; then
   cp "${REPO_ROOT}/.env.example" "${REPO_ROOT}/.env"
+  echo "No interactive terminal detected. Run ./scripts/configure.sh before startup."
 fi
 
 echo
-echo "Setup complete. Edit ${REPO_ROOT}/.env, then run ./scripts/start.sh"
+echo "Setup complete. Run ./scripts/start.sh"
 echo "VISTA3D weights are downloaded automatically from Hugging Face on first inference."
 "${VENV_DIR}/bin/python" "${REPO_ROOT}/scripts/doctor.py" --require-vista-compatible
