@@ -2,7 +2,7 @@
 
 [English](README.md) | **简体中文**
 
-<img src="docs/assets/voxelsage-logo.png" alt="VoxelSage 标志" width="128">
+<img src="docs/assets/voxelsage-logo.png?v=2" alt="VoxelSage 标志" width="128">
 
 # VoxelSage
 
