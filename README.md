@@ -6,11 +6,12 @@
 
 # VoxelSage
 
-### CT analysis without stitching together segmentation, agents, and 3D tools
+### All-in-one abdominal CT workspace: 3D reconstruction, agent-driven analysis, and preoperative planning
 
-Self-hosted medical-imaging workspace for abdominal CT research. Upload DICOM
-or NIfTI data, ask questions in natural language, and move from segmentation
-to measurements, key slices, and interactive 3D review in one place.
+VoxelSage is a self-hosted medical-imaging workspace for abdominal CT research.
+Upload DICOM or NIfTI data, direct the agent in natural language, and complete
+segmentation, quantitative measurements, key-slice selection, interactive 3D
+reconstruction, and preoperative planning—all in one place.
 
 [![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
 [![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)

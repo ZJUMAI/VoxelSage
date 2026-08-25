@@ -6,10 +6,9 @@
 
 # VoxelSage
 
-### 无需拼接分割、智能体与 3D 工具的 CT 分析工作台
+### 一站式腹部 CT 工作台：三维重建、Agent 驱动分析与术前规划
 
-面向腹部 CT 研究的自托管医学影像工作台。上传 DICOM 或 NIfTI 数据，使用
-自然语言提问，在一个界面中完成分割、测量、关键切片选取与交互式 3D 复核。
+VoxelSage 是面向腹部 CT 研究的自托管医学影像工作台。上传 DICOM 或 NIfTI数据后，即可通过自然语言与 Agent 交互，在同一工作台中完成影像分割、定量测量与关键切片选取，查看交互式三维重建结果，并开展术前规划。
 
 [![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
 [![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
