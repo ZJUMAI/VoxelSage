@@ -66,7 +66,7 @@ git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
 之后如需配置或更换 LLM 服务，可重新运行交互式配置脚本：
 
 ```bash
-./scripts/configure.sh
+bash ./scripts/configure.sh
 ```
 
 脚本只会更新 `.env` 中的三个 LLM 字段，其他部署配置会保留。例如（以下 Key

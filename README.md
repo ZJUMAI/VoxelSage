@@ -67,7 +67,7 @@ PyPI/npm, and Hugging Face—or suitable mirrors—is required.
 To configure or change the LLM endpoint later, rerun the interactive helper:
 
 ```bash
-./scripts/configure.sh
+bash ./scripts/configure.sh
 ```
 
 It updates only the three LLM fields in `.env` and preserves the other settings.

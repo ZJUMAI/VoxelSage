@@ -53,6 +53,9 @@ prompt_value() {
 }
 
 echo "Configure the OpenAI-compatible LLM endpoint for VoxelSage."
+echo "Note: API key input is hidden for security. No characters will appear while"
+echo "you type or paste it; this is normal. Press Enter when finished."
+echo "提示：输入或粘贴 API Key 时不会显示任何字符，这是正常的；完成后按 Enter。"
 prompt_value DASHSCOPE_API_KEY "DASHSCOPE_API_KEY" "sk-cc8d****c840" 1
 prompt_value DASHSCOPE_BASE_URL "DASHSCOPE_BASE_URL" "https://api.deepseek.com"
 prompt_value LLM_MODEL_NAME "LLM_MODEL_NAME" "deepseek-v4-flash-vision-exp"

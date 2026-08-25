@@ -153,10 +153,10 @@ if [[ ! -f "${REPO_ROOT}/Frontend/.env.local" ]]; then
 fi
 if [[ -t 0 ]]; then
   echo
-  "${REPO_ROOT}/scripts/configure.sh"
+  bash "${REPO_ROOT}/scripts/configure.sh"
 elif [[ ! -f "${REPO_ROOT}/.env" ]]; then
   cp "${REPO_ROOT}/.env.example" "${REPO_ROOT}/.env"
-  echo "No interactive terminal detected. Run ./scripts/configure.sh before startup."
+  echo "No interactive terminal detected. Run bash ./scripts/configure.sh before startup."
 fi
 
 echo
