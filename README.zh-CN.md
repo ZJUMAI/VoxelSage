@@ -57,7 +57,7 @@ git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
 [`uv`](https://docs.astral.sh/uv/) 自动下载并管理 Python 3.12）、安装 Python
 与前端依赖、将 VISTA 官方仓库克隆到
 `third_party/`，并通过交互提示依次收集三项必需的 LLM 配置（API Key 输入时
-不会显示在终端中）。默认安装**不会**安装 TotalSegmentator。
+不会显示在终端中）。
 
 即便网络良好，首次安装也可能需要数十分钟。在一次经过测试的 WSL 环境中，
 `.venv` 约占 6.7 GB。安装过程需要访问 GitHub、PyPI/npm 与 Hugging Face，
@@ -91,6 +91,7 @@ LLM_MODEL_NAME=deepseek-v4-flash-vision-exp
 
 VISTA3D 是默认后端，也是上述命令唯一安装的分割模型。首次执行分割时，程序会
 从 Hugging Face 自动下载官方权重，后续直接复用本地缓存。
+TotalSegmentator 是可选后端，安装时需要额外下载其权重。
 
 ### 分割后端
 
