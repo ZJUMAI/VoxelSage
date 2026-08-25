@@ -1,25 +1,5 @@
 <div align="center">
 
-[English](README.md) | **简体中文**
-
-<img src="docs/assets/voxelsage-logo-v2.png" alt="VoxelSage 标志" width="128">
-
-# VoxelSage
-
-### 一站式腹部 CT 工作台：三维重建、Agent 驱动分析与术前规划
-
-VoxelSage 是面向腹部 CT 研究的自托管医学影像工作台。上传 DICOM 或 NIfTI数据后，即可通过自然语言与 Agent 交互，在同一工作台中完成影像分割、定量测量与关键切片选取，查看交互式三维重建结果，并开展术前规划。
-
-[![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
-[![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-
-[快速开始](#快速开始) · [核心能力](#核心能力) · [工作原理](#工作原理) · [Skills API](#skills-api--ai-智能体接入) · [项目文档](#项目文档)
-
-</div>
-
 <p align="center">
   <a href="docs/assets/web_overview.png">
     <img src="docs/assets/web_overview.png" alt="VoxelSage 工作台：智能体对话与交互式肝脏三维重建并排展示" width="100%">
@@ -41,8 +21,7 @@ VoxelSage 是面向腹部 CT 研究的自托管医学影像工作台。上传 DI
 - 兼容 OpenAI API 的 LLM 服务
 - 满足所选分割后端要求的 CPU、内存和磁盘空间（10 GB+）；默认 VISTA3D
   后端需要能够被 PyTorch CUDA 识别的 NVIDIA GPU
-- 建议使用 Ubuntu 进行环境配置；经开发者测试，正确配置的 WSL Ubuntu
-  也可以顺利执行以下命令。
+- **强烈建议使用 Ubuntu**。Windows 用户可以先按照微软的 [WSL 安装指南](https://learn.microsoft.com/zh-cn/windows/wsl/install) 安装 Ubuntu，然后在 Ubuntu 终端中执行以下命令。经过测试，本项目在 Ubuntu 和 WSL Ubuntu 可以正常运行；对于其他环境，我们无法保证兼容性。
 
 ### 安装
 
@@ -82,7 +61,7 @@ LLM_MODEL_NAME=deepseek-v4-flash-vision-exp
 
 这一条命令会同时启动影像 API（`:8765`）、输出代理（`:8898`）、智能体服务
 （`:8900`）和 Web 前端（`:3000`）。启动后访问
-**<http://localhost:3000>**；按 `Ctrl+C` 即可停止全部服务。日志保存在
+**[http://localhost:3000](http://localhost:3000)**；按 `Ctrl+C` 即可停止全部服务。日志保存在
 `.runtime/logs/`。
 
 VISTA3D 是默认后端，也是上述命令唯一安装的分割模型。首次执行分割时，程序会
@@ -90,9 +69,9 @@ VISTA3D 是默认后端，也是上述命令唯一安装的分割模型。首次
 
 ### 分割后端
 
-| 后端 | 安装方式 | 选择方式 |
-| --- | --- | --- |
-| **VISTA3D**（默认） | `./scripts/setup.sh` | `SEGMENTATION_BACKEND=vista3d` |
+| 后端                               | 安装方式                                       | 选择方式                                  |
+| ---------------------------------- | ---------------------------------------------- | ----------------------------------------- |
+| **VISTA3D**（默认）          | `./scripts/setup.sh`                         | `SEGMENTATION_BACKEND=vista3d`          |
 | **TotalSegmentator**（可选） | `./scripts/setup.sh --with-totalsegmentator` | `SEGMENTATION_BACKEND=totalsegmentator` |
 
 可以在 `.env` 中设置服务级默认后端，也可以为单次请求覆盖：
@@ -157,12 +136,12 @@ DICOM / NIfTI → 分割 → 后处理 → 定量分析技能
                → 结构化结果 → 2D / 3D 复核 → 智能体回答
 ```
 
-| 服务 | 职责 | 默认地址 |
-| --- | --- | --- |
-| **Frontend** | 病例管理、对话、2D 切片和 3D 结果展示 | `http://localhost:3000` |
-| **Port A** | LLM 循环、工具选择、校验、恢复和流式输出 | `http://localhost:8900` |
-| **Port B** | 分割、测量、结构化结果和影像技能 | `http://localhost:8765` |
-| **输出代理** | 向浏览器提供生成的文件 | `http://localhost:8898` |
+| 服务               | 职责                                     | 默认地址                  |
+| ------------------ | ---------------------------------------- | ------------------------- |
+| **Frontend** | 病例管理、对话、2D 切片和 3D 结果展示    | `http://localhost:3000` |
+| **Port A**   | LLM 循环、工具选择、校验、恢复和流式输出 | `http://localhost:8900` |
+| **Port B**   | 分割、测量、结构化结果和影像技能         | `http://localhost:8765` |
+| **输出代理** | 向浏览器提供生成的文件                   | `http://localhost:8898` |
 
 ## Skills API & AI 智能体接入
 
@@ -185,19 +164,19 @@ curl http://localhost:8765/api/skills/list
 
 ## 配置说明
 
-| 变量 | 服务 | 用途 | 默认值 |
-| --- | --- | --- | --- |
-| `DASHSCOPE_API_KEY` | Port A | LLM API 凭据 | 必填 |
-| `DASHSCOPE_BASE_URL` | Port A | 兼容 OpenAI API 的基础地址 | 必填 |
-| `LLM_MODEL_NAME` | Port A | 当前 LLM 端点实际提供的模型 ID | 必填 |
-| `PORT_B_INTERNAL` | Port A | Port B 内部访问地址 | `http://localhost:8765` |
-| `PUBLIC_BASE_URL` | Port B | 输出代理的公开基础地址 | `http://127.0.0.1:8898` |
-| `VOXELSAGE_OUTPUT_DIR` | Port B | 运行时输出目录 | `Port_B/output` |
-| `SEGMENTATION_BACKEND` | Port B | 服务级默认分割后端 | `vista3d` |
-| `VISTA3D_ROOT` | Port B | VISTA3D 官方源码目录 | `third_party/VISTA/vista3d` |
-| `VISTA3D_CONFIG` | Port B | VISTA3D 推理配置 | `Port_B/SegAgent/VISTA3d/configs/infer.yaml` |
-| `VISTA3D_MODEL_DIR` | Port B | VISTA3D 权重与推理缓存 | `Port_B/models/vista3d` |
-| `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B | 经授权的冻结 v10.6 规划权重 | 未设置 |
+| 变量                                     | 服务   | 用途                           | 默认值                                         |
+| ---------------------------------------- | ------ | ------------------------------ | ---------------------------------------------- |
+| `DASHSCOPE_API_KEY`                    | Port A | LLM API 凭据                   | 必填                                           |
+| `DASHSCOPE_BASE_URL`                   | Port A | 兼容 OpenAI API 的基础地址     | 必填                                           |
+| `LLM_MODEL_NAME`                       | Port A | 当前 LLM 端点实际提供的模型 ID | 必填                                           |
+| `PORT_B_INTERNAL`                      | Port A | Port B 内部访问地址            | `http://localhost:8765`                      |
+| `PUBLIC_BASE_URL`                      | Port B | 输出代理的公开基础地址         | `http://127.0.0.1:8898`                      |
+| `VOXELSAGE_OUTPUT_DIR`                 | Port B | 运行时输出目录                 | `Port_B/output`                              |
+| `SEGMENTATION_BACKEND`                 | Port B | 服务级默认分割后端             | `vista3d`                                    |
+| `VISTA3D_ROOT`                         | Port B | VISTA3D 官方源码目录           | `third_party/VISTA/vista3d`                  |
+| `VISTA3D_CONFIG`                       | Port B | VISTA3D 推理配置               | `Port_B/SegAgent/VISTA3d/configs/infer.yaml` |
+| `VISTA3D_MODEL_DIR`                    | Port B | VISTA3D 权重与推理缓存         | `Port_B/models/vista3d`                      |
+| `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B | 经授权的冻结 v10.6 规划权重    | 未设置                                         |
 
 浏览器端服务地址见 [`Frontend/.env.example`](Frontend/.env.example)，可选影像
 运行时配置见 [`Port_B/.env.example`](Port_B/.env.example)。
@@ -250,7 +229,7 @@ cd ../Frontend && npm run lint && npm run build
 患者数据、凭据、模型权重或生成的医学影像产物。
 
 - **问题反馈：** [GitHub Issues](https://github.com/ZJUMAI/VoxelSage/issues)
-- **研究问题与功能建议：** Discussions 启用前暂时使用 GitHub Issues
+- **研究问题与功能建议：** [GitHub Discussions](https://github.com/ZJUMAI/VoxelSage/discussions)
 - **私密安全报告：** [binghong.25@intl.zju.edu.cn](mailto:binghong.25@intl.zju.edu.cn)
 
 ## 负责任使用

@@ -1,28 +1,5 @@
 <div align="center">
 
-**English** | [简体中文](README.zh-CN.md)
-
-<img src="docs/assets/voxelsage-logo-v2.png" alt="VoxelSage logo" width="128">
-
-# VoxelSage
-
-### All-in-one abdominal CT workspace: 3D reconstruction, agent-driven analysis, and preoperative planning
-
-VoxelSage is a self-hosted medical-imaging workspace for abdominal CT research.
-Upload DICOM or NIfTI data, direct the agent in natural language, and complete
-segmentation, quantitative measurements, key-slice selection, interactive 3D
-reconstruction, and preoperative planning—all in one place.
-
-[![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
-[![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-
-[Quick Start](#quick-start) · [What You Can Do](#what-you-can-do) · [How It Works](#how-it-works) · [Skills API](#skills-api--ai-agent-integration) · [Documentation](#documentation)
-
-</div>
-
 <p align="center">
   <a href="docs/assets/web_overview.png">
     <img src="docs/assets/web_overview.png" alt="VoxelSage workspace showing an agent conversation beside an interactive 3D liver reconstruction" width="100%">
@@ -41,11 +18,10 @@ reconstruction, and preoperative planning—all in one place.
 
 - Python 3.10, 3.11, or 3.12
 - Node.js 20+ and npm
-- An OpenAI-compatible LLM endpoint
+- An OpenAI-compatible LLM endpoint with image processing capabilities (recommend GPT, Qwen and DeepSeek; for DeepSeek, please choose `deepseek-v4-flash-vision-exp` or similar models in the future)
 - At least 10 GB of free disk space, plus enough CPU and memory for the selected
   backend; default VISTA3D requires an NVIDIA GPU visible to PyTorch CUDA
-- Ubuntu is recommended; a correctly configured Ubuntu environment under WSL
-  has also been tested with the commands below
+- **Linux Ubuntu is highly recommended**. On Windows, we recommend installing Ubuntu through [WSL](https://learn.microsoft.com/en-us/windows/wsl/install), then run the commands below inside the Ubuntu terminal. We can ensure that *VoxelSage* runs properly on Ubuntu and WSL, but cannot guarantee compatibility with other platforms.
 
 ### Install
 
@@ -86,7 +62,7 @@ LLM_MODEL_NAME=deepseek-v4-flash-vision-exp
 
 This one command starts the imaging API (`:8765`), output proxy (`:8898`),
 agent service (`:8900`), and web app (`:3000`). Open
-**<http://localhost:3000>**; press `Ctrl+C` to stop all four services. Logs are
+**[http://localhost:3000](http://localhost:3000)**; press `Ctrl+C` to stop all four services. Logs are
 written to `.runtime/logs/`.
 
 VISTA3D is the default and only segmentation model installed by the command
@@ -95,9 +71,9 @@ on the first inference and then reused from the local cache.
 
 ### Segmentation backends
 
-| Backend | Installation | Selection |
-| --- | --- | --- |
-| **VISTA3D** (default) | `./scripts/setup.sh` | `SEGMENTATION_BACKEND=vista3d` |
+| Backend                               | Installation                                   | Selection                                 |
+| ------------------------------------- | ---------------------------------------------- | ----------------------------------------- |
+| **VISTA3D** (default)           | `./scripts/setup.sh`                         | `SEGMENTATION_BACKEND=vista3d`          |
 | **TotalSegmentator** (optional) | `./scripts/setup.sh --with-totalsegmentator` | `SEGMENTATION_BACKEND=totalsegmentator` |
 
 Set the server-wide default in `.env`, or override it for one request:
@@ -166,12 +142,12 @@ DICOM / NIfTI → segmentation → post-processing → quantitative Skills
                → structured results → 2D / 3D review → agent response
 ```
 
-| Service | Responsibility | Default endpoint |
-| --- | --- | --- |
-| **Frontend** | Case management, chat, 2D slices, and 3D result display | `http://localhost:3000` |
-| **Port A** | LLM loop, tool selection, validation, recovery, and streaming | `http://localhost:8900` |
-| **Port B** | Segmentation, measurements, structured output, and Skills | `http://localhost:8765` |
-| **Output proxy** | Browser-accessible generated files | `http://localhost:8898` |
+| Service                | Responsibility                                                | Default endpoint          |
+| ---------------------- | ------------------------------------------------------------- | ------------------------- |
+| **Frontend**     | Case management, chat, 2D slices, and 3D result display       | `http://localhost:3000` |
+| **Port A**       | LLM loop, tool selection, validation, recovery, and streaming | `http://localhost:8900` |
+| **Port B**       | Segmentation, measurements, structured output, and Skills     | `http://localhost:8765` |
+| **Output proxy** | Browser-accessible generated files                            | `http://localhost:8898` |
 
 ## Skills API & AI Agent Integration
 
@@ -196,19 +172,19 @@ the web application.
 
 ## Configuration
 
-| Variable | Service | Purpose | Default |
-| --- | --- | --- | --- |
-| `DASHSCOPE_API_KEY` | Port A | LLM API credential | Required |
-| `DASHSCOPE_BASE_URL` | Port A | OpenAI-compatible API base URL | Required |
-| `LLM_MODEL_NAME` | Port A | Exact model ID served by the configured endpoint | Required |
-| `PORT_B_INTERNAL` | Port A | Internal Port B address | `http://localhost:8765` |
-| `PUBLIC_BASE_URL` | Port B | Public output-proxy base URL | `http://127.0.0.1:8898` |
-| `VOXELSAGE_OUTPUT_DIR` | Port B | Runtime output directory | `Port_B/output` |
-| `SEGMENTATION_BACKEND` | Port B | Server-wide segmentation backend | `vista3d` |
-| `VISTA3D_ROOT` | Port B | Official VISTA3D source directory | `third_party/VISTA/vista3d` |
-| `VISTA3D_CONFIG` | Port B | VISTA3D inference configuration | `Port_B/SegAgent/VISTA3d/configs/infer.yaml` |
-| `VISTA3D_MODEL_DIR` | Port B | VISTA3D checkpoint and inference cache | `Port_B/models/vista3d` |
-| `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B | Authorized frozen v10.6 planning checkpoint | Unset |
+| Variable                                 | Service | Purpose                                          | Default                                        |
+| ---------------------------------------- | ------- | ------------------------------------------------ | ---------------------------------------------- |
+| `DASHSCOPE_API_KEY`                    | Port A  | LLM API credential                               | Required                                       |
+| `DASHSCOPE_BASE_URL`                   | Port A  | OpenAI-compatible API base URL                   | Required                                       |
+| `LLM_MODEL_NAME`                       | Port A  | Exact model ID served by the configured endpoint | Required                                       |
+| `PORT_B_INTERNAL`                      | Port A  | Internal Port B address                          | `http://localhost:8765`                      |
+| `PUBLIC_BASE_URL`                      | Port B  | Public output-proxy base URL                     | `http://127.0.0.1:8898`                      |
+| `VOXELSAGE_OUTPUT_DIR`                 | Port B  | Runtime output directory                         | `Port_B/output`                              |
+| `SEGMENTATION_BACKEND`                 | Port B  | Server-wide segmentation backend                 | `vista3d`                                    |
+| `VISTA3D_ROOT`                         | Port B  | Official VISTA3D source directory                | `third_party/VISTA/vista3d`                  |
+| `VISTA3D_CONFIG`                       | Port B  | VISTA3D inference configuration                  | `Port_B/SegAgent/VISTA3d/configs/infer.yaml` |
+| `VISTA3D_MODEL_DIR`                    | Port B  | VISTA3D checkpoint and inference cache           | `Port_B/models/vista3d`                      |
+| `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B  | Authorized frozen v10.6 planning checkpoint      | Unset                                          |
 
 See [`Frontend/.env.example`](Frontend/.env.example) for browser-facing service
 URLs and [`Port_B/.env.example`](Port_B/.env.example) for optional imaging
@@ -266,8 +242,7 @@ Pull requests are welcome. Before opening one, run the checks in
 weights, or generated medical artifacts are included.
 
 - **Bug reports:** [GitHub Issues](https://github.com/ZJUMAI/VoxelSage/issues)
-- **Research questions and feature ideas:** use GitHub Issues until Discussions
-  is enabled
+- **Research questions and feature ideas:** [GitHub Discussions](https://github.com/ZJUMAI/VoxelSage/discussions)
 - **Private security reports:** [binghong.25@intl.zju.edu.cn](mailto:binghong.25@intl.zju.edu.cn)
 
 ## Responsible Use
