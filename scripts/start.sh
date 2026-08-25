@@ -24,11 +24,29 @@ fi
 export SEGMENTATION_BACKEND="${SEGMENTATION_BACKEND:-vista3d}"
 export VISTA3D_ROOT="${VISTA3D_ROOT:-${REPO_ROOT}/third_party/VISTA/vista3d}"
 export VISTA3D_CONFIG="${VISTA3D_CONFIG:-${REPO_ROOT}/Port_B/SegAgent/VISTA3d/configs/infer.yaml}"
+export LLM_MODEL_NAME="${LLM_MODEL_NAME:-${QWEN_MODEL_NAME:-}}"
+
+for variable_name in DASHSCOPE_API_KEY DASHSCOPE_BASE_URL LLM_MODEL_NAME; do
+  variable_value="${!variable_name:-}"
+  if [[ -z "${variable_value}" || "${variable_value}" == *your-* || "${variable_value}" == *example.com* ]]; then
+    echo "Missing or placeholder ${variable_name} in ${REPO_ROOT}/.env" >&2
+    exit 1
+  fi
+done
 
 if [[ "${SEGMENTATION_BACKEND,,}" == "vista3d" ]] && \
    [[ ! -f "${VISTA3D_ROOT}/scripts/infer.py" ]]; then
   echo "VISTA3D is not installed at ${VISTA3D_ROOT}. Run ./scripts/setup.sh first." >&2
   exit 1
+fi
+if [[ "${SEGMENTATION_BACKEND,,}" == "vista3d" ]] && \
+   [[ "${VOXELSAGE_SKIP_GPU_PREFLIGHT:-0}" != "1" ]]; then
+  if ! "${PYTHON}" "${REPO_ROOT}/scripts/doctor.py" \
+      --require-cuda --require-vista-compatible; then
+    echo "CUDA preflight failed. Fix the NVIDIA/PyTorch environment or set" >&2
+    echo "VOXELSAGE_SKIP_GPU_PREFLIGHT=1 only when intentionally using GT demo masks." >&2
+    exit 1
+  fi
 fi
 
 mkdir -p "${LOG_DIR}"

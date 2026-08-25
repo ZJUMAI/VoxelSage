@@ -36,11 +36,11 @@ VoxelSage 是面向腹部 CT 研究的自托管医学影像工作台。上传 DI
 
 ### 环境要求
 
-- Python 3.10+
+- Python 3.10、3.11 或 3.12
 - Node.js 20+ 和 npm
 - 兼容 OpenAI API 的 LLM 服务
-- 满足所选分割后端要求的 CPU、内存和磁盘空间（10 GB+）；部分后端还需要兼容的
-  CUDA GPU
+- 满足所选分割后端要求的 CPU、内存和磁盘空间（10 GB+）；默认 VISTA3D
+  后端需要能够被 PyTorch CUDA 识别的 NVIDIA GPU
 - 建议使用 Ubuntu 进行环境配置；经开发者测试，正确配置的 WSL Ubuntu
   也可以顺利执行以下命令。
 
@@ -64,6 +64,7 @@ git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
 ```dotenv
 DASHSCOPE_API_KEY=your-api-key
 DASHSCOPE_BASE_URL=https://your-llm-endpoint.example.com/v1
+LLM_MODEL_NAME=your-endpoint-model-name
 ```
 
 ### 启动
@@ -98,6 +99,20 @@ curl -X POST http://localhost:8765/api/process-lite \
 只有已显式安装的后端才能被选择。若同一病例此前由另一个后端生成，系统会分配
 新的病例 ID，避免静默混用掩膜。模型路径和 CLI 选项详见
 [Port B 文档](Port_B/README.md#segmentation-backends)。
+
+### 诊断本地部署
+
+启动前检查依赖版本以及 NVIDIA/PyTorch CUDA；提供 CT 路径时还会检查 MONAI
+使用的 NIfTI 维度、仿射矩阵和体素间距：
+
+```bash
+./scripts/doctor.py
+./scripts/doctor.py /absolute/path/to/ct.nii.gz
+```
+
+如果环境是在加入 VISTA3D 兼容性约束之前创建的，请重新执行
+`./scripts/setup.sh` 修复。运行期间也可以通过
+`GET /api/diagnostics/runtime` 获取相同的依赖与 CUDA 摘要。
 
 ## 核心能力
 
@@ -167,6 +182,7 @@ curl http://localhost:8765/api/skills/list
 | --- | --- | --- | --- |
 | `DASHSCOPE_API_KEY` | Port A | LLM API 凭据 | 必填 |
 | `DASHSCOPE_BASE_URL` | Port A | 兼容 OpenAI API 的基础地址 | 必填 |
+| `LLM_MODEL_NAME` | Port A | 当前 LLM 端点实际提供的模型 ID | 必填 |
 | `PORT_B_INTERNAL` | Port A | Port B 内部访问地址 | `http://localhost:8765` |
 | `PUBLIC_BASE_URL` | Port B | 输出代理的公开基础地址 | `http://127.0.0.1:8898` |
 | `VOXELSAGE_OUTPUT_DIR` | Port B | 运行时输出目录 | `Port_B/output` |

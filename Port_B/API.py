@@ -114,8 +114,20 @@ from skills.models import SkillContext
 _skill_engine: SkillEngine = None
 
 # GPU 管理器 — 负责自动选择空闲 GPU 并防止并发 OOM
-from Tool_Box.gpu_manager import GPUManager, print_gpu_info as _print_gpu_info
+from Tool_Box.gpu_manager import GPUManager
 from Tool_Box.mask_resolution import resolve_mask_path
+from Tool_Box.runtime_diagnostics import (
+    CudaEnvironmentError,
+    NiftiGeometryError,
+    Vista3DEnvironmentError,
+    Vista3DInferenceError,
+    collect_runtime_diagnostics,
+    cuda_runtime_info,
+    exception_chain,
+    is_retryable_cuda_error,
+    require_cuda_device,
+    validate_nifti_geometry,
+)
 _gpu_manager = GPUManager()
 
 # 病例级锁 — 同一 case_id 的 process-lite 串行执行，不同 case 并行
@@ -490,6 +502,22 @@ def _run_vista3d_segmentation(
     if organ_list is None:
         organ_list = _CRLM_DEFAULT_ORGANS
 
+    runtime = collect_runtime_diagnostics()
+    compatibility_errors = runtime["vista3d_compatibility_errors"]
+    if compatibility_errors:
+        raise Vista3DEnvironmentError(" ".join(compatibility_errors))
+    _log(
+        "       [Runtime] "
+        f"python={runtime['python']} numpy={runtime['packages']['numpy']} "
+        f"monai={runtime['packages']['monai']} torch={runtime['packages']['torch']}"
+    )
+
+    geometry = validate_nifti_geometry(nifti_path)
+    _log(
+        "       [NIfTI] "
+        f"shape={geometry['shape']} spacing_mm={geometry.get('voxel_spacing_mm')}"
+    )
+
     from vista3d_Segmentator import Vista3D_Segmentator
 
     if vista3d_config is None:
@@ -501,14 +529,28 @@ def _run_vista3d_segmentation(
     # ---- GPU 分配 + 重试：自动选择空闲 GPU（若 device 为默认值则自动选卡，否则用指定卡） ----
     _seg = None
     _all_mask = None
-    _last_err = None
+    _last_err: Optional[BaseException] = None
     for _attempt in range(3):
         # 若 device 是 "auto"，让 GPUManager 自动选择；否则直接使用指定卡
         _preferred = None if device == "auto" else device
         try:
             with _gpu_manager.allocate(preferred=_preferred) as _alloc_dev:
+                cuda_info = require_cuda_device(_alloc_dev)
                 if device == "auto":
                     _log(f"       [GPU] Auto-allocated {_alloc_dev} (attempt {_attempt+1}/3)")
+                if _attempt == 0:
+                    gpu_name = next(
+                        (
+                            item["name"]
+                            for item in cuda_info.get("devices", [])
+                            if f"cuda:{item['index']}" == _alloc_dev
+                        ),
+                        "unknown",
+                    )
+                    _log(
+                        f"       [CUDA] device={_alloc_dev} gpu={gpu_name} "
+                        f"torch={cuda_info.get('torch')} runtime={cuda_info.get('torch_cuda')}"
+                    )
                 _seg = Vista3D_Segmentator(config_file=vista3d_config, device=_alloc_dev)
                 _backend_prompt = [_VISTA_ORGAN2ID[o] for o in organ_list]
                 _all_mask_path = os.path.join(output_dir, "all.nii.gz")
@@ -519,13 +561,27 @@ def _run_vista3d_segmentation(
                     save_mask=True,
                 )
             break  # 加载 + 推理成功，跳出重试
-        except RuntimeError as _e:
+        except Exception as _e:
             _last_err = _e
-            _log(f"       [RETRY {_attempt+1}/3] GPU error: {_e}")
-            time.sleep(5 * (_attempt + 1))  # 递增等待
+            detail = exception_chain(_e)
+            if not is_retryable_cuda_error(_e):
+                _log(f"       [VISTA3D] Non-retryable failure: {detail}")
+                _log("".join(traceback.format_exception(type(_e), _e, _e.__traceback__)))
+                if isinstance(_e, (CudaEnvironmentError, NiftiGeometryError)):
+                    raise
+                raise Vista3DInferenceError(
+                    f"VISTA3D preprocessing/inference failed: {detail}"
+                ) from _e
+            if _attempt == 2:
+                break
+            _log(f"       [RETRY {_attempt+1}/3] Retryable CUDA failure: {detail}")
+            time.sleep(5 * (_attempt + 1))
 
     if _all_mask is None:
-        raise RuntimeError(f"VISTA3D segmentation failed after 3 attempts: {_last_err}")
+        detail = exception_chain(_last_err) if _last_err else "unknown CUDA failure"
+        raise CudaEnvironmentError(
+            f"VISTA3D failed after 3 CUDA attempts: {detail}"
+        ) from _last_err
 
     seg = _seg
     all_mask = _all_mask
@@ -654,6 +710,16 @@ def _write_segmentation_metadata(mask_dir: str, backend: str) -> None:
     temp_path = path.with_suffix(path.suffix + ".tmp")
     temp_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     os.replace(temp_path, path)
+
+
+def _segmentation_http_error(exc: Exception) -> Tuple[int, str]:
+    if isinstance(exc, NiftiGeometryError):
+        return 422, "invalid_nifti_geometry"
+    if isinstance(exc, CudaEnvironmentError):
+        return 503, "cuda_unavailable"
+    if isinstance(exc, Vista3DEnvironmentError):
+        return 503, "vista3d_environment_incompatible"
+    return 500, "segmentation_failed"
 
 
 def _list_mask_files(mask_dir: str, organ_list: Optional[List[str]] = None) -> Dict[str, str]:
@@ -3209,10 +3275,20 @@ if _HAS_FASTAPI:
     @app.get("/health")
     async def health():
         """健康检查。"""
+        segmentation_backend = _normalize_segmentation_backend(None)
+        cuda_required = segmentation_backend == "vista3d"
         gpu_summary = _gpu_manager.summary()
+        runtime_summary = collect_runtime_diagnostics()
+        cuda_summary = runtime_summary["cuda"]
+        compatibility_errors = runtime_summary["vista3d_compatibility_errors"]
+        vista3d_ready = cuda_summary["available"] and not compatibility_errors
         return {
-            "status": "ok",
+            "status": (
+                "ok" if not cuda_required or vista3d_ready else "degraded"
+            ),
             "timestamp": _dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "segmentation_backend": segmentation_backend,
+            "cuda_required": cuda_required,
             "output_dir": str(OUTPUT_DIR),
             "output_dir_exists": OUTPUT_DIR.exists(),
             "output_dir_writable": os.access(str(OUTPUT_DIR), os.W_OK) if OUTPUT_DIR.exists() else False,
@@ -3221,8 +3297,18 @@ if _HAS_FASTAPI:
                 "in_use": gpu_summary["in_use"],
                 "devices": gpu_summary["devices"],
                 "count": len(gpu_summary["gpus"]),
+                "torch_cuda_available": cuda_summary["available"],
+                "torch": cuda_summary.get("torch"),
+                "torch_cuda": cuda_summary.get("torch_cuda"),
+                "errors": cuda_summary["errors"],
             },
+            "vista3d_compatibility_errors": compatibility_errors,
         }
+
+    @app.get("/api/diagnostics/runtime")
+    async def runtime_diagnostics():
+        """Return package and CUDA details without running model inference."""
+        return collect_runtime_diagnostics()
 
     @app.get("/api/organs")
     def list_organs():
@@ -3963,14 +4049,16 @@ if _HAS_FASTAPI:
             elapsed = time.time() - start
             _log(f"[process-lite] FAILED after {elapsed:.1f}s: {e}")
             _log(traceback.format_exc())
-            return ProcessLiteResponse(
-                status="error",
-                message=f"Process-lite failed: {e}",
-                case_id=case_name,
-                elapsed_seconds=round(elapsed, 1),
-                case_reused=False,
-                reused=False,
-            )
+            status_code, error_code = _segmentation_http_error(e)
+            raise HTTPException(
+                status_code=status_code,
+                detail={
+                    "error_code": error_code,
+                    "message": str(e),
+                    "case_id": case_name,
+                    "elapsed_seconds": round(elapsed, 1),
+                },
+            ) from e
 
     def _run_visualization_bg(job_id: str, case_dir: str, req: VisualizeRequest):
         """Background thread for visualization (timeout: 30 min)."""
@@ -4157,8 +4245,20 @@ def server_main(argv: Optional[List[str]] = None):
     _log(f"  Skills:    {count if _skill_engine else 0} registered")
     _log(f"  Log file:  {_log_file_path}")
     # GPU info
-    _log("  GPU Status:")
-    _print_gpu_info()
+    gpu_summary = _gpu_manager.summary()
+    cuda_summary = cuda_runtime_info()
+    if gpu_summary["gpus"]:
+        for gpu in gpu_summary["gpus"]:
+            _log(
+                f"  GPU {gpu['index']}: {gpu['name']} "
+                f"{gpu['memory_used_mb']}/{gpu['memory_total_mb']} MB"
+            )
+    else:
+        _log("  GPU:       nvidia-smi did not report a device")
+    _log(
+        f"  CUDA:      available={cuda_summary['available']} "
+        f"torch={cuda_summary.get('torch')} runtime={cuda_summary.get('torch_cuda')}"
+    )
     _log(f"  GPUManager: {_gpu_manager.in_use_count()} in use")
     _log(sep)
 

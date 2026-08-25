@@ -39,11 +39,11 @@ reconstruction, and preoperative planning—all in one place.
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.10, 3.11, or 3.12
 - Node.js 20+ and npm
 - An OpenAI-compatible LLM endpoint
-- At least 10 GB of free disk space, plus enough CPU and memory for the selected segmentation backend;
-  some backends also require a compatible CUDA GPU
+- At least 10 GB of free disk space, plus enough CPU and memory for the selected
+  backend; default VISTA3D requires an NVIDIA GPU visible to PyTorch CUDA
 - Ubuntu is recommended; a correctly configured Ubuntu environment under WSL
   has also been tested with the commands below
 
@@ -68,6 +68,7 @@ Edit `.env` and set the LLM endpoint:
 ```dotenv
 DASHSCOPE_API_KEY=your-api-key
 DASHSCOPE_BASE_URL=https://your-llm-endpoint.example.com/v1
+LLM_MODEL_NAME=your-endpoint-model-name
 ```
 
 ### Run
@@ -104,6 +105,20 @@ Only explicitly installed backends can be selected. Existing cases generated
 by another backend are kept under a new case ID instead of silently mixing
 masks. See the [Port B guide](Port_B/README.md#segmentation-backends) for model
 paths and CLI selection.
+
+### Diagnose a local deployment
+
+Check package versions and NVIDIA/PyTorch CUDA before startup. Supplying a CT
+also validates the NIfTI dimensions, affine, and voxel spacing used by MONAI:
+
+```bash
+./scripts/doctor.py
+./scripts/doctor.py /absolute/path/to/ct.nii.gz
+```
+
+If the environment predates the VISTA3D compatibility constraints, rerun
+`./scripts/setup.sh` to repair it. During runtime, the same package and CUDA
+summary is available from `GET /api/diagnostics/runtime`.
 
 ## What You Can Do
 
@@ -178,6 +193,7 @@ the web application.
 | --- | --- | --- | --- |
 | `DASHSCOPE_API_KEY` | Port A | LLM API credential | Required |
 | `DASHSCOPE_BASE_URL` | Port A | OpenAI-compatible API base URL | Required |
+| `LLM_MODEL_NAME` | Port A | Exact model ID served by the configured endpoint | Required |
 | `PORT_B_INTERNAL` | Port A | Internal Port B address | `http://localhost:8765` |
 | `PUBLIC_BASE_URL` | Port B | Public output-proxy base URL | `http://127.0.0.1:8898` |
 | `VOXELSAGE_OUTPUT_DIR` | Port B | Runtime output directory | `Port_B/output` |

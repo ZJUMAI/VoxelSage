@@ -21,7 +21,7 @@ Port_A/
 
 ## 快速开始
 
-在仓库根目录创建 Python 3.10+ 虚拟环境并安装依赖：
+在仓库根目录创建 Python 3.10、3.11 或 3.12 虚拟环境并安装依赖：
 
 ```bash
 python -m venv .venv
@@ -34,9 +34,13 @@ pip install -r Port_A/requirements.txt
 ```bash
 export DASHSCOPE_API_KEY="your-api-key"
 export DASHSCOPE_BASE_URL="https://your-llm-endpoint/v1"
+export LLM_MODEL_NAME="your-endpoint-model-name"
 export PORT_B_INTERNAL="http://localhost:8765"
 export CACHE_ROOT="./case_cache"
 ```
+
+`LLM_MODEL_NAME` 必须与兼容 OpenAI API 的服务实际暴露的模型 ID 完全一致。
+旧变量 `QWEN_MODEL_NAME` 仍可使用，但建议迁移到通用名称 `LLM_MODEL_NAME`。
 
 ### 启动服务
 
@@ -54,7 +58,7 @@ cd Port_A
 
 ```bash
 cd Port_A
-python tests/test_p0_optimizations.py
+python -m pytest -q
 ```
 
 ## 架构

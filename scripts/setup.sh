@@ -31,6 +31,11 @@ for command in python3 git npm; do
   fi
 done
 
+if ! python3 -c 'import sys; raise SystemExit(not ((3, 10) <= sys.version_info[:2] < (3, 13)))'; then
+  echo "VoxelSage requires Python 3.10, 3.11, or 3.12." >&2
+  exit 1
+fi
+
 if [[ ! -x "${VENV_DIR}/bin/python" ]]; then
   python3 -m venv "${VENV_DIR}"
 fi
@@ -56,6 +61,7 @@ if ((WITH_TOTALSEGMENTATOR)); then
   "${VENV_DIR}/bin/python" -m pip install \
     -r "${REPO_ROOT}/Port_B/requirements-totalsegmentator.txt"
 fi
+"${VENV_DIR}/bin/python" -m pip check
 
 npm --prefix "${REPO_ROOT}/Frontend" ci
 if [[ ! -f "${REPO_ROOT}/Frontend/.env.local" ]]; then
@@ -68,3 +74,4 @@ fi
 echo
 echo "Setup complete. Edit ${REPO_ROOT}/.env, then run ./scripts/start.sh"
 echo "VISTA3D weights are downloaded automatically from Hugging Face on first inference."
+"${VENV_DIR}/bin/python" "${REPO_ROOT}/scripts/doctor.py" --require-vista-compatible

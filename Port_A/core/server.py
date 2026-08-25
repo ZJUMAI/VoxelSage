@@ -126,7 +126,34 @@ DASHSCOPE_BASE_URL = os.getenv(
     "DASHSCOPE_BASE_URL",
     "https://your-llm-endpoint.example.com/v1",
 )
-QWEN_MODEL_NAME = os.getenv("QWEN_MODEL_NAME", "qwen3.7-plus")
+LLM_MODEL_NAME = (
+    os.getenv("LLM_MODEL_NAME", "").strip()
+    or os.getenv("QWEN_MODEL_NAME", "").strip()  # backward compatibility
+)
+
+
+def _is_placeholder(value: str) -> bool:
+    normalized = value.strip().lower()
+    return not normalized or "your-" in normalized or "example.com" in normalized
+
+
+def llm_configuration_errors() -> List[str]:
+    errors = []
+    if _is_placeholder(DASHSCOPE_API_KEY):
+        errors.append("DASHSCOPE_API_KEY")
+    if _is_placeholder(DASHSCOPE_BASE_URL):
+        errors.append("DASHSCOPE_BASE_URL")
+    if _is_placeholder(LLM_MODEL_NAME):
+        errors.append("LLM_MODEL_NAME")
+    return errors
+
+
+def require_llm_configuration() -> None:
+    missing = llm_configuration_errors()
+    if missing:
+        raise RuntimeError(
+            "LLM configuration is incomplete. Set " + ", ".join(missing) + " in .env."
+        )
 
 PORT_B_PROCESS_TIMEOUT = float(os.getenv("PORT_B_PROCESS_TIMEOUT", "1200"))
 PORT_B_SKILL_TIMEOUT = float(os.getenv("PORT_B_SKILL_TIMEOUT", "600"))  # 增加到600秒，因为liver_analysis可能需要230-290秒
@@ -140,8 +167,12 @@ MAX_IMAGE_BYTES = int(os.getenv("MAX_IMAGE_BYTES", str(8 * 1024 * 1024)))
 MAX_IMAGES_PER_REQUEST = int(os.getenv("MAX_IMAGES_PER_REQUEST", "4"))
 SKILLS_CACHE_TTL_SECONDS = float(os.getenv("SKILLS_CACHE_TTL_SECONDS", "60"))
 
-if not DASHSCOPE_API_KEY:
-    print("[WARN] DASHSCOPE_API_KEY is not set. Model calls will fail.")
+if missing_llm_config := llm_configuration_errors():
+    print(
+        "[WARN] LLM configuration is incomplete: "
+        + ", ".join(missing_llm_config)
+        + ". Model calls will fail until .env is updated."
+    )
 
 llm_client = AsyncOpenAI(api_key=DASHSCOPE_API_KEY or "missing", base_url=DASHSCOPE_BASE_URL)
 
@@ -595,7 +626,14 @@ async def port_b_process_lite(input_path: str, case_name: str, device: str) -> D
     payload = {"input": input_path, "case_name": case_name, "device": device}
     async with httpx.AsyncClient(timeout=PORT_B_PROCESS_TIMEOUT) as client:
         response = await client.post(f"{PORT_B_INTERNAL}{PORT_B_PROCESS_LITE_PATH}", json=payload)
-        response.raise_for_status()
+        if response.status_code >= 400:
+            try:
+                failure = response.json()
+            except ValueError:
+                failure = response.text[:2000]
+            raise RuntimeError(
+                f"Port B process-lite HTTP {response.status_code}: {failure}"
+            )
         raw = response.json()
     parsed = ProcessLiteResponse(**raw)
     if parsed.status != "ok":
@@ -1508,8 +1546,9 @@ async def run_one_model_round(
 
     Returns (text, tool_calls). Text is streamed to the frontend only when the response contains no tool calls.
     """
+    require_llm_configuration()
     stream = await llm_client.chat.completions.create(
-        model=QWEN_MODEL_NAME,
+        model=LLM_MODEL_NAME,
         messages=messages,
         tools=session["available_tools"],
         tool_choice="auto",
@@ -1772,8 +1811,9 @@ async def run_agent_loop(
             "并清楚说明未解决部分和局限。"
         ),
     })
+    require_llm_configuration()
     response = await llm_client.chat.completions.create(
-        model=QWEN_MODEL_NAME,
+        model=LLM_MODEL_NAME,
         messages=messages,
         stream=False,
         max_tokens=session.get("max_new_tokens", 4096),
@@ -2226,7 +2266,7 @@ def root() -> Dict[str, Any]:
         "status": "ok",
         "service": "Port A Qwen Medical Skills Agent",
         "version": "2.0.0",
-        "model": QWEN_MODEL_NAME,
+        "model": LLM_MODEL_NAME,
         "endpoints": {
             "health": "/health",
             "upload": "/api/upload",
@@ -2243,14 +2283,20 @@ async def health() -> Dict[str, Any]:
     try:
         async with httpx.AsyncClient(timeout=5) as client:
             response = await client.get(f"{PORT_B_INTERNAL}/health")
-            port_b_ok = response.status_code < 400
             port_b_detail = response.json() if response.headers.get("content-type", "").startswith("application/json") else response.text[:200]
+            port_b_ok = (
+                response.status_code < 400
+                and isinstance(port_b_detail, dict)
+                and port_b_detail.get("status") == "ok"
+            )
     except Exception as exc:
         port_b_detail = str(exc)
+    llm_errors = llm_configuration_errors()
     return {
-        "status": "ok" if DASHSCOPE_API_KEY and port_b_ok else "degraded",
-        "model_configured": bool(DASHSCOPE_API_KEY),
-        "model": QWEN_MODEL_NAME,
+        "status": "ok" if not llm_errors and port_b_ok else "degraded",
+        "model_configured": not llm_errors,
+        "model_configuration_errors": llm_errors,
+        "model": LLM_MODEL_NAME or None,
         "port_b_ok": port_b_ok,
         "port_b_detail": port_b_detail,
         "sessions": len(SESSION_STORE),

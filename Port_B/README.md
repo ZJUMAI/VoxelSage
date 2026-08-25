@@ -62,6 +62,21 @@ Override a manually managed installation with `VISTA3D_ROOT`, the inference
 configuration with `VISTA3D_CONFIG`, or the model directory with
 `VISTA3D_MODEL_DIR`.
 
+VISTA3D requires a CUDA-capable NVIDIA GPU. Check the driver, PyTorch CUDA
+build, compatibility-sensitive packages, and an optional input volume before
+starting the services:
+
+```bash
+./scripts/doctor.py
+./scripts/doctor.py /absolute/path/to/ct.nii.gz
+```
+
+VoxelSage validates NIfTI geometry before loading VISTA3D, preserves the full
+MONAI exception chain, and retries only explicit CUDA memory/resource errors.
+Invalid geometry returns HTTP `422`, unavailable CUDA returns `503`, and other
+inference failures return `500`. A known-incompatible VISTA3D environment also
+returns `503` instead of reporting a successful HTTP response with an error body.
+
 ### TotalSegmentator (optional)
 
 TotalSegmentator is not part of the default dependency set. Install it only

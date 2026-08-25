@@ -28,15 +28,29 @@ _MIN_FREE_MEMORY_MB = 2048  # 2 GB
 
 # nvidia-smi 查询超时（秒）— 防止 GPU 驱动卡死导致事件循环阻塞
 _NV_SMI_TIMEOUT = 5
+_GPU_INFO_CACHE_SECONDS = 30.0
+_gpu_info_cache: List[Dict[str, object]] = []
+_gpu_info_cache_at = 0.0
+_gpu_info_cache_lock = threading.Lock()
 
 
-def query_gpu_info() -> List[Dict[str, object]]:
+def query_gpu_info(refresh: bool = False) -> List[Dict[str, object]]:
     """查询所有 GPU 的型号和显存信息。
 
     Returns:
         [{index, name, memory_total_mb, memory_used_mb, memory_free_mb}, ...]
         查询失败返回空列表。
     """
+    global _gpu_info_cache, _gpu_info_cache_at
+    now = time.monotonic()
+    with _gpu_info_cache_lock:
+        if (
+            not refresh
+            and _gpu_info_cache_at
+            and now - _gpu_info_cache_at < _GPU_INFO_CACHE_SECONDS
+        ):
+            return [dict(item) for item in _gpu_info_cache]
+
     try:
         result = subprocess.run(
             ["nvidia-smi", "--query-gpu=index,name,memory.total,memory.used,memory.free",
@@ -54,7 +68,7 @@ def query_gpu_info() -> List[Dict[str, object]]:
         line = line.strip()
         if not line:
             continue
-        parts = [p.strip() for p in line.split(", ")]
+        parts = [p.strip() for p in line.split(",")]
         if len(parts) < 5:
             continue
         try:
@@ -67,6 +81,9 @@ def query_gpu_info() -> List[Dict[str, object]]:
             })
         except (ValueError, IndexError):
             continue
+    with _gpu_info_cache_lock:
+        _gpu_info_cache = [dict(item) for item in gpus]
+        _gpu_info_cache_at = time.monotonic()
     return gpus
 
 
