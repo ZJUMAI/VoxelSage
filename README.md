@@ -42,73 +42,68 @@ reconstruction, and preoperative planning—all in one place.
 - Python 3.10+
 - Node.js 20+ and npm
 - An OpenAI-compatible LLM endpoint
-- Enough CPU, memory, and disk space for the selected segmentation backend;
+- At least 10 GB of free disk space, plus enough CPU and memory for the selected segmentation backend;
   some backends also require a compatible CUDA GPU
+- Ubuntu is recommended; a correctly configured Ubuntu environment under WSL
+  has also been tested with the commands below
 
 ### Install
 
 ```bash
 git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
-python -m venv .venv && source .venv/bin/activate
-pip install -r Port_B/requirements.txt -r Port_A/requirements.txt
-npm --prefix Frontend ci
-cp Frontend/.env.example Frontend/.env.local
+./scripts/setup.sh
 ```
 
-Configure the LLM endpoint in the same shell used to start Port A:
+The setup script creates `.venv`, installs the Python and frontend dependencies,
+clones the official VISTA repository into `third_party/`, and creates `.env`
+from [`.env.example`](.env.example) if needed. It does **not** install
+TotalSegmentator.
 
-```bash
-export DASHSCOPE_API_KEY="your-api-key"
-export DASHSCOPE_BASE_URL="https://your-llm-endpoint.example.com/v1"
+Even with a good connection, the first installation can take tens of minutes.
+In one tested WSL environment, `.venv` occupied about 6.7 GB. Access to GitHub,
+PyPI/npm, and Hugging Face—or suitable mirrors—is required.
+
+Edit `.env` and set the LLM endpoint:
+
+```dotenv
+DASHSCOPE_API_KEY=your-api-key
+DASHSCOPE_BASE_URL=https://your-llm-endpoint.example.com/v1
 ```
 
 ### Run
 
-Open four terminals from the repository root:
-
-<details open>
-<summary><strong>1 · Imaging API</strong> — segmentation and analysis on <code>:8765</code></summary>
-
 ```bash
-cd Port_B
-../.venv/bin/python API.py server --port 8765
+./scripts/start.sh
 ```
 
-</details>
+This one command starts the imaging API (`:8765`), output proxy (`:8898`),
+agent service (`:8900`), and web app (`:3000`). Open
+**<http://localhost:3000>**; press `Ctrl+C` to stop all four services. Logs are
+written to `.runtime/logs/`.
 
-<details open>
-<summary><strong>2 · Output proxy</strong> — generated files on <code>:8898</code></summary>
+VISTA3D is the default and only segmentation model installed by the command
+above. Its official checkpoint is downloaded automatically from Hugging Face
+on the first inference and then reused from the local cache.
 
-```bash
-cd Port_B
-../.venv/bin/python file_proxy.py --port 8898
-```
+### Segmentation backends
 
-</details>
+| Backend | Installation | Selection |
+| --- | --- | --- |
+| **VISTA3D** (default) | `./scripts/setup.sh` | `SEGMENTATION_BACKEND=vista3d` |
+| **TotalSegmentator** (optional) | `./scripts/setup.sh --with-totalsegmentator` | `SEGMENTATION_BACKEND=totalsegmentator` |
 
-<details open>
-<summary><strong>3 · Agent service</strong> — LLM orchestration on <code>:8900</code></summary>
-
-```bash
-cd Port_A
-../.venv/bin/python -m core.server
-```
-
-</details>
-
-<details open>
-<summary><strong>4 · Web app</strong> — research workspace on <code>:3000</code></summary>
+Set the server-wide default in `.env`, or override it for one request:
 
 ```bash
-npm --prefix Frontend run dev
+curl -X POST http://localhost:8765/api/process-lite \
+  -H 'Content-Type: application/json' \
+  -d '{"input":"/absolute/path/to/ct.nii.gz","seg_backend":"totalsegmentator"}'
 ```
 
-</details>
-
-Open **<http://localhost:3000>**. The first TotalSegmentator run may download
-model assets. Optional VISTA3D support requires a separate upstream checkout,
-configuration, and model assets; see the
-[Port B guide](Port_B/README.md#segmentation-backends).
+Only explicitly installed backends can be selected. Existing cases generated
+by another backend are kept under a new case ID instead of silently mixing
+masks. See the [Port B guide](Port_B/README.md#segmentation-backends) for model
+paths and CLI selection.
 
 ## What You Can Do
 
@@ -186,7 +181,10 @@ the web application.
 | `PORT_B_INTERNAL` | Port A | Internal Port B address | `http://localhost:8765` |
 | `PUBLIC_BASE_URL` | Port B | Public output-proxy base URL | `http://127.0.0.1:8898` |
 | `VOXELSAGE_OUTPUT_DIR` | Port B | Runtime output directory | `Port_B/output` |
-| `VISTA3D_ROOT` | Port B | Optional upstream VISTA3D source directory | Unset |
+| `SEGMENTATION_BACKEND` | Port B | Server-wide segmentation backend | `vista3d` |
+| `VISTA3D_ROOT` | Port B | Official VISTA3D source directory | `third_party/VISTA/vista3d` |
+| `VISTA3D_CONFIG` | Port B | VISTA3D inference configuration | `Port_B/SegAgent/VISTA3d/configs/infer.yaml` |
+| `VISTA3D_MODEL_DIR` | Port B | VISTA3D checkpoint and inference cache | `Port_B/models/vista3d` |
 | `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B | Authorized frozen v10.6 planning checkpoint | Unset |
 
 See [`Frontend/.env.example`](Frontend/.env.example) for browser-facing service

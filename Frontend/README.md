@@ -22,6 +22,9 @@
 
 ## 快速开始
 
+完整应用建议先在仓库根目录执行 `./scripts/setup.sh`，配置 `.env` 后通过
+`./scripts/start.sh` 一键启动。仅调试前端时：
+
 ```bash
 cd Frontend
 npm ci

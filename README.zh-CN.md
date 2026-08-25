@@ -39,72 +39,65 @@ VoxelSage 是面向腹部 CT 研究的自托管医学影像工作台。上传 DI
 - Python 3.10+
 - Node.js 20+ 和 npm
 - 兼容 OpenAI API 的 LLM 服务
-- 满足所选分割后端要求的 CPU、内存和磁盘空间；部分后端还需要兼容的
+- 满足所选分割后端要求的 CPU、内存和磁盘空间（10 GB+）；部分后端还需要兼容的
   CUDA GPU
+- 建议使用 Ubuntu 进行环境配置；经开发者测试，正确配置的 WSL Ubuntu
+  也可以顺利执行以下命令。
 
 ### 安装
 
 ```bash
 git clone https://github.com/ZJUMAI/VoxelSage.git && cd VoxelSage
-python -m venv .venv && source .venv/bin/activate
-pip install -r Port_B/requirements.txt -r Port_A/requirements.txt
-npm --prefix Frontend ci
-cp Frontend/.env.example Frontend/.env.local
+./scripts/setup.sh
 ```
 
-在用于启动 Port A 的同一终端中配置 LLM 服务：
+安装脚本会创建 `.venv`、安装 Python 与前端依赖、将 VISTA 官方仓库克隆到
+`third_party/`，并在需要时根据 [`.env.example`](.env.example) 创建 `.env`。
+默认安装**不会**安装 TotalSegmentator。
 
-```bash
-export DASHSCOPE_API_KEY="your-api-key"
-export DASHSCOPE_BASE_URL="https://your-llm-endpoint.example.com/v1"
+即便网络良好，首次安装也可能需要数十分钟。在一次经过测试的 WSL 环境中，
+`.venv` 约占 6.7 GB。安装过程需要访问 GitHub、PyPI/npm 与 Hugging Face，
+也可以配置合适的镜像站。
+
+编辑 `.env`，配置 LLM 服务：
+
+```dotenv
+DASHSCOPE_API_KEY=your-api-key
+DASHSCOPE_BASE_URL=https://your-llm-endpoint.example.com/v1
 ```
 
 ### 启动
 
-在仓库根目录打开四个终端：
-
-<details open>
-<summary><strong>1 · 影像 API</strong> — 在 <code>:8765</code> 提供分割与分析</summary>
-
 ```bash
-cd Port_B
-../.venv/bin/python API.py server --port 8765
+./scripts/start.sh
 ```
 
-</details>
+这一条命令会同时启动影像 API（`:8765`）、输出代理（`:8898`）、智能体服务
+（`:8900`）和 Web 前端（`:3000`）。启动后访问
+**<http://localhost:3000>**；按 `Ctrl+C` 即可停止全部服务。日志保存在
+`.runtime/logs/`。
 
-<details open>
-<summary><strong>2 · 输出代理</strong> — 在 <code>:8898</code> 提供生成文件</summary>
+VISTA3D 是默认后端，也是上述命令唯一安装的分割模型。首次执行分割时，程序会
+从 Hugging Face 自动下载官方权重，后续直接复用本地缓存。
 
-```bash
-cd Port_B
-../.venv/bin/python file_proxy.py --port 8898
-```
+### 分割后端
 
-</details>
+| 后端 | 安装方式 | 选择方式 |
+| --- | --- | --- |
+| **VISTA3D**（默认） | `./scripts/setup.sh` | `SEGMENTATION_BACKEND=vista3d` |
+| **TotalSegmentator**（可选） | `./scripts/setup.sh --with-totalsegmentator` | `SEGMENTATION_BACKEND=totalsegmentator` |
 
-<details open>
-<summary><strong>3 · 智能体服务</strong> — 在 <code>:8900</code> 编排 LLM</summary>
-
-```bash
-cd Port_A
-../.venv/bin/python -m core.server
-```
-
-</details>
-
-<details open>
-<summary><strong>4 · Web 前端</strong> — 在 <code>:3000</code> 提供研究工作台</summary>
+可以在 `.env` 中设置服务级默认后端，也可以为单次请求覆盖：
 
 ```bash
-npm --prefix Frontend run dev
+curl -X POST http://localhost:8765/api/process-lite \
+  -H 'Content-Type: application/json' \
+  -d '{"input":"/absolute/path/to/ct.nii.gz","seg_backend":"totalsegmentator"}'
 ```
 
-</details>
-
-启动完成后访问 **<http://localhost:3000>**。首次运行 TotalSegmentator 时可能
-下载模型文件。VISTA3D 为可选后端，需要单独准备上游源码、配置和模型文件；
-详见 [Port B 文档](Port_B/README.md#segmentation-backends)。
+只有已显式安装的后端才能被选择。若同一病例此前由另一个后端生成，系统会分配
+新的病例 ID，避免静默混用掩膜。模型路径和 CLI 选项详见
+[Port B 文档](Port_B/README.md#segmentation-backends)。
 
 ## 核心能力
 
@@ -177,7 +170,10 @@ curl http://localhost:8765/api/skills/list
 | `PORT_B_INTERNAL` | Port A | Port B 内部访问地址 | `http://localhost:8765` |
 | `PUBLIC_BASE_URL` | Port B | 输出代理的公开基础地址 | `http://127.0.0.1:8898` |
 | `VOXELSAGE_OUTPUT_DIR` | Port B | 运行时输出目录 | `Port_B/output` |
-| `VISTA3D_ROOT` | Port B | 可选的 VISTA3D 上游源码目录 | 未设置 |
+| `SEGMENTATION_BACKEND` | Port B | 服务级默认分割后端 | `vista3d` |
+| `VISTA3D_ROOT` | Port B | VISTA3D 官方源码目录 | `third_party/VISTA/vista3d` |
+| `VISTA3D_CONFIG` | Port B | VISTA3D 推理配置 | `Port_B/SegAgent/VISTA3d/configs/infer.yaml` |
+| `VISTA3D_MODEL_DIR` | Port B | VISTA3D 权重与推理缓存 | `Port_B/models/vista3d` |
 | `VOXELSAGE_RESECTION_MODEL_CHECKPOINT` | Port B | 经授权的冻结 v10.6 规划权重 | 未设置 |
 
 浏览器端服务地址见 [`Frontend/.env.example`](Frontend/.env.example)，可选影像

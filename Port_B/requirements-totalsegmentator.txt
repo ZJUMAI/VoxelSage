@@ -1,0 +1,3 @@
+# Optional segmentation backend. The default VISTA3D installation does not
+# install or download TotalSegmentator.
+TotalSegmentator>=2.4

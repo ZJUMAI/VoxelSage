@@ -40,9 +40,11 @@ export CACHE_ROOT="./case_cache"
 
 ### 启动服务
 
+完整应用建议在仓库根目录通过 `./scripts/start.sh` 一键启动。仅调试 Port A 时：
+
 ```bash
 cd Port_A
-python -m core.server
+../.venv/bin/python -m core.server
 ```
 
 服务默认监听 `0.0.0.0:8900`。启动前请先运行 Port B，并确保

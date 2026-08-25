@@ -18,17 +18,25 @@ upstream MIT license and copyright notice with that distribution.
 
 ## TotalSegmentator
 
-Port B can use **TotalSegmentator** as an installed segmentation dependency;
-its source code and model weights are not redistributed here.
+Port B can use **TotalSegmentator** as an explicitly installed optional
+segmentation dependency; the default installation does not install it. Its
+source code and model weights are not redistributed here.
 
 - License: Apache License 2.0
 - Source and license: <https://github.com/wasserth/TotalSegmentator>
 
 ## VISTA3D and other optional models
 
-VISTA3D, MedSAM2, BiomedParse, model weights, and datasets are not distributed
-with this repository. Users must obtain them separately and comply with their
-respective upstream licenses, access conditions, and usage restrictions.
+VISTA3D is VoxelSage's default segmentation backend. The setup script clones
+its source from <https://github.com/Project-MONAI/VISTA>; the source and model
+weights are not redistributed in this repository. On first inference, the
+upstream loader obtains the checkpoint from
+<https://huggingface.co/nvidia/NV-Segment-CT>. Users must comply with the
+upstream Apache 2.0 source licence, NVIDIA Open Model License for the weights,
+and any applicable access or usage conditions.
+
+Other optional model integrations and their weights are likewise not
+redistributed with this repository.
 
 ## 3DMedAgent reference
 

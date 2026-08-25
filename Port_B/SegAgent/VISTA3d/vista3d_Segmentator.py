@@ -3,17 +3,22 @@ import sys
 import torch
 import numpy as np
 import nibabel as nib
+from pathlib import Path
 
-# 指向真正的 Vista3D 仓库根目录（包含 scripts/ 和 vista3d/）
-# __file__ is at .../SegAgent/VISTA3d/vista3d_Segmentator.py
-# We need .../VISTA/vista3d (sibling of SegAgent/)
-VISTA3D_ROOT = os.environ.get("VISTA3D_ROOT", "")
-if not VISTA3D_ROOT:
-    raise ImportError(
-        "VISTA3D_ROOT is not set. Install VISTA3D separately under its own "
-        "license and set VISTA3D_ROOT to its vista3d source directory."
+# scripts/setup.sh installs the official source here. VISTA3D_ROOT remains an
+# override for shared or manually managed installations.
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+VISTA3D_ROOT = os.path.abspath(
+    os.environ.get(
+        "VISTA3D_ROOT",
+        str(_REPO_ROOT / "third_party" / "VISTA" / "vista3d"),
     )
-VISTA3D_ROOT = os.path.abspath(VISTA3D_ROOT)
+)
+if not os.path.isfile(os.path.join(VISTA3D_ROOT, "scripts", "infer.py")):
+    raise ImportError(
+        f"VISTA3D source was not found at {VISTA3D_ROOT}. "
+        "Run ./scripts/setup.sh or set VISTA3D_ROOT to the upstream vista3d directory."
+    )
 
 if VISTA3D_ROOT not in sys.path:
     sys.path.insert(0, VISTA3D_ROOT)
@@ -37,10 +42,19 @@ class Vista3D_Segmentator:
             self.device = device
 
         # Vista3D 的 InferClass 本身已经封装好模型 / transforms / 保存逻辑
+        bundle_root = os.environ.get(
+            "VISTA3D_MODEL_DIR",
+            str(_REPO_ROOT / "Port_B" / "models" / "vista3d"),
+        )
+        os.makedirs(bundle_root, exist_ok=True)
         self.infer_engine = InferClass(
             config_file=config_file,
-            device=self.device,
+            bundle_root=bundle_root,
         )
+        # The upstream research InferClass initializes on cuda:0. Respect the
+        # device selected by VoxelSage for all subsequent inference calls.
+        self.infer_engine.device = self.device
+        self.infer_engine.model = self.infer_engine.model.to(self.device)
 
         print("[Vista3D_Segmentator] Initialized")
         print(f"  Config: {config_file}")
@@ -104,4 +118,3 @@ class Vista3D_Segmentator:
             )
 
         return pred_np
-

@@ -254,11 +254,35 @@ _LESION_NAMES = {"pancreatic tumor", "hepatic tumor", "left kidney cyst",
 for _i in range(1, 51):
     _LESION_NAMES.add(f"tumor_{_i}")
 
-# VISTA paths
+# Segmentation backends and VISTA paths
 _PROJECT_ROOT = Path(__file__).resolve().parent
 _VISTA3D_WRAPPER = str(_PROJECT_ROOT / "SegAgent" / "VISTA3d")
 if _VISTA3D_WRAPPER not in sys.path:
     sys.path.insert(0, _VISTA3D_WRAPPER)
+
+_SEGMENTATION_BACKEND_ALIASES = {
+    "vista": "vista3d",
+    "vista3d": "vista3d",
+    "total": "totalsegmentator",
+    "totalseg": "totalsegmentator",
+    "totalsegmentator": "totalsegmentator",
+}
+_DEFAULT_SEGMENTATION_BACKEND = os.environ.get(
+    "SEGMENTATION_BACKEND", "vista3d"
+).strip().lower()
+_SEGMENTATION_METADATA_FILENAME = ".voxelsage-segmentation.json"
+
+
+def _normalize_segmentation_backend(backend: Optional[str]) -> str:
+    """Return a canonical, installed-on-demand segmentation backend name."""
+    requested = (backend or _DEFAULT_SEGMENTATION_BACKEND).strip().lower()
+    canonical = _SEGMENTATION_BACKEND_ALIASES.get(requested)
+    if canonical is None:
+        supported = ", ".join(sorted(set(_SEGMENTATION_BACKEND_ALIASES.values())))
+        raise ValueError(
+            f"Unsupported segmentation backend '{requested}'. Supported: {supported}"
+        )
+    return canonical
 
 _VISTA_LABEL_PATH = _PROJECT_ROOT / "SegAgent" / "VISTA3d" / "label_dict.json"
 with open(_VISTA_LABEL_PATH) as _f:
@@ -309,8 +333,8 @@ _CRLM_CLINICAL_XLSX = os.environ.get(
     str(_PROJECT_ROOT / "data" / "CRLM" / "Colorectal-Liver-Metastases-Clinical-data-April-2023.xlsx"),
 )
 
-# ---- 演示模式：有预分割 GT 掩码时跳过 VISTA3D ----
-# 通过 DEMO_MODE 环境变量控制（launch.sh 传入），默认开启
+# ---- 演示模式：有预分割 GT 掩码时跳过模型推理 ----
+# 通过 DEMO_MODE 环境变量控制（scripts/start.sh 传入），默认开启
 _DEMO_MODE = os.environ.get("DEMO_MODE", "1") == "1"
 
 # ---- GPU 互斥锁：防止并发请求同时占用 GPU 导致 CUDA OOM / device busy ----
@@ -550,6 +574,88 @@ def _run_vista3d_segmentation(
     return all_mask_path
 
 
+def _run_totalsegmentator_segmentation(
+    nifti_path: str,
+    output_dir: str,
+    device: str = "auto",
+) -> None:
+    """Run the optional TotalSegmentator CRLM adapter."""
+    try:
+        from SegAgent.TotalSegmentator import run_crlm_segmentation
+    except ImportError as exc:
+        raise RuntimeError(
+            "TotalSegmentator is not installed. Run "
+            "./scripts/setup.sh --with-totalsegmentator first."
+        ) from exc
+
+    preferred = None if device == "auto" else device
+    with _gpu_manager.allocate(preferred=preferred) as allocated_device:
+        run_crlm_segmentation(
+            input_path=nifti_path,
+            output_dir=output_dir,
+            device=allocated_device,
+        )
+
+
+def _run_segmentation(
+    backend: str,
+    nifti_path: str,
+    output_dir: str,
+    organ_list: Optional[List[str]] = None,
+    device: str = "auto",
+    vista3d_config: Optional[str] = None,
+) -> str:
+    """Dispatch segmentation without importing optional backends eagerly."""
+    backend = _normalize_segmentation_backend(backend)
+    if backend == "vista3d":
+        _run_vista3d_segmentation(
+            nifti_path=nifti_path,
+            output_dir=output_dir,
+            organ_list=organ_list,
+            device=device,
+            vista3d_config=vista3d_config,
+        )
+    elif backend == "totalsegmentator":
+        _run_totalsegmentator_segmentation(
+            nifti_path=nifti_path,
+            output_dir=output_dir,
+            device=device,
+        )
+    return backend
+
+
+def _segmentation_metadata_path(mask_dir: str) -> Path:
+    return Path(mask_dir) / _SEGMENTATION_METADATA_FILENAME
+
+
+def _read_segmentation_backend(mask_dir: str) -> Optional[str]:
+    path = _segmentation_metadata_path(mask_dir)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if payload.get("status") != "complete" or not payload.get("backend"):
+            return None
+        return _normalize_segmentation_backend(payload["backend"])
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        # Older VISTA3D outputs predate the metadata marker.
+        legacy_all = Path(mask_dir) / "all.nii.gz"
+        legacy_liver = Path(mask_dir) / "liver.nii.gz"
+        if legacy_all.is_file() and legacy_liver.is_file():
+            return "vista3d"
+        return None
+
+
+def _write_segmentation_metadata(mask_dir: str, backend: str) -> None:
+    path = _segmentation_metadata_path(mask_dir)
+    payload = {
+        "backend": _normalize_segmentation_backend(backend),
+        "status": "complete",
+        "completed_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+    }
+    temp_path = path.with_suffix(path.suffix + ".tmp")
+    temp_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    os.replace(temp_path, path)
+
+
 def _list_mask_files(mask_dir: str, organ_list: Optional[List[str]] = None) -> Dict[str, str]:
     """Return logical masks mapped to trusted resolved payload paths."""
     from Tool_Box.mask_resolution import scan_logical_masks
@@ -564,17 +670,25 @@ def _list_mask_files(mask_dir: str, organ_list: Optional[List[str]] = None) -> D
     }
 
 
-def _is_case_complete(mask_dir: str) -> bool:
+def _is_case_complete(mask_dir: str, backend: Optional[str] = None) -> bool:
     """Return whether the minimum reusable segmentation result is present.
 
-    ``all.nii.gz`` is the merged VISTA3D label map and ``liver.nii.gz`` is
-    required by the CRLM downstream skills.  Check file sizes as well as
-    existence so an interrupted write is not treated as a reusable case.
+    New outputs have an atomic completion marker recording their backend.
+    Older VISTA3D outputs are recognized by ``all.nii.gz`` plus ``liver.nii.gz``.
     """
     if not os.path.isdir(mask_dir):
         return False
 
-    for filename in ("liver.nii.gz", "all.nii.gz"):
+    recorded_backend = _read_segmentation_backend(mask_dir)
+    if recorded_backend is None:
+        return False
+    if backend is not None and recorded_backend != _normalize_segmentation_backend(backend):
+        return False
+
+    required_files = ["liver.nii.gz"]
+    if not _segmentation_metadata_path(mask_dir).is_file():
+        required_files.append("all.nii.gz")
+    for filename in required_files:
         path = os.path.join(mask_dir, filename)
         try:
             if not os.path.isfile(path) or os.path.getsize(path) < 1000:
@@ -2277,6 +2391,7 @@ def process_nifti_file(
     skip_viz: bool = False,
     vista3d_config: Optional[str] = None,
     demo_mode: Optional[bool] = None,
+    seg_backend: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     运行 CRLM 肝癌专项管线。
@@ -2297,7 +2412,8 @@ def process_nifti_file(
         nifti_path: [已弃用] 向后兼容别名，请使用 input_path。
         force: 强制重新转换 DICOM。
         skip_viz: 跳过 3D 可视化。
-        demo_mode: 演示模式（默认: True）。开启时若存在预分割 GT 掩码，跳过 VISTA3D。
+        demo_mode: 演示模式（默认: True）。开启时若存在预分割 GT 掩码，跳过模型推理。
+        seg_backend: 分割后端；默认读取 SEGMENTATION_BACKEND（默认 vista3d）。
 
     Returns:
         包含 visualization_html / best_slices / structural_report / mask_files 等字段的 dict。
@@ -2305,6 +2421,10 @@ def process_nifti_file(
     """
     start = time.time()
     _t = lambda s, p, m="": progress_tracker.update(s, p, m) if progress_tracker else None
+    try:
+        effective_backend = _normalize_segmentation_backend(seg_backend)
+    except ValueError as exc:
+        return _pipeline_error(str(exc))
 
     # ---- Backward compat: accept either input_path or nifti_path ----
     resolved_input = str(Path(input_path or nifti_path).resolve())
@@ -2385,56 +2505,61 @@ def process_nifti_file(
                 _log(f"       [WARN] Could not load raw HU, falling back to composite")
             scoring_mode = "composite"
 
-    # ---- 演示模式：有 GT 掩码时跳过 VISTA3D ----
+    # ---- 演示模式：有 GT 掩码时跳过模型推理 ----
     _demo_mode = _DEMO_MODE if demo_mode is None else demo_mode
 
-    # ---- Step 2: Segmentation (VISTA3D or demo mode GT) ----
+    # ---- Step 2: Segmentation backend or demo-mode GT ----
     if _demo_mode and has_seg_gt:
         if verbose:
-            _log(f"[2/5] 🎯 演示模式 — 使用预分割 GT 掩码（跳过 VISTA3D）")
+            _log(f"[2/5] 🎯 演示模式 — 使用预分割 GT 掩码（跳过模型推理）")
         _t("GT mask copy", 10, "Copying GT masks ...")
         _use_gt_masks(output_dir, mask_dir)
-        # 检查是否有实际可用的掩码，没有则回退到 VISTA3D
+        # 检查是否有实际可用的掩码，没有则回退到选定后端
         gt_count = len(glob.glob(os.path.join(mask_dir, "*.nii.gz")))
         if gt_count == 0:
             if verbose:
-                _log(f"       ⚠ GT 掩码为空，自动回退到 VISTA3D 分割")
+                _log(f"       ⚠ GT 掩码为空，自动回退到 {effective_backend} 分割")
             _demo_mode = False  # 标记已回退，避免后续误判
             if verbose:
-                _log(f"[2/5] Running VISTA3D segmentation (device={device}) …")
-            _t("VISTA3D segmentation", 10, "Initializing model...")
+                _log(f"[2/5] Running {effective_backend} segmentation (device={device}) …")
+            _t(f"{effective_backend} segmentation", 10, "Initializing model...")
             try:
-                _run_vista3d_segmentation(ct_nifti_path, mask_dir,
-                                           organ_list=effective_organ_list, device=device,
-                                           vista3d_config=vista3d_config)
+                _run_segmentation(
+                    effective_backend, ct_nifti_path, mask_dir,
+                    organ_list=effective_organ_list, device=device,
+                    vista3d_config=vista3d_config,
+                )
             except Exception as e:
                 tb = traceback.format_exc()
                 return _pipeline_error(f"Segmentation failed: {e}\n{tb}")
             if verbose:
                 _log(f"       Masks saved to: {mask_dir}")
-            _t("VISTA3D segmentation", 65, "Masks saved")
+            _t(f"{effective_backend} segmentation", 65, "Masks saved")
         else:
             if verbose:
                 _log(f"       GT masks copied to: {mask_dir}")
     else:
         if verbose:
-            _log(f"[2/5] Running VISTA3D segmentation (device={device}) …")
-        _t("VISTA3D segmentation", 10, "Initializing model...")
+            _log(f"[2/5] Running {effective_backend} segmentation (device={device}) …")
+        _t(f"{effective_backend} segmentation", 10, "Initializing model...")
         try:
-            _run_vista3d_segmentation(ct_nifti_path, mask_dir,
-                                       organ_list=effective_organ_list, device=device,
-                                       vista3d_config=vista3d_config)
+            _run_segmentation(
+                effective_backend, ct_nifti_path, mask_dir,
+                organ_list=effective_organ_list, device=device,
+                vista3d_config=vista3d_config,
+            )
         except Exception as e:
             tb = traceback.format_exc()
             return _pipeline_error(f"Segmentation failed: {e}\n{tb}")
         if verbose:
             _log(f"       Masks saved to: {mask_dir}")
-        _t("VISTA3D segmentation", 65, "Masks saved")
+        _t(f"{effective_backend} segmentation", 65, "Masks saved")
 
     # ---- Step 2b: CRLM postprocessing (vessel rename + tumor split) ----
     if verbose:
         _log(f"[2b/5] CRLM postprocessing (vessel rename + tumor split) …")
     effective_organ_list = _crlm_run_postprocessing(mask_dir)
+    _write_segmentation_metadata(mask_dir, effective_backend)
 
     # ---- Collect mask files ----
     mask_files = _list_mask_files(mask_dir, organ_list=effective_organ_list)
@@ -2614,7 +2739,7 @@ def pipeline_main(argv: Optional[List[str]] = None):
     """
     import argparse
     parser = argparse.ArgumentParser(
-        description="CRLM Pipeline: DICOM/.nii.gz → VISTA3D → 3D HTML + top-K slices + report",
+        description="CRLM Pipeline: DICOM/.nii.gz → segmentation → 3D HTML + top-K slices + report",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("input", nargs="?", type=str, default=None,
@@ -2625,6 +2750,12 @@ def pipeline_main(argv: Optional[List[str]] = None):
                         help="Output directory (default: output/<case_name>/)")
     parser.add_argument("--device", type=str, default="auto",
                         help="CUDA device ('auto'=auto-select, 'cuda:0'='cuda:1'=specific, default: auto)")
+    parser.add_argument(
+        "--seg-backend",
+        default=None,
+        choices=sorted(set(_SEGMENTATION_BACKEND_ALIASES.values())),
+        help="Segmentation backend (default: SEGMENTATION_BACKEND or vista3d)",
+    )
     parser.add_argument("--step-size", type=int, default=2,
                         help="Marching cubes step (default: 2)")
     parser.add_argument("--downsample", type=float, default=1.0,
@@ -2643,9 +2774,9 @@ def pipeline_main(argv: Optional[List[str]] = None):
     parser.add_argument("--skip-viz", action="store_true",
                         help="Skip 3D visualization")
     parser.add_argument("--demo", action="store_true", dest="demo", default=None,
-                        help="Enable demo mode (use GT masks if available, skip VISTA3D)")
+                        help="Enable demo mode (use GT masks if available, skip model inference)")
     parser.add_argument("--no-demo", action="store_false", dest="demo", default=None,
-                        help="Disable demo mode (always run VISTA3D)")
+                        help="Disable demo mode (always run the selected backend)")
 
     args = parser.parse_args(argv)
 
@@ -2676,6 +2807,7 @@ def pipeline_main(argv: Optional[List[str]] = None):
                     top_k=args.top_k,
                     scoring_mode=args.scoring,
                     demo_mode=args.demo,
+                    seg_backend=args.seg_backend,
                 )
                 results.append(res)
                 status = "OK" if res["status"] == "ok" else "FAILED"
@@ -2705,6 +2837,7 @@ def pipeline_main(argv: Optional[List[str]] = None):
         force=args.force,
         skip_viz=args.skip_viz,
         demo_mode=args.demo,
+        seg_backend=args.seg_backend,
     )
 
     if result["status"] == "ok":
@@ -2740,7 +2873,7 @@ if _HAS_FASTAPI:
             None, description="Optional root directory containing prepared cases"
         )
         seg_backend: Optional[str] = Field(
-            None, description="Segmentation backend (VISTA3D / TotalSegmentator / BiomedParse)"
+            None, description="Segmentation backend (vista3d / totalsegmentator)"
         )
         step_size: int = Field(2, description="Marching cubes step: 1~4")
         downsample: float = Field(1.0, description="Voxel downsampling: 1.0=no downsampling")
@@ -2765,7 +2898,11 @@ if _HAS_FASTAPI:
         scoring_mode: str = Field("crlm", description="Slice scoring mode: 'composite', 'cflt', or 'crlm' (default)")
         force: bool = Field(False, description="Force DICOM re-conversion")
         skip_viz: bool = Field(False, description="Skip 3D visualization")
-        demo_mode: Optional[bool] = Field(None, description="Demo mode: use GT masks if available, skip VISTA3D (default: env DEMO_MODE or True)")
+        demo_mode: Optional[bool] = Field(None, description="Demo mode: use GT masks if available and skip model inference")
+        seg_backend: Optional[str] = Field(
+            None,
+            description="Segmentation backend: vista3d (default) or totalsegmentator",
+        )
 
     class VisualizeResponse(BaseModel):
         """POST /api/visualize sync response."""
@@ -2836,7 +2973,11 @@ if _HAS_FASTAPI:
         case_name: Optional[str] = Field(None, description="Case name")
         device: str = Field("auto", description="CUDA device ('auto'=auto-select, 'cuda:0'='cuda:1'=specific)")
         force: bool = Field(False, description="Force DICOM re-conversion")
-        demo_mode: Optional[bool] = Field(None, description="Demo mode: use GT masks if available, skip VISTA3D (default: env DEMO_MODE or True)")
+        demo_mode: Optional[bool] = Field(None, description="Demo mode: use GT masks if available and skip model inference")
+        seg_backend: Optional[str] = Field(
+            None,
+            description="Segmentation backend: vista3d (default) or totalsegmentator",
+        )
 
     class ProcessLiteResponse(BaseModel):
         """POST /api/process-lite response — segmentation results."""
@@ -3173,7 +3314,7 @@ if _HAS_FASTAPI:
 
     @app.post("/api/process", response_model=ProcessNiftiResponse)
     async def process_nifti(req: ProcessNiftiRequest):
-        """全流程管线：DICOM/.nii.gz → VISTA3D 分割 → 3D 渲染 + Top-K 切片 + 结构报告。"""
+        """全流程管线：输入 → 可选分割后端 → 3D/切片/结构报告。"""
         # Backward compat: accept either `input` or `nifti_path`
         input_path = req.input or req.nifti_path
         if not input_path:
@@ -3221,6 +3362,7 @@ if _HAS_FASTAPI:
                 force=req.force,
                 skip_viz=req.skip_viz,
                 demo_mode=req.demo_mode,
+                seg_backend=req.seg_backend,
             )
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Pipeline failed: {e}")
@@ -3613,6 +3755,10 @@ if _HAS_FASTAPI:
         input_path = str(Path(req.input).resolve())
         if not os.path.exists(input_path):
             raise HTTPException(status_code=404, detail=f"Input not found: {input_path}")
+        try:
+            effective_backend = _normalize_segmentation_backend(req.seg_backend)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         start = time.time()
         case_name = req.case_name
@@ -3640,6 +3786,25 @@ if _HAS_FASTAPI:
 
                     mask_dir = os.path.join(output_dir, "masks")
                     if _is_case_complete(mask_dir):
+                        recorded_backend = _read_segmentation_backend(mask_dir)
+                        if recorded_backend != effective_backend:
+                            timestamp = _dt.datetime.now().strftime("%y%m%d%H%M")
+                            new_case_id = f"{case_name}_{effective_backend}_{timestamp}"
+                            collision_index = 1
+                            while (_PROJECT_ROOT / "output" / new_case_id).exists():
+                                new_case_id = (
+                                    f"{case_name}_{effective_backend}_{timestamp}_"
+                                    f"{collision_index:02d}"
+                                )
+                                collision_index += 1
+                            _log(
+                                f"[process-lite] Case {case_name} uses "
+                                f"{recorded_backend}; using new case_id {new_case_id} "
+                                f"for {effective_backend}"
+                            )
+                            req.case_name = new_case_id
+                            return process_lite(req)
+
                         # Keep the case CT link synchronized for NIfTI uploads.
                         # DICOM inputs need conversion when the Skills CT link
                         # is absent, or explicitly when ``force`` is requested.
@@ -3722,12 +3887,12 @@ if _HAS_FASTAPI:
 
                     os.makedirs(mask_dir, exist_ok=True)
 
-                    # ---- 演示模式：有 GT 掩码时跳过 VISTA3D ----
+                    # ---- 演示模式：有 GT 掩码时跳过模型推理 ----
                     _demo_mode = _DEMO_MODE if req.demo_mode is None else req.demo_mode
                     if _demo_mode and has_seg_gt:
-                        _log("[process-lite] 🎯 演示模式 — 使用预分割 GT 掩码（跳过 VISTA3D）")
+                        _log("[process-lite] 🎯 演示模式 — 使用预分割 GT 掩码（跳过模型推理）")
                         _use_gt_masks(output_dir, mask_dir)
-                        # 检查是否有实际可用的掩码，没有则回退到 VISTA3D
+                        # 检查是否有实际可用的掩码，没有则回退到选定后端
                         gt_list = sorted(glob.glob(os.path.join(mask_dir, "*.nii.gz")))
                         gt_list = [
                             f for f in gt_list
@@ -3737,7 +3902,10 @@ if _HAS_FASTAPI:
                             )
                         ]
                         if not gt_list:
-                            _log("       ⚠ GT 掩码为空，自动回退到 VISTA3D 分割")
+                            _log(
+                                f"       ⚠ GT 掩码为空，自动回退到 "
+                                f"{effective_backend} 分割"
+                            )
                             _demo_mode = False
                         else:
                             effective_organs = sorted(
@@ -3746,18 +3914,22 @@ if _HAS_FASTAPI:
                             _log(f"[process-lite] GT masks: {effective_organs}")
 
                     if not (_demo_mode and has_seg_gt):
-                        # VISTA3D segmentation
-                        _log(f"[process-lite] Running VISTA3D segmentation for {case_name}...")
-                        _run_vista3d_segmentation(
+                        _log(
+                            f"[process-lite] Running {effective_backend} "
+                            f"segmentation for {case_name}..."
+                        )
+                        _run_segmentation(
+                            backend=effective_backend,
                             nifti_path=ct_nifti_path,
                             output_dir=mask_dir,
                             organ_list=_CRLM_DEFAULT_ORGANS,
                             device=req.device,
                         )
 
-                        # CRLM postprocessing（血管重命名 + 肿瘤分裂）
-                        _log("[process-lite] CRLM postprocessing...")
-                        effective_organs = _crlm_run_postprocessing(mask_dir)
+                    # CRLM postprocessing（血管重命名 + 肿瘤分裂）
+                    _log("[process-lite] CRLM postprocessing...")
+                    effective_organs = _crlm_run_postprocessing(mask_dir)
+                    _write_segmentation_metadata(mask_dir, effective_backend)
 
                     mask_files = _list_mask_files(
                         mask_dir, organ_list=effective_organs
@@ -3855,6 +4027,7 @@ if _HAS_FASTAPI:
                     force=req.force,
                     skip_viz=req.skip_viz,
                     demo_mode=req.demo_mode,
+                    seg_backend=req.seg_backend,
                 )
 
             with ThreadPoolExecutor(max_workers=1) as pool:
@@ -3980,6 +4153,7 @@ def server_main(argv: Optional[List[str]] = None):
     _log(f"  Start:     http://{args.host}:{args.port}")
     _log(f"  API Docs:  http://{args.host}:{args.port}/docs")
     _log(f"  Output:    {OUTPUT_DIR}")
+    _log(f"  Segment:   {_normalize_segmentation_backend(None)}")
     _log(f"  Skills:    {count if _skill_engine else 0} registered")
     _log(f"  Log file:  {_log_file_path}")
     # GPU info

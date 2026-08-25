@@ -16,37 +16,73 @@ third-party model source trees.
 
 ## Installation
 
-Use Python 3.10+ in a clean virtual environment:
+For a complete local installation from the repository root, use the shared
+setup script:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+./scripts/setup.sh
 ```
 
-Start the API and optional output proxy in separate terminals:
+It installs VISTA3D as the default backend and does not install
+TotalSegmentator. Start the complete four-service application with
+`./scripts/start.sh`; see the root [README](../README.md#quick-start).
+
+To run only Port B manually after setup, use two terminals:
 
 ```bash
-python API.py server --port 8765
-python file_proxy.py --port 8898
+cd Port_B
+../.venv/bin/python API.py server --port 8765
+# In another terminal:
+cd Port_B
+../.venv/bin/python file_proxy.py --port 8898
 ```
 
 Set `PUBLIC_BASE_URL` when the proxy is served from another host or port. The
 default is `http://127.0.0.1:8898`. Set `VOXELSAGE_OUTPUT_DIR` to place runtime
 outputs outside the source tree. The variables in `.env.example` are examples;
-export them in the service environment before startup.
+copy the settings you need into the root `.env` for `scripts/start.sh`, or
+export them before a manual Port B startup.
 
 ## Segmentation backends
 
-TotalSegmentator is the self-contained default dependency listed in
-`requirements.txt`; its weights are downloaded and licensed by that project.
+`SEGMENTATION_BACKEND=vista3d` is the server default. The API request field
+`seg_backend` and the pipeline option `--seg-backend` can override it for one
+case.
 
-VISTA3D support is optional. This repository does not redistribute VISTA3D
-source code or weights. Install them separately under the upstream licence,
-then set `VISTA3D_ROOT` to the upstream `vista3d` source directory and either
-place model assets under `./models` or set `VISTA3D_CONFIG` to a local inference
-configuration. Do not publish fine-tuned weights unless you have confirmed the
-rights to distribute both the base model and the derived weights.
+### VISTA3D (default)
+
+`./scripts/setup.sh` clones the official `Project-MONAI/VISTA` repository to
+`third_party/VISTA`. VoxelSage automatically resolves that path, uses
+`SegAgent/VISTA3d/configs/infer.yaml`, and stores its model files under
+`Port_B/models/vista3d` by default. On first inference, the upstream loader
+downloads `model_monai1.3.pt` from `nvidia/NV-Segment-CT` on Hugging Face; later
+runs reuse the cache.
+
+Override a manually managed installation with `VISTA3D_ROOT`, the inference
+configuration with `VISTA3D_CONFIG`, or the model directory with
+`VISTA3D_MODEL_DIR`.
+
+### TotalSegmentator (optional)
+
+TotalSegmentator is not part of the default dependency set. Install it only
+when required:
+
+```bash
+./scripts/setup.sh --with-totalsegmentator
+```
+
+Then set `SEGMENTATION_BACKEND=totalsegmentator` in `.env`, pass
+`"seg_backend": "totalsegmentator"` to `/api/process` or `/api/process-lite`,
+or run:
+
+```bash
+cd Port_B
+../.venv/bin/python API.py pipeline /absolute/path/to/ct.nii.gz \
+  --seg-backend totalsegmentator
+```
+
+Do not publish downloaded or fine-tuned weights unless you have confirmed the
+rights to distribute both the base model and any derived weights.
 
 ## Data handling
 

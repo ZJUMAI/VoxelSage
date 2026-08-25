@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+third_party/
+.runtime/
 
 # Credentials and local configuration
 .env
