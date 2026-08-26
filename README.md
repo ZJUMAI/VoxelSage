@@ -1,5 +1,28 @@
 <div align="center">
 
+**English** | [简体中文](README.zh-CN.md)
+
+<img src="docs/assets/voxelsage-logo-v2.png" alt="VoxelSage logo" width="128">
+
+# VoxelSage
+
+### All-in-one abdominal CT workspace: 3D reconstruction, agent-driven analysis, and preoperative planning
+
+VoxelSage is a self-hosted medical-imaging workspace for abdominal CT research.
+Upload DICOM or NIfTI data, direct the agent in natural language, and complete
+segmentation, quantitative measurements, key-slice selection, interactive 3D
+reconstruction, and preoperative planning—all in one place.
+
+[![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
+[![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+
+[Quick Start](#quick-start) · [What You Can Do](#what-you-can-do) · [How It Works](#how-it-works) · [Skills API](#skills-api--ai-agent-integration) · [Documentation](#documentation)
+
+</div>
+
 <p align="center">
   <a href="docs/assets/web_overview.png">
     <img src="docs/assets/web_overview.png" alt="VoxelSage workspace showing an agent conversation beside an interactive 3D liver reconstruction" width="100%">
