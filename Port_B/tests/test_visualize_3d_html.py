@@ -183,6 +183,30 @@ class OrganTreeResizeHtmlTests(unittest.TestCase):
         self.assertIn("#plane-label,", html)
         self.assertIn("#path-planning-panel label {", html)
 
+    def test_cdn_mode_embeds_bezier_surface_as_blob(self):
+        # VoxelSage always renders in CDN mode (Three.js library files are
+        # intentionally not bundled).  BezierSurface.js is project-authored
+        # code, so it must be embedded as a self-contained Blob URL rather
+        # than referenced via a relative path that the served HTML cannot
+        # resolve from the output directory.
+        html = _make_threejs_html(three_sources=None, bezier_source="const X = 1;")
+
+        self.assertIn('id="bs-source"', html)
+        self.assertIn("uB = URL.createObjectURL(new Blob([sB]", html)
+        self.assertIn('"BezierSurface":uB', html)
+        self.assertIn("document.currentScript.after(im)", html)
+        # CDN wildcard still resolves OrbitControls/DragControls from unpkg
+        self.assertIn("https://unpkg.com/three@0.160.0/examples/jsm/", html)
+        # The previously-used relative reference must not leak into CDN mode
+        self.assertNotIn('"BezierSurface": "./BezierSurface.js"', html)
+
+    def test_cdn_mode_without_bezier_keeps_static_importmap(self):
+        html = _make_threejs_html(three_sources=None, bezier_source=None)
+
+        self.assertIn('<script type="importmap">', html)
+        self.assertNotIn('id="bs-source"', html)
+        self.assertIn("https://unpkg.com/three@0.160.0/examples/jsm/", html)
+
 
 if __name__ == "__main__":
     unittest.main()

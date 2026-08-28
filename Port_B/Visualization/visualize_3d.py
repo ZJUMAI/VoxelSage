@@ -2552,19 +2552,41 @@ def _make_threejs_html(title="三维分割可视化",
             f'</script>\n'
         )
     else:
-        # CDN mode: "three/addons/" wildcard already covers DragControls
-        extra_imports_cdn = ', "BezierSurface": "./BezierSurface.js"' if bezier_source else ""
-        import_section = (
-            '<script type="importmap">\n'
-            '{\n'
-            '  "imports": {\n'
-            '    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",\n'
-            '    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"'
-            f'{extra_imports_cdn}\n'
-            '  }\n'
-            '}\n'
-            '</script>\n'
-        )
+        # CDN mode: "three/addons/" wildcard already covers OrbitControls and
+        # DragControls from the CDN.  BezierSurface.js is project-authored code,
+        # so it is not available from any CDN; embed it as a Blob URL so the
+        # resection-plane feature keeps working even when the Three.js library
+        # itself is fetched from the CDN.
+        if bezier_source:
+            bezier_blob_script = (
+                f'<script type="text/plain" id="bs-source">\n'
+                f'{bezier_source}\n'
+                f'</script>\n'
+            )
+            import_section = (
+                f'{bezier_blob_script}'
+                '<script>\n'
+                '(function(){\n'
+                '  var sB = document.getElementById("bs-source").textContent;\n'
+                '  var uB = URL.createObjectURL(new Blob([sB], {type:"application/javascript"}));\n'
+                '  var im = document.createElement("script");\n'
+                '  im.type = "importmap";\n'
+                '  im.textContent = JSON.stringify({imports:{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/","BezierSurface":uB}});\n'
+                '  document.currentScript.after(im);\n'
+                '})();\n'
+                '</script>\n'
+            )
+        else:
+            import_section = (
+                '<script type="importmap">\n'
+                '{\n'
+                '  "imports": {\n'
+                '    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",\n'
+                '    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"\n'
+                '  }\n'
+                '}\n'
+                '</script>\n'
+            )
     # ---- Build JS module code (separate from f-string) ----
     bg_color_q = json.dumps(bg_color)
     js_url_q = json.dumps(json_url)
