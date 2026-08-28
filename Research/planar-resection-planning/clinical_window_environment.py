@@ -89,6 +89,9 @@ DEFAULT_CLINICAL_CONFIG = {
     "unclamp_minutes": 5.0,
     "weight_kg": 70.0,
     "bleeding_probability": 1.0,
+    # Reference exposed area = 5 cells * 16 mm^2 (4 mm cell side).  Sets
+    # the unit-area bleeding rate beta = Q_ref / A_ref; see design doc
+    # 临床时间窗口与模拟出血奖励模型设计.md §6.3.
     "reference_area_mm2": 80.0,
     "large_vessel_min_cells": 2.0,
     "large_vessel_time_multiplier": 3.0,
@@ -265,6 +268,10 @@ class ClinicalWindowResectionEnv(GymEnvBase):
 
     @property
     def reference_flow_ml_per_min(self) -> float:
+        # Reference total hepatic blood flow per kg, summed as HA 3.5 + PV 13.5
+        # (mL/min/kg) from Carlisle KM, et al., Gut 1992.  Engineering scale
+        # that defines a repeatable simulator regime, not a patient-specific
+        # predictor.  See design doc 临床时间窗口与模拟出血奖励模型设计.md §6.2.
         return 17.0 * self.clinical_config["weight_kg"]
 
     @property
