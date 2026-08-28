@@ -35,6 +35,27 @@ def _resolve_vessel_sources(ctx):
     return sources
 
 
+def _locate_surface_planner():
+    """Return the surface_planner directory, or None if unavailable.
+
+    The no-training rule planner ships as a pure-algorithm package next to this
+    skill (``surface_planner/`` with its sibling ``reward_function/``).  For
+    backwards compatibility we also accept a legacy
+    ``data/VoxelSage_*/切面算法/surface_planner`` tree that predates the public
+    release.  Returns ``None`` when neither is present so the caller can degrade
+    gracefully instead of crashing the whole skill chain.
+    """
+    builtin_root = Path(__file__).resolve().parents[0]
+    inrepo_planner = builtin_root / "surface_planner"
+    if (inrepo_planner / "plan_surfaces.py").exists():
+        return inrepo_planner
+
+    # Legacy/project-local installs may keep the planner under data/.
+    project_root = Path(__file__).resolve().parents[3]
+    voxel_sage_dirs = sorted(project_root.glob("data/VoxelSage_*/切面算法/surface_planner"))
+    return voxel_sage_dirs[-1] if voxel_sage_dirs else None
+
+
 def _json_dump_safe(data, path):
     """Write JSON, replacing any NaN/Inf with null so browsers can parse it."""
     import math as _math
@@ -518,18 +539,43 @@ def run(ctx):
     sample_idx = np.sort(rng.choice(len(liver_xyz), size=sample_n, replace=False))
     liver_sample_xyz = liver_xyz[sample_idx]
 
-    # ---- 3. Import VoxelSage planner functions ----
-    project_root = Path(__file__).resolve().parents[3]
-    # Use glob to discover VoxelSage directory (avoids date-stamp fragility)
-    voxel_sage_dirs = sorted(project_root.glob("data/VoxelSage_*/切面算法/surface_planner"))
-    if not voxel_sage_dirs:
-        raise FileNotFoundError(
-            f"VoxelSage surface_planner not found under {project_root / 'data/VoxelSage_*'}. "
-            "Expected: data/VoxelSage_<date>/切面算法/surface_planner/"
-        )
-    planner_dir = str(voxel_sage_dirs[-1])  # take the latest version
+    # ---- 3. Import the resection-surface planner ----
+    # The no-training rule planner (scale prediction -> candidate bank ->
+    # reward selection -> Bézier refinement -> curvature metrics) ships as a
+    # pure-algorithm package next to this skill:
+    #
+    #   skills/builtin/plan_resection/
+    #     ├── surface_planner/      plan_surfaces / curved_refinement / surface_metrics
+    #     └── reward_function/      candidate_reward (imported by plan_surfaces)
+    #
+    # We also accept a legacy ``data/VoxelSage_*/切面算法/surface_planner`` tree
+    # for local setups that predate the public release.  If neither is present
+    # the skill degrades gracefully instead of crashing the whole chain.
+    _planner_dir = _locate_surface_planner()
+    if _planner_dir is None:
+        ctx.log("  WARNING: surface_planner not found; resection-plane planning is unavailable")
+        return {
+            "status": "unavailable",
+            "reason": "surface_planner_not_found",
+            "margin_min_mm": 0.0,
+            "margin_p05_mm": 0.0,
+            "margin_success": False,
+            "resection_plane_count": 0,
+            "candidate_count": 0,
+            "json_updated": False,
+            "predicted_scale": "unavailable",
+            "vessel_mask_variants": vessel_mask_variants,
+        }
+
+    # ``plan_surfaces`` imports its siblings (``curved_refinement``,
+    # ``surface_metrics``) and ``reward_function.candidate_reward`` from the
+    # parent directory, so both this dir and its parent must be importable.
+    planner_dir = str(_planner_dir)
     if planner_dir not in sys.path:
         sys.path.insert(0, planner_dir)
+    planner_parent = str(Path(_planner_dir).parent)
+    if planner_parent not in sys.path:
+        sys.path.insert(0, planner_parent)
 
     from plan_surfaces import (
         build_candidates, predict_scale, score_and_select_candidates,
