@@ -5,8 +5,8 @@ This module is intentionally independent of the doctor resection mask.  It
 scores a bank of Bezier surface candidates from computable anatomy only:
 
 - tumor recall is the first gate: removed tumor voxels / all tumor voxels;
-- the final choice is made on a compact Pareto front rather than by matching a
-  single target resection ratio;
+- a case mode defines a coverage-qualified admissible set, and the final choice
+  is the largest common base score inside that set;
 - liver PCA / lobar axes / portal and hepatic vessel directions / tumor-surface
   corridor candidates receive anatomy-dependent support;
 - stability is measured by robust tumor recall and scale consistency under
@@ -760,19 +760,42 @@ def select_candidate_index(
     predicted_scale: str,
     context: dict[str, Any] | None = None,
 ) -> tuple[int, dict[str, Any]]:
+    """Select the highest common base score inside a mode-admissible set.
+
+    Candidate scoring and case-specific admissibility deliberately have separate
+    responsibilities.  ``score_candidate`` supplies one comparable base score
+    for every candidate.  This function first preserves coverage eligibility,
+    then applies the case mode's family, extent, and detachability rules.  The
+    final winner is the largest base score in that set.  If the mode set is
+    empty, selection falls back only to the coverage-qualified set and records
+    that the exported result requires explicit review.
+    """
     if not scored:
         raise ValueError("No scored candidates")
     context = context or {}
     coverage_gate = _coverage_gate(scored)
-    eligible = [
+    coverage_eligible = [
         i
         for i, s in enumerate(scored)
-        if float(s["tumor_recall_sample"]) >= coverage_gate and float(s["pred_ratio_sample"]) >= 0.002
+        if float(s["tumor_recall_sample"]) >= coverage_gate
     ]
-    if not eligible:
-        eligible = list(range(len(scored)))
+    coverage_gate_fallback = False
+    if not coverage_eligible:
+        # _coverage_gate normally guarantees at least one entry.  Keep a
+        # deterministic last resort for malformed external score records.
+        coverage_eligible = list(range(len(scored)))
+        coverage_gate_fallback = True
+    eligible = [
+        i for i in coverage_eligible if float(scored[i]["pred_ratio_sample"]) >= 0.002
+    ]
+    eligibility_floor_fallback = not eligible
 
     surgical_mode, surgical_mode_reason = surgical_mode_gate(predicted_scale, context)
+    mode_eligible: list[int] = []
+    mode_details: dict[str, Any] = {}
+    dominance_floor = 0.0
+    pareto_count = 0
+
     if surgical_mode == "local_protect":
         local_families = {"local", "legacy_local", "corridor"}
         total_volume = float(context.get("tumor_total_volume_mm3", 0.0))
@@ -788,58 +811,30 @@ def select_candidate_index(
             local_cap = 0.28
         elif n_components >= 5 and total_volume >= 15000.0:
             local_cap = 0.34
-        local_eligible = [
+        mode_eligible = [
             i
             for i in eligible
             if scored[i]["candidate_family"] in local_families
             and float(scored[i]["pred_ratio_sample"]) <= local_cap
         ]
-        if not local_eligible:
-            local_eligible = [
-                i
-                for i, s in enumerate(scored)
-                if s["candidate_family"] in local_families
-                and float(s["pred_ratio_sample"]) <= local_cap
-                and float(s["pred_ratio_sample"]) >= 0.002
-            ]
-        if local_eligible:
-            best_idx = local_eligible[0]
-            best_value = -1e9
-            for i in local_eligible:
-                s = scored[i]
-                pred_ratio = float(s["pred_ratio_sample"])
-                value = (
-                    float(s["score"])
-                    + 0.25 * min(1.0, pred_ratio / 0.12)
-                    + 0.32 * float(s.get("local_surface_tumor_fit", 0.5))
-                    + 0.20 * float(s.get("local_focus_score", 0.0))
-                    + 0.18 * float(s.get("geometry_support", 0.0))
-                    - 0.22 * float(s.get("geometry_penalty", 0.0))
-                    - 0.25 * max(0.0, pred_ratio - 0.22) / 0.10
-                )
-                if value > best_value:
-                    best_value = float(value)
-                    best_idx = i
-            details = {
-                "selection_policy": "surgical_mode_gate_local_protect_v1",
-                "surgical_mode": surgical_mode,
-                "surgical_mode_reason": surgical_mode_reason,
-                "coverage_gate": float(coverage_gate),
-                "dominance_scale_floor": 0.0,
-                "eligible_count": int(len(eligible)),
-                "pareto_front_count": int(len(local_eligible)),
-                "selected_knee_value": float(best_value),
-                "local_protect_cap": float(local_cap),
-            }
-            return best_idx, details
+        pareto_count = len(mode_eligible)
+        mode_details["local_protect_cap"] = float(local_cap)
 
-    if surgical_mode in {"central_anatomic", "high_burden_anatomic", "regional_segmental"}:
-        anatomic_families = {"corridor", "liver_pca", "lobar_axis", "portal_vessel", "hepatic_vessel", "plane", "other"}
+    elif surgical_mode in {"central_anatomic", "high_burden_anatomic", "regional_segmental"}:
+        anatomic_families = {
+            "corridor",
+            "liver_pca",
+            "lobar_axis",
+            "portal_vessel",
+            "hepatic_vessel",
+            "plane",
+            "other",
+        }
         centrality = float(context.get("centrality", 0.0))
         extent = float(context.get("extent_signal", 0.0))
         vessel = float(context.get("vessel_signal", 0.0))
         burden = float(context.get("burden_signal", 0.0))
-        scale_lower = dominance_scale_floor(predicted_scale, context)
+        dominance_floor = dominance_scale_floor(predicted_scale, context)
         large_pressure = 0.0
         if surgical_mode == "central_anatomic" and centrality >= 0.60 and vessel >= 0.20:
             large_pressure = 1.0
@@ -863,138 +858,74 @@ def select_candidate_index(
             else:
                 mode_ratio_target = min(0.34, 0.16 + 0.08 * extent + 0.06 * centrality + 0.04 * vessel)
         if large_pressure >= 0.80:
-            anatomic_floor = max(scale_lower, min(0.56, 0.55 * mode_ratio_target))
+            anatomic_floor = max(dominance_floor, min(0.56, 0.55 * mode_ratio_target))
         elif large_pressure >= 0.30:
-            anatomic_floor = max(min(scale_lower, 0.20), min(0.28, 0.40 * mode_ratio_target))
+            anatomic_floor = max(min(dominance_floor, 0.20), min(0.28, 0.40 * mode_ratio_target))
         else:
             anatomic_floor = min(0.16, max(0.035, 0.32 * mode_ratio_target))
         allowed_families = set(anatomic_families)
         if large_pressure < 0.50:
             allowed_families.update({"local", "legacy_local"})
-        anatomic_eligible = [
+        mode_eligible = [
             i
             for i in eligible
             if scored[i]["candidate_family"] in allowed_families
             and float(scored[i]["pred_ratio_sample"]) >= anatomic_floor
             and float(scored[i].get("detachable_support", 0.0)) >= 0.45
         ]
-        if not anatomic_eligible:
-            anatomic_eligible = [
-                i
-                for i in eligible
-                if float(scored[i]["pred_ratio_sample"]) >= anatomic_floor
-                and float(scored[i].get("detachable_support", 0.0)) >= 0.60
-            ]
-        if anatomic_eligible:
-            best_idx = anatomic_eligible[0]
-            best_value = -1e9
-            for i in anatomic_eligible:
-                s = scored[i]
-                pred_ratio = float(s["pred_ratio_sample"])
-                losses = volume_losses(pred_ratio, predicted_scale, context)
-                ratio_support = min(1.0, pred_ratio / max(mode_ratio_target, 1e-6))
-                ratio_under = max(0.0, mode_ratio_target - pred_ratio) / max(mode_ratio_target, 1e-6)
-                over_grace = 0.04 + 0.14 * large_pressure
-                ratio_over = max(0.0, pred_ratio - min(0.88, mode_ratio_target + over_grace)) / 0.10
-                compact_over = max(0.0, pred_ratio - mode_ratio_target) / max(mode_ratio_target, 0.05)
-                family = str(s.get("candidate_family", ""))
-                local_detached_bonus = 0.20 if family in {"local", "legacy_local"} and large_pressure < 0.50 else 0.0
-                value = (
-                    0.25 * float(s["score"])
-                    + 2.25 * float(s["tumor_recall_sample"])
-                    + 0.45 * float(s.get("extent_support", 0.0))
-                    + 0.85 * float(s.get("detachable_support", 0.0))
-                    + 0.35 * float(s.get("anatomy_support", 0.0))
-                    + 0.25 * float(s.get("vessel_support", 0.0))
-                    + (0.35 + 0.80 * large_pressure) * ratio_support
-                    - (0.25 + 1.00 * large_pressure) * ratio_under
-                    - (0.70 - 0.25 * large_pressure) * ratio_over
-                    - 0.22 * (1.0 - large_pressure) * compact_over
-                    + local_detached_bonus
-                    - 0.20 * float(s.get("geometry_penalty", 0.0))
-                    - 0.10 * float(s.get("stability_penalty", 0.0))
-                    - 0.12 * losses["volume_soft_over_loss"]
-                    - 0.18 * losses["volume_hard_over_loss"]
-                )
-                if value > best_value:
-                    best_value = float(value)
-                    best_idx = i
-            details = {
-                "selection_policy": "surgical_mode_gate_anatomic_detachable_v1",
-                "surgical_mode": surgical_mode,
-                "surgical_mode_reason": surgical_mode_reason,
-                "coverage_gate": float(coverage_gate),
-                "dominance_scale_floor": float(scale_lower),
-                "eligible_count": int(len(eligible)),
-                "pareto_front_count": int(len(anatomic_eligible)),
-                "selected_knee_value": float(best_value),
-                "anatomic_detachable_floor": float(anatomic_floor),
+        pareto_count = len(mode_eligible)
+        mode_details.update(
+            {
+                "anatomic_detachable_floor": 0.45,
+                "anatomic_mode_ratio_floor": float(anatomic_floor),
                 "anatomic_mode_ratio_target": float(mode_ratio_target),
                 "anatomic_large_pressure": float(large_pressure),
-                "anatomic_eligible_count": int(len(anatomic_eligible)),
+                "anatomic_allowed_families": sorted(allowed_families),
             }
-            return best_idx, details
-
-    band = SCALE_BANDS.get(predicted_scale, SCALE_BANDS["intermediate_local"])
-    non_extreme = [i for i in eligible if float(scored[i]["pred_ratio_sample"]) <= band.hard_upper]
-    if non_extreme:
-        eligible = non_extreme
-    scale_lower = volume_losses(0.0, predicted_scale, context)["scale_lower"]
-    front = pareto_front_indices(eligible, scored, scale_lower)
-    if not front:
-        front = eligible
-    local_pred_ratios = [
-        float(scored[i]["pred_ratio_sample"])
-        for i in eligible
-        if scored[i]["candidate_family"] in {"local", "legacy_local"}
-        and float(scored[i]["tumor_recall_sample"]) >= coverage_gate
-    ]
-    min_local_pred_ratio = min(local_pred_ratios) if local_pred_ratios else float("inf")
-
-    # Knee choice: among the coverage-qualified Pareto front, prefer the point
-    # where extra removed liver volume no longer buys meaningful stability or
-    # anatomy support.  This is deliberately not an absolute target-ratio match.
-    best_idx = front[0]
-    best_value = -1e9
-    for i in front:
-        s = scored[i]
-        pred_ratio = float(s["pred_ratio_sample"])
-        losses = volume_losses(pred_ratio, predicted_scale, context)
-        geometry_support = 0.0
-        geometry_penalty = 0.0
-        allow_corridor_geometry = s.get("candidate_family") == "corridor" and predicted_scale != "local"
-        vessel_signal = float(context.get("vessel_signal", 0.0))
-        if predicted_scale == "expanded_local" and vessel_signal <= 0.05 and min_local_pred_ratio <= 0.14:
-            allow_corridor_geometry = False
-        if predicted_scale == "intermediate_local" and vessel_signal <= 0.05 and min_local_pred_ratio < 0.055:
-            allow_corridor_geometry = False
-        if allow_corridor_geometry:
-            geometry_support = float(s.get("geometry_support", 0.0))
-            geometry_penalty = float(s.get("geometry_penalty", 0.0))
-        knee_value = (
-            float(s["score"])
-            + 0.35 * float(s["tumor_recall_sample"])
-            + 0.22 * float(s["anatomy_support"])
-            + 0.05 * geometry_support
-            - 0.12 * geometry_penalty
-            - 0.25 * losses["volume_under_loss"] * band.under_weight
-            - 0.35 * losses["volume_soft_over_loss"]
-            - 1.20 * losses["volume_hard_over_loss"]
         )
-        if knee_value > best_value:
-            best_value = float(knee_value)
-            best_idx = i
 
+    else:
+        # Compact cases retain only non-extreme, coverage-qualified members of
+        # the Pareto front.  The common base score, rather than a second knee
+        # objective, decides among those admissible candidates.
+        band = SCALE_BANDS.get(predicted_scale, SCALE_BANDS["intermediate_local"])
+        non_extreme = [
+            i for i in eligible if float(scored[i]["pred_ratio_sample"]) <= band.hard_upper
+        ]
+        dominance_floor = volume_losses(0.0, predicted_scale, context)["scale_lower"]
+        mode_eligible = pareto_front_indices(non_extreme, scored, dominance_floor)
+        pareto_count = len(mode_eligible)
+        mode_details["compact_hard_upper"] = float(band.hard_upper)
+
+    selection_fallback = not mode_eligible
+    selected_pool = mode_eligible if mode_eligible else coverage_eligible
+    best_idx = max(
+        selected_pool,
+        key=lambda i: (float(scored[i].get("score", float("-inf"))), -i),
+    )
+    requires_user_review = bool(selection_fallback or coverage_gate_fallback)
     details = {
-        "selection_policy": "surgical_mode_gate_v1",
+        "selection_policy": (
+            "mode_fallback_max_base_score_v1"
+            if selection_fallback
+            else "mode_eligible_max_base_score_v1"
+        ),
         "surgical_mode": surgical_mode,
         "surgical_mode_reason": surgical_mode_reason,
         "coverage_gate": float(coverage_gate),
-        "dominance_scale_floor": float(scale_lower),
+        "dominance_scale_floor": float(dominance_floor),
         "eligible_count": int(len(eligible)),
-        "pareto_front_count": int(len(front)),
-        "selected_knee_value": float(best_value),
+        "mode_eligible_count": int(len(mode_eligible)),
+        "selected_pool_count": int(len(selected_pool)),
+        "pareto_front_count": int(pareto_count),
+        "selection_fallback": bool(selection_fallback),
+        "selection_fallback_reason": "no_mode_eligible_candidate" if selection_fallback else "",
+        "coverage_gate_fallback": bool(coverage_gate_fallback),
+        "eligibility_floor_fallback": bool(eligibility_floor_fallback),
+        "requires_user_review": requires_user_review,
+        "selected_base_score": float(scored[best_idx].get("score", float("-inf"))),
     }
+    details.update(mode_details)
     return best_idx, details
 
 

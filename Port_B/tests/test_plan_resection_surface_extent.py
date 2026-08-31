@@ -7,6 +7,7 @@ from skills.builtin.plan_resection.main import (
     _invalidate_previous_resection_state,
     _surface_resolution_for_cell_size,
     _select_refinement_candidates,
+    _tumor_component_context,
 )
 
 
@@ -98,6 +99,19 @@ def test_refinement_shortlist_keeps_selected_candidate_and_family_diversity():
     shortlist = _select_refinement_candidates(candidates, scored, selected_index=4, max_candidates=4)
 
     assert [index for index, _ in shortlist] == [4, 0, 2, 3]
+
+
+def test_tumor_component_context_uses_retained_masks_and_physical_voxel_volume():
+    affine = np.diag([1.0, 2.0, 3.0, 1.0])
+
+    context = _tumor_component_context([100, 50], affine)
+
+    assert context["n_tumor_components"] == 2
+    assert context["tumor_total_volume_mm3"] == 900.0
+    assert context["tumor_max_volume_mm3"] == 600.0
+    expected_radius = np.cbrt(3.0 * 600.0 / (4.0 * np.pi))
+    assert np.isclose(context["tumor_max_radius_mm"], expected_radius)
+
 
 def test_surface_expansion_does_not_extrapolate_local_cubic():
     surface = _surface()
