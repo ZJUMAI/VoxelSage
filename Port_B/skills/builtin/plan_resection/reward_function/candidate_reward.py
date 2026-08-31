@@ -351,8 +351,7 @@ def candidate_geometry_features(
     focus_scale = max(22.0, 0.35 * tumor_spread + 2.0 * tumor_radius)
     local_focus = float(math.exp(-centroid_distance / max(focus_scale, 1e-6)))
 
-    n_components = int(context.get("n_tumor_components", 1))
-    expected_surfaces = 2 if n_components >= 2 and tumor_spread > 45.0 and len(surfaces) > 1 else 1
+    expected_surfaces = 1
     active_count = 0
     local_fit = 0.5
     if family in {"local", "legacy_local"} and len(tumor_xyz) > 0 and surfaces:
@@ -363,16 +362,11 @@ def candidate_geometry_features(
             per_surface.append(float(np.mean(inside & neg)))
         active = [v for v in per_surface if v >= 0.08]
         active_count = len(active)
-        if expected_surfaces == 1:
-            local_fit = 1.0 if active_count <= 1 else max(0.35, 1.0 - 0.35 * (active_count - 1))
-        else:
-            if active_count >= 2:
-                balance = min(active) / max(max(active), 1e-6)
-                local_fit = 0.75 + 0.25 * min(1.0, 2.0 * balance)
-            elif active_count == 1:
-                local_fit = 0.58
-            else:
-                local_fit = 0.25
+        local_fit = (
+            1.0
+            if active_count <= 1
+            else max(0.35, 1.0 - 0.35 * (active_count - 1))
+        )
     elif family == "corridor":
         local_fit = 0.65 + 0.35 * max(0.0, centroid_alignment)
     else:
