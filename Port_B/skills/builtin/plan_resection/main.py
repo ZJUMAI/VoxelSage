@@ -90,6 +90,27 @@ def _load_ijk_from_mask(ctx, mask_name):
         return np.zeros((0, 3), dtype=np.float64)
 
 
+def _tumor_component_context(voxel_counts, affine):
+    """Return physical-volume context for retained tumor components."""
+    counts = [int(count) for count in voxel_counts if int(count) > 0]
+    voxel_volume_mm3 = abs(
+        float(np.linalg.det(np.asarray(affine, dtype=np.float64)[:3, :3]))
+    )
+    volumes_mm3 = [float(count) * voxel_volume_mm3 for count in counts]
+    max_volume_mm3 = float(max(volumes_mm3)) if volumes_mm3 else 0.0
+    max_radius_mm = (
+        float(np.cbrt(3.0 * max_volume_mm3 / (4.0 * np.pi)))
+        if max_volume_mm3 > 0.0
+        else 0.0
+    )
+    return {
+        "n_tumor_components": len(counts),
+        "tumor_total_volume_mm3": float(sum(volumes_mm3)),
+        "tumor_max_volume_mm3": max_volume_mm3,
+        "tumor_max_radius_mm": max_radius_mm,
+    }
+
+
 def _compute_vertex_distances(surface, tumor_xyz, n_u=20, n_v=20):
     """
     计算曲面上 nU×nV 网格每个顶点到最近肿瘤点的距离。
@@ -506,6 +527,7 @@ def run(ctx):
     MIN_TUMOR_VOXELS = 50  # ~58 mm³ at typical CT spacing — smaller is likely noise
     tumor_names = [n for n in ctx.list_masks() if "tumor" in n.lower()]
     tumor_xyz_list = []
+    tumor_voxel_counts = []
     filtered_tumors = []
     for tname in tumor_names:
         mask = ctx.get_mask(tname)
@@ -515,18 +537,28 @@ def run(ctx):
             continue
         xyz = _load_ijk_from_mask(ctx, tname) - center_offset
         tumor_xyz_list.append(xyz)
+        tumor_voxel_counts.append(n_voxels)
     if filtered_tumors:
         ctx.log(f"  Filtered {len(filtered_tumors)} noise tumor(s): "
                 + ", ".join(f"{n}({v} vox)" for n, v in filtered_tumors))
     tumor_xyz = np.concatenate(tumor_xyz_list, axis=0) if tumor_xyz_list else np.zeros((0, 3), dtype=np.float64)
+    tumor_context = _tumor_component_context(tumor_voxel_counts, affine)
+    n_tumor_components = int(tumor_context["n_tumor_components"]) or 1
+    tumor_total_volume_mm3 = float(tumor_context["tumor_total_volume_mm3"])
+    tumor_max_volume_mm3 = float(tumor_context["tumor_max_volume_mm3"])
+    tumor_max_radius_mm = float(tumor_context["tumor_max_radius_mm"])
 
     # Load vessels (centered)
     hepatic_xyz = _load_ijk_from_mask(ctx, "hepatic") - center_offset
     portal_xyz = _load_ijk_from_mask(ctx, "portal") - center_offset
-    vessel_xyz = np.concatenate([hepatic_xyz, portal_xyz], axis=0) if (len(hepatic_xyz) > 0 or len(portal_xyz) > 0) else np.zeros((0, 3), dtype=np.float64)
+    vessel_xyz = (
+        np.concatenate([hepatic_xyz, portal_xyz], axis=0)
+        if len(hepatic_xyz) > 0 or len(portal_xyz) > 0
+        else np.zeros((0, 3), dtype=np.float64)
+    )
 
     ctx.log(f"  Liver: {len(liver_xyz)} points")
-    ctx.log(f"  Tumors: {len(tumor_xyz)} points ({len(tumor_names)} components)")
+    ctx.log(f"  Tumors: {len(tumor_xyz)} points ({n_tumor_components} retained components)")
     ctx.log(f"  Hepatic v.: {len(hepatic_xyz)} points")
     ctx.log(f"  Portal v.:  {len(portal_xyz)} points")
 
@@ -588,7 +620,6 @@ def run(ctx):
 
     # ---- 4. Predict scale ----
     tumor_liver_ratio = float(len(tumor_xyz) / max(len(liver_xyz), 1))
-    n_tumor_components = len(tumor_names) or 1
 
     scale, target_ratio, scale_reason = predict_scale(
         liver_sample_xyz, tumor_xyz, vessel_xyz,
@@ -630,6 +661,9 @@ def run(ctx):
         predicted_surface_count=predicted_surface_count,
         n_tumor_components=n_tumor_components,
         tumor_liver_ratio=tumor_liver_ratio,
+        tumor_total_volume_mm3=tumor_total_volume_mm3,
+        tumor_max_volume_mm3=tumor_max_volume_mm3,
+        tumor_max_radius_mm=tumor_max_radius_mm,
         stability_points=0,
     )
     refinement_candidates = _select_refinement_candidates(
@@ -673,15 +707,24 @@ def run(ctx):
         predicted_surface_count=predicted_surface_count,
         n_tumor_components=n_tumor_components,
         tumor_liver_ratio=tumor_liver_ratio,
+        tumor_total_volume_mm3=tumor_total_volume_mm3,
+        tumor_max_volume_mm3=tumor_max_volume_mm3,
+        tumor_max_radius_mm=tumor_max_radius_mm,
         stability_points=final_stability_points,
     )
 
     reward_cand = refined_candidates[reward_index]
-    ctx.log(f"  Selected: {reward_cand['name']}")
+    ctx.log(
+        f"  Selected: {reward_cand['name']} "
+        f"(mode={selection_info.get('surgical_mode')}, "
+        f"policy={selection_info.get('selection_policy')})"
+    )
+    if selection_info.get("requires_user_review"):
+        ctx.log("  WARNING: mode eligibility fallback used; explicit user review is required")
 
-    # ---- 10. Select 3 candidates: 2 raw (diverse ratio) + 1 refined (major) ----
+    # ---- 10. Select 3 candidates: 2 raw references + 1 refined proposal ----
     # Use original (unrefined) candidates for ratio diversity.
-    # Then use the refined VoxelSage best as the major option.
+    # Then use the mode-admissible refined candidate with the largest base score.
     def _extract_ratio(cand):
         import re
         m = re.search(r'_r([0-9.]+)', cand["name"])
@@ -697,17 +740,14 @@ def run(ctx):
         n = min(3, len(valid_orig_sorted))
         pick_orig = [valid_orig_sorted[i*len(valid_orig_sorted)//n] for i in range(n)]
 
-    # Refined best candidate
-    best_refined = refined_candidates[int(np.argmax([s.get("score", 0) for s in refined_scored]))]
-
     ctx.log(f"  Selected candidates:")
     for orig_idx, orig_cand in pick_orig:
         r = _extract_ratio(orig_cand)
         ctx.log(f"    Raw #{orig_idx}: {orig_cand['name'][:60]} (ratio={r:.3f})")
-    ctx.log(f"    Refined: {best_refined['name'][:60]} (VoxelSage optimized)")
+    ctx.log(f"    Refined: {reward_cand['name'][:60]} (mode-eligible maximum base score)")
 
     # ---- 11. Build entries: 2 raw + 1 refined ----
-    all_to_build = [c for _, c in pick_orig[:2]] + [best_refined]
+    all_to_build = [c for _, c in pick_orig[:2]] + [reward_cand]
     ctx.log(f"  Building {len(all_to_build)} candidates: "
             + ", ".join(c["name"][:40] for c in all_to_build))
 
@@ -773,7 +813,18 @@ def run(ctx):
             plane_entry = {
                 "candidate_rank": rank + 1,
                 "candidate_name": cand["name"],
-                "candidate_score": 0.0,
+                "candidate_score": (
+                    float(selection_info.get("selected_base_score", 0.0))
+                    if cand is reward_cand
+                    else 0.0
+                ),
+                "candidate_role": (
+                    "mode_selected_refined" if cand is reward_cand else "unrefined_ratio_reference"
+                ),
+                "refinement_applied": bool(cand is reward_cand),
+                "requires_user_review": bool(
+                    cand is not reward_cand or selection_info.get("requires_user_review", False)
+                ),
                 "type": "bicubic_bezier",
                 "reference_plane": ref,
                 "height_decoder": surf.get("height_decoder", {
@@ -813,6 +864,14 @@ def run(ctx):
     _invalidate_previous_resection_state(json_data)
     json_data["resection_planes"] = resection_planes
     json_data["vessel_mask_variants"] = vessel_mask_variants
+    json_data["resection_selection"] = {
+        **selection_info,
+        "selected_refined_candidate": reward_cand["name"],
+        "tumor_total_volume_mm3": tumor_total_volume_mm3,
+        "tumor_max_volume_mm3": tumor_max_volume_mm3,
+        "tumor_max_radius_mm": tumor_max_radius_mm,
+        "n_tumor_components": n_tumor_components,
+    }
 
     # Add sampled tumor point cloud for browser-side distance recomputation
     if len(tumor_xyz) > 0:
@@ -833,8 +892,16 @@ def run(ctx):
     ctx.log(f"Updated {json_path.name} with {len(resection_planes)} resection plane(s)")
     ctx.log(f"  Refresh the 3D HTML to see the resection overlay")
 
-    # Build summary from top candidate
-    top_plane = resection_planes[0] if resection_planes else {}
+    # Build the summary from the selected refined candidate, not the first raw
+    # ratio reference in display order.
+    top_plane = next(
+        (
+            plane
+            for plane in resection_planes
+            if plane.get("candidate_role") == "mode_selected_refined"
+        ),
+        {},
+    )
     return {
         "margin_min_mm": top_plane.get("margin_min_mm", 0.0),
         "margin_p05_mm": top_plane.get("margin_p05_mm", 0.0),
@@ -843,5 +910,9 @@ def run(ctx):
         "candidate_count": len({p.get("candidate_name") for p in resection_planes}),
         "json_updated": True,
         "predicted_scale": scale,
+        "surgical_mode": selection_info.get("surgical_mode"),
+        "selection_policy": selection_info.get("selection_policy"),
+        "selection_fallback": bool(selection_info.get("selection_fallback", False)),
+        "requires_user_review": bool(selection_info.get("requires_user_review", False)),
         "vessel_mask_variants": vessel_mask_variants,
     }

@@ -3,9 +3,9 @@
 
 This script does not train a model and does not use doctor labels to select the
 final plan. It generates multiple Bezier candidate surface sets, scores them
-with computable anatomy features, selects by a coverage-first Pareto/knee
-reward, and then evaluates that selected candidate against the cleaned doctor
-mask.
+with computable anatomy features, applies case-mode admissibility rules, selects
+the largest common base score inside that set, and then evaluates that selected
+candidate against the cleaned doctor mask.
 
 For diagnosis only, it also reports a sample-GT oracle over the same candidates
 so we can separate candidate-set limitations from reward-selection limitations.
@@ -624,26 +624,22 @@ def process_case(case_dir: Path, args: argparse.Namespace) -> dict[str, Any]:
     parent_name = original_candidates[parent_index]["name"]
     parent_refined_index = refined_index_by_source.get(parent_name)
     hard_upper = float(SCALE_BANDS[scale].hard_upper)
-    if parent_refined_index is None:
-        parent_ratio: float | None = None
-        reward_index = safe_index
-        selection_policy = "safe_reselection_after_parent_refinement_failure"
-        selection_info = safe_selection_info
-    else:
+    parent_ratio: float | None = None
+    if parent_refined_index is not None:
         parent_ratio = predict_full_resection_ratio(
             liver_ijk,
             affine,
             refined_candidates[parent_refined_index]["surfaces"],
             args.batch_size,
         )
-        if parent_ratio > hard_upper:
-            reward_index = safe_index
-            selection_policy = "safe_reselection_after_scale_violation"
-            selection_info = safe_selection_info
-        else:
-            reward_index = parent_refined_index
-            selection_policy = "parent_preserving_bezier_refinement"
-            selection_info = parent_selection_info
+
+    # Final selection is authoritative only after margin refinement.  The
+    # original-bank parent remains diagnostic, while the exported candidate is
+    # always the maximum common base score inside the refined mode-admissible
+    # set (or its explicitly marked coverage-qualified fallback).
+    reward_index = safe_index
+    selection_info = safe_selection_info
+    selection_policy = str(selection_info["selection_policy"])
 
     for idx, (candidate, score) in enumerate(zip(refined_candidates, refined_scored)):
         pred_sample = eval_surfaces(liver_sample_xyz, candidate["surfaces"])
@@ -716,7 +712,10 @@ def process_case(case_dir: Path, args: argparse.Namespace) -> dict[str, Any]:
         "parent_refined_pred_ratio": parent_ratio if parent_ratio is not None else "",
         "selection_policy": selection_policy,
         "selection_scale_hard_upper": hard_upper,
-        "selection_fallback": selection_policy != "parent_preserving_bezier_refinement",
+        "selection_fallback": bool(selection_info.get("selection_fallback", False)),
+        "selection_requires_user_review": bool(
+            selection_info.get("requires_user_review", False)
+        ),
         "tumor_margin_target_mm": args.tumor_margin_mm,
         "tumor_margin_min_mm": float(np.min(reward_clearance)),
         "tumor_margin_p05_mm": float(np.percentile(reward_clearance, 5)),
