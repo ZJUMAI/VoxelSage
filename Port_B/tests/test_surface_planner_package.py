@@ -20,6 +20,8 @@ import tempfile
 import types
 import unittest
 
+import numpy as np
+
 
 def _import_planner_modules():
     """Insert the bundled planner dirs on sys.path and import the functions."""
@@ -71,7 +73,7 @@ class SurfacePlannerPackageTests(unittest.TestCase):
         self.assertTrue((planner_dir / "plan_surfaces.py").exists())
         # In the public repo this resolves under skills/builtin/plan_resection,
         # not under a data/ directory.
-        self.assertIn("skills/builtin/plan_resection", str(planner_dir))
+        self.assertIn("skills/builtin/plan_resection", planner_dir.as_posix())
 
     def test_locate_surface_planner_graceful_when_absent(self):
         # When neither the bundled package nor a legacy data/ tree exists, the
@@ -99,6 +101,55 @@ class SurfacePlannerPackageTests(unittest.TestCase):
                 self.assertIsNone(result)
         finally:
             main_mod.__file__ = original_file
+
+    def test_candidate_bank_is_strictly_single_surface(self):
+        build_candidates = _import_planner_modules()[0]
+        grid = np.stack(
+            np.meshgrid(
+                np.linspace(-40.0, 40.0, 5),
+                np.linspace(-30.0, 30.0, 5),
+                np.linspace(-20.0, 20.0, 5),
+                indexing="ij",
+            ),
+            axis=-1,
+        ).reshape(-1, 3)
+        tumor = np.asarray(
+            [
+                [-12.0, 0.0, 0.0],
+                [-10.0, 1.0, 0.0],
+                [10.0, -1.0, 0.0],
+                [12.0, 0.0, 0.0],
+            ],
+            dtype=np.float64,
+        )
+        components = [
+            {
+                "centroid_world": [-11.0, 0.5, 0.0],
+                "volume_mm3": 1200.0,
+                "radius_mm": 4.0,
+            },
+            {
+                "centroid_world": [11.0, -0.5, 0.0],
+                "volume_mm3": 900.0,
+                "radius_mm": 3.5,
+            },
+        ]
+        candidates = build_candidates(
+            grid,
+            tumor,
+            np.empty((0, 3), dtype=np.float64),
+            np.empty((0, 3), dtype=np.float64),
+            n_tumor_components=2,
+            target_ratio=0.24,
+            tumor_components=components,
+        )
+
+        self.assertTrue(candidates)
+        self.assertTrue(
+            all(len(candidate["surfaces"]) == 1 for candidate in candidates)
+        )
+        self.assertFalse(any("local_n2_" in candidate["name"] for candidate in candidates))
+        self.assertFalse(any("legacy_local_s2_" in candidate["name"] for candidate in candidates))
 
     def test_unavailable_skill_result_is_structured(self):
         # The run() contract when the planner is missing: a JSON-serializable

@@ -607,7 +607,9 @@ def run(ctx):
 
     # ---- 6. Build candidates ----
     ctx.log("Building candidate surfaces...")
-    predicted_surface_count = 2 if (n_tumor_components >= 2 and scale not in {"local", "intermediate_local"}) else 1
+    # The browser editor and downstream sequence planner operate on one saved
+    # surface, so the active candidate bank is deliberately single-surface.
+    predicted_surface_count = 1
     original_candidates = build_candidates(
         liver_sample_xyz, tumor_xyz, hepatic_xyz, portal_xyz,
         n_tumor_components, target_ratio,

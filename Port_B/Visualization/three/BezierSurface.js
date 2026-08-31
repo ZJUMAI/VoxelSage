@@ -325,8 +325,13 @@ export function buildMarginLabel(planeData, maxDim) {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, 600, 100);
 
-  // 背景 (more opaque)
-  const isSafe = margin >= 5.0;
+  // 背景 (more opaque).  Threshold reads the same configurable target the
+  // server uses (margin_target_mm), so the label colour stays consistent
+  // with the rest of the UI when tumor_margin_mm is overridden.
+  const marginTarget = (planeData.margin_target_mm != null)
+    ? planeData.margin_target_mm
+    : 5.0;
+  const isSafe = margin >= marginTarget;
   ctx.fillStyle = isSafe ? 'rgba(0,130,50,0.95)' : 'rgba(200,50,50,0.95)';
   ctx.beginPath();
   ctx.roundRect(10, 6, 580, 62, 12);

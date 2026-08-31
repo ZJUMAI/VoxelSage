@@ -1342,7 +1342,11 @@ fetch(DATA_URL)
 
           const marginMin = Math.min(...dists);
           po.planeData.margin_min_mm = marginMin;
-          po.planeData.margin_p05_mm = 0;
+          const sortedDists = [...dists].sort((a, b) => a - b);
+          const marginP05 = sortedDists.length === 0
+            ? 0
+            : sortedDists[Math.floor(sortedDists.length * 0.05)];
+          po.planeData.margin_p05_mm = marginP05;
           po.planeData.margin_success = marginMin >= (po.planeData.margin_target_mm || 5);
           if (po.label) {
             const labelWasVisible = po.label.visible;
@@ -1443,7 +1447,11 @@ fetch(DATA_URL)
             if (po.label) {
               scene.remove(po.label);
               po.planeData.margin_min_mm = marginMin;
-              po.planeData.margin_p05_mm = 0;
+              const sortedDists = [...dists].sort((a, b) => a - b);
+              const marginP05 = sortedDists.length === 0
+                ? 0
+                : sortedDists[Math.floor(sortedDists.length * 0.05)];
+              po.planeData.margin_p05_mm = marginP05;
               po.label = BS.buildMarginLabel(po.planeData, dim);
               if (po.label) scene.add(po.label);
             }

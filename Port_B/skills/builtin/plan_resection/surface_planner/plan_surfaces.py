@@ -187,21 +187,6 @@ def local_extent(points: np.ndarray, origin: np.ndarray, u_axis: np.ndarray, v_a
     return max(min_half, float(np.max(np.abs(uu)) + margin)), max(min_half, float(np.max(np.abs(vv)) + margin))
 
 
-def cluster_tumor_points(tumor_xyz: np.ndarray, n_clusters: int) -> list[np.ndarray]:
-    if n_clusters <= 1 or len(tumor_xyz) < 32:
-        return [tumor_xyz]
-    # Deterministic two-center split along the largest tumor spread axis.
-    centered = tumor_xyz - tumor_xyz.mean(axis=0, keepdims=True)
-    _, _, vh = np.linalg.svd(centered.astype(np.float64), full_matrices=False)
-    proj = centered @ vh[0]
-    med = float(np.median(proj))
-    a = tumor_xyz[proj <= med]
-    b = tumor_xyz[proj > med]
-    if len(a) == 0 or len(b) == 0:
-        return [tumor_xyz]
-    return [a, b]
-
-
 def predict_scale(
     liver_xyz_sample: np.ndarray,
     tumor_xyz: np.ndarray,
@@ -291,71 +276,46 @@ def local_candidate(
     return {"name": name, "surfaces": surfaces}
 
 
-def cluster_tumor_components(components: list[dict[str, Any]], max_clusters: int) -> list[list[dict[str, Any]]]:
-    if not components:
-        return []
-    if len(components) <= max_clusters:
-        return [[c] for c in components]
-    centers = np.asarray([c["centroid_world"] for c in components], dtype=np.float64)
-    weights = np.asarray([max(float(c.get("volume_mm3", 1.0)), 1.0) for c in components], dtype=np.float64)
-    first = int(np.argmax(weights))
-    second = int(np.argmax(np.linalg.norm(centers - centers[first], axis=1)))
-    seeds = np.stack([centers[first], centers[second]], axis=0)
-    assign = np.zeros(len(components), dtype=np.int64)
-    for _ in range(10):
-        dist = np.linalg.norm(centers[:, None, :] - seeds[None, :, :], axis=2)
-        assign = np.argmin(dist, axis=1)
-        for k in range(max_clusters):
-            idx = np.where(assign == k)[0]
-            if len(idx):
-                seeds[k] = np.average(centers[idx], axis=0, weights=weights[idx])
-    clusters: list[list[dict[str, Any]]] = []
-    for k in range(max_clusters):
-        idx = np.where(assign == k)[0]
-        if len(idx):
-            clusters.append([components[i] for i in idx])
-    return clusters
-
-
 def legacy_component_candidate(
     tumor_components: list[dict[str, Any]],
     liver_center: np.ndarray,
-    max_surfaces: int,
     margin_depth: float,
     lateral_margin: float,
     min_half: float,
     name: str,
 ) -> dict[str, Any]:
-    surfaces: list[dict[str, Any]] = []
-    clusters = cluster_tumor_components(tumor_components, max_surfaces)
-    clusters = sorted(clusters, key=lambda g: sum(float(c.get("volume_mm3", 1.0)) for c in g), reverse=True)
-    for cluster in clusters[:max_surfaces]:
-        centers = np.asarray([c["centroid_world"] for c in cluster], dtype=np.float64)
-        weights = np.asarray([max(float(c.get("volume_mm3", 1.0)), 1.0) for c in cluster], dtype=np.float64)
-        radii = np.asarray([max(float(c.get("radius_mm", 3.0)), 1.0) for c in cluster], dtype=np.float64)
-        center = np.average(centers, axis=0, weights=weights)
-        radius = float(np.max(radii))
-        normal = unit(liver_center - center, np.array([0.0, 0.0, 1.0]))
-        u_axis, v_axis = choose_axes(normal, centers)
-        origin = center + normal * (radius + margin_depth)
-        vec = centers - origin
-        uu = vec @ u_axis
-        vv = vec @ v_axis
-        hu = max(min_half, float(np.max(np.abs(uu) + radii + lateral_margin)))
-        hv = max(min_half, float(np.max(np.abs(vv) + radii + lateral_margin)))
-        surfaces.append(
-            make_surface(
-                origin,
-                normal,
-                u_axis,
-                v_axis,
-                hu,
-                hv,
-                grid_amp=min(10.0, 0.35 * radius),
-                name=name,
-            )
-        )
-    return {"name": name, "surfaces": surfaces}
+    if not tumor_components:
+        return {"name": name, "surfaces": []}
+    centers = np.asarray([c["centroid_world"] for c in tumor_components], dtype=np.float64)
+    weights = np.asarray(
+        [max(float(c.get("volume_mm3", 1.0)), 1.0) for c in tumor_components],
+        dtype=np.float64,
+    )
+    radii = np.asarray(
+        [max(float(c.get("radius_mm", 3.0)), 1.0) for c in tumor_components],
+        dtype=np.float64,
+    )
+    center = np.average(centers, axis=0, weights=weights)
+    radius = float(np.max(radii))
+    normal = unit(liver_center - center, np.array([0.0, 0.0, 1.0]))
+    u_axis, v_axis = choose_axes(normal, centers)
+    origin = center + normal * (radius + margin_depth)
+    vec = centers - origin
+    uu = vec @ u_axis
+    vv = vec @ v_axis
+    hu = max(min_half, float(np.max(np.abs(uu) + radii + lateral_margin)))
+    hv = max(min_half, float(np.max(np.abs(vv) + radii + lateral_margin)))
+    surface = make_surface(
+        origin,
+        normal,
+        u_axis,
+        v_axis,
+        hu,
+        hv,
+        grid_amp=min(10.0, 0.35 * radius),
+        name=name,
+    )
+    return {"name": name, "surfaces": [surface]}
 
 
 def append_vessel_normals(
@@ -394,38 +354,37 @@ def build_candidates(
     liver_center = liver_sample.mean(axis=0)
     tumor_center = tumor_xyz.mean(axis=0) if len(tumor_xyz) else liver_center
     candidates: list[dict[str, Any]] = []
-    # Always include local candidates: one cluster and two-cluster variants.
-    for ncl in [1, 2]:
-        clusters = cluster_tumor_points(tumor_xyz, ncl)
-        for depth in [5.0, 10.0, 18.0, 28.0]:
+    # The online workflow intentionally treats the tumor mask as one target and
+    # exports one editable surface.  Keep every active candidate single-patch so
+    # scoring, browser editing, persistence, and sequence planning share the
+    # same plan semantics.
+    for depth in [5.0, 10.0, 18.0, 28.0]:
+        for lat in [12.0, 24.0, 42.0]:
+            candidates.append(
+                local_candidate(
+                    liver_sample,
+                    [tumor_xyz],
+                    liver_center,
+                    margin_depth=depth,
+                    lateral_margin=lat,
+                    min_half=max(16.0, lat),
+                    name=f"local_n1_d{depth:g}_lat{lat:g}",
+                )
+            )
+
+    if tumor_components:
+        for depth in [5.0, 10.0, 18.0]:
             for lat in [12.0, 24.0, 42.0]:
                 candidates.append(
-                    local_candidate(
-                        liver_sample,
-                        clusters,
+                    legacy_component_candidate(
+                        tumor_components,
                         liver_center,
                         margin_depth=depth,
                         lateral_margin=lat,
                         min_half=max(16.0, lat),
-                        name=f"local_n{len(clusters)}_d{depth:g}_lat{lat:g}",
+                        name=f"legacy_local_s1_d{depth:g}_lat{lat:g}",
                     )
                 )
-
-    if tumor_components:
-        for max_surfaces in [1, 2]:
-            for depth in [5.0, 10.0, 18.0]:
-                for lat in [12.0, 24.0, 42.0]:
-                    candidates.append(
-                        legacy_component_candidate(
-                            tumor_components,
-                            liver_center,
-                            max_surfaces=max_surfaces,
-                            margin_depth=depth,
-                            lateral_margin=lat,
-                            min_half=max(16.0, lat),
-                            name=f"legacy_local_s{max_surfaces}_d{depth:g}_lat{lat:g}",
-                        )
-                    )
 
     normals: list[tuple[str, np.ndarray]] = []
     base = unit(liver_center - tumor_center, np.array([0.0, 0.0, 1.0]))
@@ -466,6 +425,11 @@ def build_candidates(
     for cand in candidates:
         if not cand["surfaces"]:
             continue
+        if len(cand["surfaces"]) != 1:
+            raise RuntimeError(
+                f"Single-surface planning invariant violated by {cand['name']}: "
+                f"found {len(cand['surfaces'])} surfaces"
+            )
         name = cand["name"]
         if name in seen:
             continue
@@ -593,7 +557,7 @@ def process_case(case_dir: Path, args: argparse.Namespace) -> dict[str, Any]:
         n_tumor_components=n_tumor_components,
         tumor_liver_ratio=tumor_liver_ratio,
     )
-    predicted_surface_count = 2 if (n_tumor_components >= 2 and scale not in {"local", "intermediate_local"}) else 1
+    predicted_surface_count = 1
     original_candidates = build_candidates(
         liver_sample_xyz,
         tumor_xyz,
