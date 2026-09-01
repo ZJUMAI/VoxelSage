@@ -22,7 +22,7 @@
 
 ## Figures added to both manuscripts
 
-- `method_overview.pdf`
+- `learned_ordering_pipeline.pdf`
 - `replication_controller_effects.pdf`
 - `replication_paired_results.pdf`
 - `shield_ablation.pdf`

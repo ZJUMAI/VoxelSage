@@ -55,32 +55,98 @@ def load_replication_rows(controller: str):
     return rows
 
 
-def figure_method_overview() -> None:
-    fig, ax = plt.subplots(figsize=(10.5, 3.1)); ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-    boxes = [
-        (.02, .34, .16, .32, "Planar state\n+ six targets"),
-        (.225, .34, .16, .32, "Frozen learned\ntarget ranker"),
-        (.43, .34, .18, .32, "Exact full-episode\nsafety shield"),
-        (.655, .34, .15, .32, "Deterministic\nlow-level transfer"),
-        (.85, .34, .13, .32, "Next cut\ntarget"),
-    ]
-    colors = ["#e8f1fa", "#dcebdc", "#fce8dd", "#eee7f5", "#e8f1fa"]
-    for (x, y, w, h, label), color in zip(boxes, colors):
-        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.012",
-                                    facecolor=color, edgecolor="#333333", linewidth=1.0))
-        ax.text(x+w/2, y+h/2, label, ha="center", va="center")
-    for left, right in zip(boxes[:-1], boxes[1:]):
-        ax.add_patch(FancyArrowPatch((left[0]+left[2], .50), (right[0], .50),
-                                     arrowstyle="-|>", mutation_scale=12, linewidth=1.1,
-                                     color="#333333"))
-    ax.text(.52, .78, "Condition-specific constraint", ha="center", va="center", weight="bold")
-    ax.text(.52, .91, r"$B_{budget}=B_{S,condition}+16.07$ mL; fixed automatic clamp/unclamp",
-            ha="center", va="center")
-    ax.add_patch(FancyArrowPatch((.52, .84), (.52, .67), arrowstyle="-|>", mutation_scale=12,
-                                 linewidth=1.0, color="#333333"))
-    ax.text(.5, .12, "The learned ranker proposes order; the policy-external shield decides admissibility.",
-            ha="center", va="center", style="italic")
-    save(fig, "method_overview")
+def figure_learned_ordering_pipeline() -> None:
+    fig, ax = plt.subplots(figsize=(10.5, 4.8))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+
+    box_width = .13
+    box_height = .18
+    box_x = [.02, .186, .352, .518, .684, .85]
+
+    def draw_lane(y: float, labels: list[str], colors: list[str]) -> list[tuple[float, float, float, float]]:
+        boxes: list[tuple[float, float, float, float]] = []
+        for x, label, color in zip(box_x, labels, colors):
+            width = box_width
+            ax.add_patch(FancyBboxPatch(
+                (x, y), width, box_height,
+                boxstyle="round,pad=0.010",
+                facecolor=color,
+                edgecolor="#333333",
+                linewidth=1.0,
+            ))
+            ax.text(x + width / 2, y + box_height / 2, label,
+                    ha="center", va="center", fontsize=9.2, linespacing=1.1)
+            boxes.append((x, y, width, box_height))
+        for left, right in zip(boxes[:-1], boxes[1:]):
+            ax.add_patch(FancyArrowPatch(
+                (left[0] + left[2] + .006, y + box_height / 2),
+                (right[0] - .006, y + box_height / 2),
+                arrowstyle="-|>", mutation_scale=11, linewidth=1.0,
+                color="#333333",
+            ))
+        return boxes
+
+    ax.text(.025, .955, "A  Offline teacher labelling and behaviour cloning",
+            ha="left", va="center", weight="bold", fontsize=11.2)
+    offline = draw_lane(
+        .70,
+        [
+            "State $s_t$\n+ up to $K$ targets",
+            "One clone\nper candidate",
+            "Execute macro target $g$\n+ frozen S-tail",
+            "Episode time/blood\n+ exact-safe status",
+            "Teacher-selected\ncandidate label",
+            "Behaviour cloning\n$\\rightarrow$ frozen ranker $\\pi^{R}$",
+        ],
+        ["#e8f1fa", "#fce8dd", "#fce8dd", "#fce8dd", "#fff2cc", "#dcebdc"],
+    )
+
+    ax.text(.025, .430, "B  Online shielded execution",
+            ha="left", va="center", weight="bold", fontsize=11.2)
+    online = draw_lane(
+        .10,
+        [
+            "State $s_t$\n+ same targets",
+            "Deployed ranker $\\pi^{R}$\norders candidates",
+            "Exact rollout\nshield",
+            "Highest-ranked\nadmitted target",
+            "Shortest transfer\n+ cut/seal",
+            "Next state\n$s_{t+1}$",
+        ],
+        ["#e8f1fa", "#dcebdc", "#fce8dd", "#fff2cc", "#eee7f5", "#e8f1fa"],
+    )
+
+    shared_x, shared_y, shared_w, shared_h = .315, .485, .39, .105
+    ax.add_patch(FancyBboxPatch(
+        (shared_x, shared_y), shared_w, shared_h,
+        boxstyle="round,pad=0.010",
+        facecolor="#fff8f2",
+        edgecolor="#c56a36",
+        linewidth=1.0,
+        linestyle="--",
+    ))
+    ax.text(
+        shared_x + shared_w / 2,
+        shared_y + shared_h / 2,
+        "Shared frozen simulator, S-tail, and budget predicate\n"
+        r"$B_{budget}=B_{S,condition}+M_B$; automatic clamp/unclamp",
+        ha="center", va="center", fontsize=9.1, color="#7a3d1c",
+    )
+    for box in (offline[2], offline[3]):
+        ax.plot(
+            [box[0] + box[2] / 2, shared_x + shared_w / 2],
+            [box[1], shared_y + shared_h],
+            color="#c56a36", linewidth=.9, linestyle="--", zorder=0,
+        )
+    shield = online[2]
+    ax.plot(
+        [shared_x + shared_w / 2, shield[0] + shield[2] / 2],
+        [shared_y, shield[1] + shield[3]],
+        color="#c56a36", linewidth=.9, linestyle="--", zorder=0,
+    )
+    save(fig, "learned_ordering_pipeline")
 
 
 def figure_replication_effects() -> None:
@@ -157,7 +223,7 @@ def main() -> None:
     REPORT.mkdir(parents=True,exist_ok=True)
     chosen_font=configure_font()
     stats=json.loads((BASE/"evaluation/sensitivity_statistics_v1071.json").read_text(encoding="utf-8"))
-    figure_method_overview(); figure_replication_effects(); figure_replication_paired(); figure_shield_ablation(); figure_corrected_sensitivity(stats)
+    figure_learned_ordering_pipeline(); figure_replication_effects(); figure_replication_paired(); figure_shield_ablation(); figure_corrected_sensitivity(stats)
     ARXIV_FIG.mkdir(parents=True,exist_ok=True); SUMMER_FIG.mkdir(parents=True,exist_ok=True)
     for path in PUBLICATION.glob("*.pdf"):
         shutil.copy2(path,ARXIV_FIG/path.name); shutil.copy2(path,SUMMER_FIG/path.name)
