@@ -34,18 +34,150 @@ def _surface_positions(cp: np.ndarray, n_u: int, n_v: int) -> np.ndarray:
 
 
 def _learned_surface_resolution(cp: np.ndarray, cell_side_mm: float = 4.0) -> List[int]:
-    """Choose an approximately 4-mm parameter grid for the frozen model."""
+    """Choose an approximately 4-mm grid over the complete saved patch.
+
+    The saved browser patch includes a display border outside the liver.  The
+    frozen canvas limit therefore cannot be checked until the liver target has
+    been computed and that empty border has been cropped.
+    """
     probe = _surface_positions(cp, 33, 33)
     u_lengths = np.linalg.norm(np.diff(probe, axis=0), axis=2).sum(axis=0)
     v_lengths = np.linalg.norm(np.diff(probe, axis=1), axis=2).sum(axis=1)
     u_cells = max(1, int(np.ceil(float(np.mean(u_lengths)) / float(cell_side_mm))))
     v_cells = max(1, int(np.ceil(float(np.mean(v_lengths)) / float(cell_side_mm))))
-    if u_cells > 30 or v_cells > 40:
-        raise ValueError(
-            "保存剖面按 4-mm 单元离散后超过冻结模型的 30x40 上限："
-            f"{u_cells}x{v_cells}"
-        )
     return [u_cells + 1, v_cells + 1]
+
+
+def _learned_target_crop(
+    target: np.ndarray,
+    source_rows: int,
+    source_cols: int,
+    *,
+    max_rows: int = 30,
+    max_cols: int = 40,
+) -> Dict[str, Any]:
+    """Return the tight rectangular adapter window containing every target cell.
+
+    Cell indices exposed to the viewer remain indices of the complete saved
+    surface.  The learned controller receives only this result-independent
+    rectangular crop, preserving the original 4-mm sampling while removing
+    cells that are purely display padding.
+    """
+    flat_target = np.asarray(target, dtype=bool).reshape(-1)
+    if flat_target.size != int(source_rows) * int(source_cols):
+        raise ValueError("target size does not match the source surface grid")
+    occupied = np.argwhere(flat_target.reshape(source_rows, source_cols))
+    if occupied.size == 0:
+        raise ValueError("保存剖面与 Liver 没有离散交集，无法进行路径规划")
+
+    row0, col0 = occupied.min(axis=0).astype(int)
+    row1, col1 = (occupied.max(axis=0) + 1).astype(int)
+    adapter_rows = int(row1 - row0)
+    adapter_cols = int(col1 - col0)
+    if adapter_rows > max_rows or adapter_cols > max_cols:
+        raise ValueError(
+            "保存剖面的 Liver 目标按 4-mm 单元裁剪后超过冻结模型的 "
+            f"{max_rows}x{max_cols} 上限：目标 {adapter_rows}x{adapter_cols}，"
+            f"完整显示网格 {source_rows}x{source_cols}"
+        )
+
+    source_grid = np.arange(source_rows * source_cols, dtype=np.int64).reshape(
+        source_rows, source_cols
+    )
+    local_to_source = source_grid[row0:row1, col0:col1].reshape(-1)
+    source_to_local = np.full(source_rows * source_cols, -1, dtype=np.int64)
+    source_to_local[local_to_source] = np.arange(local_to_source.size, dtype=np.int64)
+    return {
+        "row0": int(row0),
+        "col0": int(col0),
+        "rows": adapter_rows,
+        "cols": adapter_cols,
+        "local_to_source": local_to_source,
+        "source_to_local": source_to_local,
+    }
+
+
+def _remap_adapter_steps(
+    steps: Sequence[Dict[str, Any]],
+    local_to_source: np.ndarray,
+    *,
+    source_cols: int,
+    adapter_cols: int,
+) -> List[Dict[str, Any]]:
+    """Map frozen-canvas path cells back to the complete saved-surface grid."""
+    remapped = []
+    for raw_step in steps:
+        local_cell = int(raw_step["cell"])
+        source_cell = int(local_to_source[local_cell])
+        step = dict(raw_step)
+        step["adapter_cell"] = local_cell
+        step["adapter_grid_ij"] = [
+            int(local_cell // adapter_cols),
+            int(local_cell % adapter_cols),
+        ]
+        step["cell"] = source_cell
+        step["grid_ij"] = [
+            int(source_cell // source_cols),
+            int(source_cell % source_cols),
+        ]
+        remapped.append(step)
+    return remapped
+
+
+def _enclose_boundary_vessel_proxies(
+    core_target: np.ndarray,
+    support_target: np.ndarray,
+    vascular_safe: np.ndarray,
+    rows: int,
+    cols: int,
+) -> Tuple[np.ndarray, Dict[str, int]]:
+    """Add sampled-liver support cells needed to keep vessel proxies internal.
+
+    The planar simulator requires every vessel proxy to have domain tissue on
+    each four-neighbour side.  A conservative four-of-five liver core can move
+    a genuine vessel proxy onto that core's boundary, so we add only adjacent
+    cells from the permissive one-of-five liver intersection until the proxy is
+    internal.  No vessel cell is deleted or relabelled.
+    """
+    core = np.asarray(core_target, dtype=bool).reshape(-1)
+    support = np.asarray(support_target, dtype=bool).reshape(-1)
+    safe = np.asarray(vascular_safe, dtype=bool).reshape(-1)
+    expected = int(rows) * int(cols)
+    if core.size != expected or support.size != expected or safe.size != expected:
+        raise ValueError("target and vascular masks must match the source grid")
+    if np.any(core & ~support):
+        raise ValueError("the liver support target must contain the conservative core")
+
+    domain = core.copy()
+    initially_boundary = 0
+    for iteration in range(expected + 1):
+        boundary = _outer_boundary_mask(domain, rows, cols)
+        boundary_vessels = domain & ~safe & boundary
+        count = int(boundary_vessels.sum())
+        if iteration == 0:
+            initially_boundary = count
+        if count == 0:
+            return domain, {
+                "core_cell_count": int(core.sum()),
+                "enclosure_added_cell_count": int((domain & ~core).sum()),
+                "initial_boundary_vessel_cell_count": initially_boundary,
+            }
+
+        additions = np.zeros(expected, dtype=bool)
+        for cell in np.flatnonzero(boundary_vessels):
+            for neighbor in _neighbors(int(cell), rows, cols):
+                if support[neighbor]:
+                    additions[neighbor] = True
+        additions &= ~domain
+        if not additions.any():
+            break
+        domain |= additions
+
+    remaining = int((domain & ~safe & _outer_boundary_mask(domain, rows, cols)).sum())
+    raise ValueError(
+        "Liver 支撑区域不足以包围裁剪边界上的血管代理："
+        f"仍有 {remaining} 个边界血管单元"
+    )
 
 
 def _cells(n_u: int, n_v: int) -> Iterable[Tuple[int, int, int]]:
@@ -273,6 +405,12 @@ def run(ctx) -> Dict[str, Any]:
             f"不支持的算法 '{algorithm}'，可选值为 nearest、dfs、spanning_tree、learned_shielded"
         )
     learned_cell_side_mm = float(ctx.params.get("learned_cell_side_mm", 4.0))
+    default_min_samples = 4 if algorithm == "learned_shielded" else 1
+    liver_intersection_min_samples = int(
+        ctx.params.get("liver_intersection_min_samples", default_min_samples)
+    )
+    if not 1 <= liver_intersection_min_samples <= 5:
+        raise ValueError("liver_intersection_min_samples 必须位于 [1, 5]")
     # The frozen model was trained on 4-mm cells, so its default grid is
     # derived from physical surface length. Deterministic baselines preserve
     # the saved browser resolution unless the caller explicitly overrides it.
@@ -301,11 +439,11 @@ def run(ctx) -> Dict[str, Any]:
     centers = cell_samples[:, 4, :]
     rows, cols = n_u - 1, n_v - 1
     center_offset = data.get("center_offset", [0, 0, 0])
-    liver_target = _liver_intersection_mask(
+    liver_core_target = _liver_intersection_mask(
         ctx, cell_samples, center_offset,
-        int(ctx.params.get("liver_intersection_min_samples", 1)),
+        liver_intersection_min_samples,
     )
-    if not liver_target.any():
+    if not liver_core_target.any():
         raise ValueError("保存剖面与 Liver 没有离散交集，无法进行路径规划")
     vessel_mask_variants = {}
     vascular_safe = _vascular_safe_mask(
@@ -313,10 +451,49 @@ def run(ctx) -> Dict[str, Any]:
         float(ctx.params.get("vascular_safe_distance_mm", 5.0)),
         vessel_mask_variants,
     )
+    liver_target = liver_core_target
+    target_rule_audit = {
+        "core_cell_count": int(liver_core_target.sum()),
+        "enclosure_added_cell_count": 0,
+        "initial_boundary_vessel_cell_count": 0,
+    }
+    if algorithm == "learned_shielded":
+        liver_support_target = _liver_intersection_mask(
+            ctx, cell_samples, center_offset, 1,
+        )
+        liver_target, target_rule_audit = _enclose_boundary_vessel_proxies(
+            liver_core_target,
+            liver_support_target,
+            vascular_safe,
+            rows,
+            cols,
+        )
     safe = liver_target & vascular_safe
     if not safe.any():
         raise ValueError("Liver∩剖面在血管安全约束后没有可规划单元")
-    start_selectable = safe & _outer_boundary_mask(liver_target, rows, cols)
+
+    adapter_grid = None
+    planning_liver_target = liver_target
+    planning_vascular_safe = vascular_safe
+    planning_rows, planning_cols = rows, cols
+    if algorithm == "learned_shielded":
+        adapter_grid = _learned_target_crop(liver_target, rows, cols)
+        local_to_source = adapter_grid["local_to_source"]
+        planning_liver_target = liver_target[local_to_source]
+        planning_vascular_safe = vascular_safe[local_to_source]
+        planning_rows = int(adapter_grid["rows"])
+        planning_cols = int(adapter_grid["cols"])
+        local_start_selectable = (
+            planning_liver_target
+            & planning_vascular_safe
+            & _outer_boundary_mask(
+                planning_liver_target, planning_rows, planning_cols
+            )
+        )
+        start_selectable = np.zeros_like(liver_target, dtype=bool)
+        start_selectable[local_to_source] = local_start_selectable
+    else:
+        start_selectable = safe & _outer_boundary_mask(liver_target, rows, cols)
     if not start_selectable.any():
         raise ValueError("Liver∩剖面的外边界没有满足血管安全约束的可选起点")
     start_raw = ctx.params.get("start_cell", None)
@@ -337,6 +514,30 @@ def run(ctx) -> Dict[str, Any]:
         if not start_selectable[start]:
             raise ValueError(f"起点单元 {start} 不在 Liver∩剖面的外边界，不能作为切除起点")
         start_source = "user"
+    planning_start = (
+        int(adapter_grid["source_to_local"][start])
+        if adapter_grid is not None else start
+    )
+    if planning_start < 0:
+        raise ValueError(f"起点单元 {start} 不在学习适配器的 Liver 目标窗口内")
+    adapter_grid_payload = None
+    adapter_target_rule = None
+    if adapter_grid is not None:
+        adapter_grid_payload = {
+            "cell_rows": planning_rows,
+            "cell_cols": planning_cols,
+            "vertex_resolution": [planning_rows + 1, planning_cols + 1],
+            "crop_origin_ij": [int(adapter_grid["row0"]), int(adapter_grid["col0"])],
+            "source_cell_rows": rows,
+            "source_cell_cols": cols,
+            "source_vertex_resolution": [n_u, n_v],
+        }
+        adapter_target_rule = {
+            "core_liver_samples_required": liver_intersection_min_samples,
+            "cell_sample_count": 5,
+            "support_liver_samples_required": 1,
+            **target_rule_audit,
+        }
 
     # The web client uses this lightweight mode before the user picks a start.
     # It returns only the legal-cell map and never writes a path result.
@@ -356,7 +557,7 @@ def run(ctx) -> Dict[str, Any]:
                 "grid_ij": [cell // cols, cell % cols],
                 "state": state,
             })
-        return {
+        preview = {
             "status": "preview",
             "saved_plane_index": saved_index,
             "saved_at": plane.get("saved_at"),
@@ -371,29 +572,46 @@ def run(ctx) -> Dict[str, Any]:
             "start_candidate_count": int(start_selectable.sum()),
             "algorithm": algorithm,
         }
+        if adapter_grid_payload is not None:
+            preview["adapter_grid"] = adapter_grid_payload
+            preview["adapter_target_rule"] = adapter_target_rule
+        return preview
     learned = None
     if algorithm == "learned_shielded":
-        from .learned_shielded import plan_learned_shielded
+        from skills.builtin.plan_resection_sequence.learned_shielded import (
+            plan_learned_shielded,
+        )
 
         learned = plan_learned_shielded(
-            liver_target,
-            vascular_safe,
-            start=start,
-            rows=rows,
-            cols=cols,
+            planning_liver_target,
+            planning_vascular_safe,
+            start=planning_start,
+            rows=planning_rows,
+            cols=planning_cols,
             cell_side_mm=learned_cell_side_mm,
         )
-        path = [int(step["cell"]) for step in learned["path"]]
+        path = [
+            int(adapter_grid["local_to_source"][int(step["cell"])])
+            for step in learned["path"]
+        ]
     elif algorithm == "dfs":
         path = _dfs_path(start, safe, rows, cols)
     elif algorithm == "spanning_tree":
         path = _spanning_tree_path(start, safe, rows, cols)
     else:
         path = _nearest_path(start, safe, rows, cols)
-    covered = (
-        sorted(int(cell) for cell in learned["covered_cells"])
-        if learned is not None else sorted(set(path))
-    )
+    if learned is not None:
+        covered = sorted(
+            int(adapter_grid["local_to_source"][int(cell)])
+            for cell in learned["covered_cells"]
+        )
+        learned_component_mask = np.zeros_like(liver_target, dtype=bool)
+        learned_component_mask[adapter_grid["local_to_source"]] = np.asarray(
+            learned["component_mask"], dtype=bool
+        )
+    else:
+        covered = sorted(set(path))
+        learned_component_mask = None
     covered_set = set(covered)
     # The learned simulator plans the complete connected Liver intersection,
     # including vessel-proxy cells. Deterministic baselines keep excluding the
@@ -407,7 +625,7 @@ def run(ctx) -> Dict[str, Any]:
             state = "outside_liver"
         elif learned is None and not vascular_safe[cell]:
             state = "vascular_risk"
-        elif learned is not None and not learned["component_mask"][cell]:
+        elif learned is not None and not learned_component_mask[cell]:
             state = "unreachable"
         elif learned is not None and not vascular_safe[cell]:
             state = "vascular_risk"
@@ -422,7 +640,12 @@ def run(ctx) -> Dict[str, Any]:
         })
     step_time = float(ctx.params.get("step_time_seconds", 1.0))
     if learned is not None:
-        steps = learned["path"]
+        steps = _remap_adapter_steps(
+            learned["path"],
+            adapter_grid["local_to_source"],
+            source_cols=cols,
+            adapter_cols=planning_cols,
+        )
     else:
         steps = []
         seen = set()
@@ -444,7 +667,7 @@ def run(ctx) -> Dict[str, Any]:
         "start_source": start_source,
         "grid": {"vertex_resolution": [n_u, n_v], "cell_rows": rows, "cell_cols": cols},
         "parameters": {"algorithm": algorithm, "vascular_safe_distance_mm": float(ctx.params.get("vascular_safe_distance_mm", 5.0)),
-                       "liver_intersection_min_samples": int(ctx.params.get("liver_intersection_min_samples", 1)),
+                       "liver_intersection_min_samples": liver_intersection_min_samples,
                        "step_time_seconds": step_time,
                        "learned_cell_side_mm": learned_cell_side_mm if learned is not None else None},
         "vessel_mask_variants": vessel_mask_variants,
@@ -454,6 +677,7 @@ def run(ctx) -> Dict[str, Any]:
         "uncovered_cells": unreachable_cells,
         "cell_states": cell_states,
         "surface_cell_count": int(len(liver_target)),
+        "liver_core_cell_count": int(liver_core_target.sum()),
         "liver_intersection_cell_count": int(liver_target.sum()),
         "outside_liver_cell_count": int((~liver_target).sum()),
         "vascular_excluded_cell_count": int((liver_target & ~vascular_safe).sum()),
@@ -476,6 +700,9 @@ def run(ctx) -> Dict[str, Any]:
             "simulator": learned["simulator"],
             "scope_warning": learned["scope_warning"],
             "learned_surface_adapter": "confirmed_3d_bezier_surface_to_2d_parameter_grid",
+            "adapter_grid": adapter_grid_payload,
+            "adapter_start_cell": planning_start,
+            "adapter_target_rule": adapter_target_rule,
         })
     with open(result_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
@@ -496,5 +723,8 @@ def run(ctx) -> Dict[str, Any]:
             "checkpoint_sha256": result["checkpoint_sha256"],
             "simulator": result["simulator"],
             "scope_warning": result["scope_warning"],
+            "adapter_grid": result["adapter_grid"],
+            "adapter_start_cell": result["adapter_start_cell"],
+            "adapter_target_rule": result["adapter_target_rule"],
         })
     return response
