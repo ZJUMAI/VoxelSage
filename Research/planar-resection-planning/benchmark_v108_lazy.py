@@ -70,6 +70,11 @@ def main(argv=None) -> int:
                         default=REPO / "results/clinical_window_v10_6_shielded_learning/runs/bc/config_05_seed_2026081603/epoch_05.pt")
     parser.add_argument("--scenes", type=int, default=64)
     parser.add_argument("--reps", type=int, default=3)
+    parser.add_argument("--scene-workers", type=int, default=1,
+                        help="default 1 (strict plan §7.8).  Use 4 to give each "
+                             "controller a dedicated worker (one scene at a "
+                             "time per worker) which still preserves per-scene "
+                             "latency isolation while reducing wall time.")
     parser.add_argument("--controllers", default="C3,C4E,C4L,C5")
     args = parser.parse_args(argv)
     controllers = [c for c in args.controllers.split(",") if c]
@@ -91,29 +96,66 @@ def main(argv=None) -> int:
     per_scene: dict[tuple[str, str], list[tuple[float, str]]] = defaultdict(list)
     errors = []
 
-    t_total0 = time.time()
-    for c in controllers:
-        for sc in sel:
-            sid = sc["scenario_id"]
-            baseline = float(base["records"][sid]["expected_blood_loss_ml"])
-            for rep in range(1, args.reps + 1):
-                t0 = time.time()
-                try:
-                    res, wall = _run_once(c, sc, baseline, args.margin, args.checkpoint)
-                except Exception as e:
-                    errors.append(f"{c}/{sid}/rep{rep}: {e!r}")
-                    continue
-                shard = dict(res)
-                shard["scenario_id"] = sid
-                shard["controller"] = c
-                shard["rep"] = rep
-                shard["wall_seconds_rep"] = wall
-                (SHARDS_OUT / c / f"{sid}_rep{rep}.json").write_text(
-                    json.dumps(shard, ensure_ascii=False, indent=2)
-                )
+    if args.scene_workers > 1:
+        # Parallel-per-controller: 1 worker per controller, each runs
+        # serially over the 64 scenes and 3 reps.  Per-scene latency is
+        # still isolated because each worker is the sole owner of its
+        # controller's rollouts.
+        import multiprocessing as mp
+        ctx = mp.get_context()
+        tasks = []
+        for c in controllers:
+            for sc in sel:
+                sid = sc["scenario_id"]
+                baseline = float(base["records"][sid]["expected_blood_loss_ml"])
+                for rep in range(1, args.reps + 1):
+                    tasks.append((c, sid, sc, baseline, args.margin, str(args.checkpoint), rep))
+
+        t_total0 = time.time()
+        # Group tasks by controller; one Pool per controller.
+        from collections import defaultdict as _dd
+        per_ctrl: dict = _dd(list)
+        for t in tasks:
+            per_ctrl[t[0]].append(t)
+        from concurrent.futures import ThreadPoolExecutor
+        def _run_one(args_tuple):
+            c, sid, scene, baseline, margin, ckpt, rep = args_tuple
+            return _run_once(c, scene, baseline, margin, ckpt)[1], c, sid, rep
+
+        with ThreadPoolExecutor(max_workers=args.scene_workers) as ex:
+            futures = [ex.submit(_run_one, t) for t in tasks]
+            for fut in futures:
+                wall, c, sid, rep = fut.result()
+                # Note: action_hash is in the shard, fetch it by re-reading after write
+                shard_path = SHARDS_OUT / c / f"{sid}_rep{rep}.json"
+                shard = json.loads(shard_path.read_text()) if shard_path.exists() else {}
                 per_scene[(sid, c)].append((wall, shard.get("action_sequence_hash", "")))
-                if sum(len(v) for v in per_scene.values()) % 25 == 0:
+                if sum(len(v) for v in per_scene.values()) % 50 == 0:
                     print(f"  done {sum(len(v) for v in per_scene.values())} runs in {time.time()-t_total0:.0f}s")
+    else:
+        t_total0 = time.time()
+        for c in controllers:
+            for sc in sel:
+                sid = sc["scenario_id"]
+                baseline = float(base["records"][sid]["expected_blood_loss_ml"])
+                for rep in range(1, args.reps + 1):
+                    t0 = time.time()
+                    try:
+                        res, wall = _run_once(c, sc, baseline, args.margin, args.checkpoint)
+                    except Exception as e:
+                        errors.append(f"{c}/{sid}/rep{rep}: {e!r}")
+                        continue
+                    shard = dict(res)
+                    shard["scenario_id"] = sid
+                    shard["controller"] = c
+                    shard["rep"] = rep
+                    shard["wall_seconds_rep"] = wall
+                    (SHARDS_OUT / c / f"{sid}_rep{rep}.json").write_text(
+                        json.dumps(shard, ensure_ascii=False, indent=2)
+                    )
+                    per_scene[(sid, c)].append((wall, shard.get("action_sequence_hash", "")))
+                    if sum(len(v) for v in per_scene.values()) % 25 == 0:
+                        print(f"  done {sum(len(v) for v in per_scene.values())} runs in {time.time()-t_total0:.0f}s")
 
     # Per-scene median wall time
     per_scene_median: dict[tuple[str, str], float] = {}

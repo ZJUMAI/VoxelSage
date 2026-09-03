@@ -67,7 +67,7 @@ def main(argv=None) -> int:
     parser.add_argument("--baseline-file", type=Path,
                         default=V108_OUT / "frozen/baseline_lazy_replication.json")
     parser.add_argument("--margin", type=float, default=16.07054347826075)
-    parser.add_argument("--limit", type=int, default=128)
+    parser.add_argument("--limit", type=int, default=64)
     parser.add_argument("--conditions", default="S0,S1,S2,S3,S4")
     parser.add_argument("--controllers", default="C0,C3,C4E,C4L,C5")
     parser.add_argument("--checkpoint", type=Path,

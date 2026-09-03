@@ -4,5 +4,5 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
 import runpy
 import sys
-sys.argv = ["benchmark_v108_lazy.py"]
+sys.argv = ["benchmark_v108_lazy.py", "--scene-workers", "4"]
 runpy.run_path("benchmark_v108_lazy.py", run_name="__main__")
