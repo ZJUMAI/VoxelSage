@@ -236,15 +236,19 @@ def _load_e6(out):
 
 
 def _load_e7(out):
-    """E7 rewritten latency: 64 scenes x 4 controllers x 3 reps."""
+    """E7 rewritten latency: 64 scenes x 4 controllers x 3 reps.
+
+    Computes per-scene median wall time across available reps directly
+    from the shard files, so partial data (e.g. when a 30-min task
+    timeout cuts off mid-run) still produces a useful summary.
+    """
+    import statistics
     v2 = V108 / "latency_v2"
     if not v2.exists():
         out["e7_rewritten"] = {"present": False}
         return
     out["e7_rewritten"] = {"present": True}
     summary = _load(v2 / "latency_summary.json")
-    if summary:
-        out["e7_rewritten"]["summary"] = summary
     # collect per-(rep, controller) shard counts
     counts = {}
     for rep_dir in sorted(v2.glob("rep*")):
@@ -257,6 +261,60 @@ def _load_e7(out):
             n = len(list(ctrl_dir.glob("*.json")))
             counts.setdefault(rep, {})[ctrl_dir.name] = n
     out["e7_rewritten"]["shard_counts_per_rep"] = counts
+
+    # Build per-scene medians across reps by scanning the shards directly.
+    # This is robust to the E7 main script never reaching _aggregate()
+    # when killed by a 30-min task timeout.
+    per_ctrl = {}
+    controllers = ("C0", "C3", "C4E", "C4L")
+    for ctrl in controllers:
+        per_scene = {}
+        for rep in range(3):
+            ctrl_dir = v2 / f"rep{rep}" / ctrl
+            if not ctrl_dir.exists():
+                continue
+            for f in ctrl_dir.glob("*.json"):
+                try:
+                    j = json.loads(f.read_text(encoding="utf-8"))
+                    sid = j.get("scenario_id", f.stem)
+                    w = float(j.get("wall_seconds", 0.0))
+                    per_scene.setdefault(sid, []).append(w)
+                except Exception:
+                    pass
+        if per_scene:
+            meds = [statistics.median(v) for v in per_scene.values() if v]
+            per_ctrl[ctrl] = {
+                "n_scenes": len(per_scene),
+                "n_with_3_reps": sum(1 for v in per_scene.values() if len(v) >= 3),
+                "n_with_2_reps": sum(1 for v in per_scene.values() if len(v) == 2),
+                "n_with_1_rep": sum(1 for v in per_scene.values() if len(v) == 1),
+                "median_s": statistics.median(meds) if meds else 0.0,
+                "mean_s": statistics.mean(meds) if meds else 0.0,
+                "p95_s": sorted(meds)[int(0.95 * (len(meds) - 1))] if len(meds) > 1 else (meds[0] if meds else 0.0),
+                "max_s": max(meds) if meds else 0.0,
+            }
+    if per_ctrl:
+        out["e7_rewritten"]["per_controller"] = per_ctrl
+        # Use the freshly-computed summary as the canonical one (overrides
+        # any partial main-script output).
+        out["e7_rewritten"]["summary"] = {
+            "spec": {
+                "n_scenes": 64,
+                "controllers": list(per_ctrl.keys()),
+                "reps": 3,
+                "scene_workers": 1,
+                "controller_order_per_rep": [
+                    ["C0", "C3", "C4E", "C4L"],
+                    ["C4L", "C0", "C3", "C4E"],
+                    ["C4E", "C4L", "C0", "C3"],
+                ],
+            },
+            "per_controller": per_ctrl,
+        }
+    else:
+        out["e7_rewritten"]["per_controller"] = {}
+        if summary:
+            out["e7_rewritten"]["summary"] = summary
 
 
 def _load_e8(out):
@@ -383,11 +441,13 @@ def _build_markdown(out: dict) -> list[str]:
         md.append(f"- spec: {json.dumps(s.get('spec', {}), ensure_ascii=False)}")
         pc = s.get("per_controller", {})
         if pc:
-            md.append("| controller | n_scenes | median_s | mean_s | p95_s | max_s |")
-            md.append("|---|---|---|---|---|---|")
+            md.append("| controller | n_scenes | 3-rep | 2-rep | 1-rep | median_s | mean_s | p95_s | max_s |")
+            md.append("|---|---|---|---|---|---|---|---|---|")
             for c, info in pc.items():
-                md.append(f"| {c} | {info['n_scenes']} | {info['median_s']:.2f} | "
-                          f"{info['mean_s']:.2f} | {info['p95_s']:.2f} | {info['max_s']:.2f} |")
+                md.append(f"| {c} | {info['n_scenes']} | {info.get('n_with_3_reps', 0)} | "
+                          f"{info.get('n_with_2_reps', 0)} | {info.get('n_with_1_rep', 0)} | "
+                          f"{info['median_s']:.2f} | {info['mean_s']:.2f} | "
+                          f"{info['p95_s']:.2f} | {info['max_s']:.2f} |")
     if "e8_sensitivity" in out:
         md.append(f"\n## E8 sensitivity (overrun = realized_episode_B_ml > budget_ml)\n")
         sens = out["e8_sensitivity"]
