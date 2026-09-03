@@ -342,8 +342,8 @@ class ClinicalWindowResectionEnv(GymEnvBase):
             raise ValueError("domain_cells must be a non-empty four-connected region")
         if not self.vessel_cells <= self.domain:
             raise ValueError("All vessel cells must be inside domain_cells")
-        if self.vessel_cells & boundary_cells(self.domain):
-            raise ValueError("Vessel cells cannot lie on the domain boundary")
+        # Boundary components use the same in-domain tissue ring, exposure,
+        # sealing, and cutting rules as interior components.
         self.start = _cell(scenario["start_cell"])
         if self.start not in boundary_cells(self.domain) or self.start in self.vessel_cells:
             raise ValueError("start_cell must be a non-vessel domain boundary cell")
@@ -405,12 +405,14 @@ class ClinicalWindowResectionEnv(GymEnvBase):
         return self._hidden_cells() | self._exposed_cells()
 
     def _release_ready_components(self, events: list[dict[str, Any]]) -> None:
+        released = False
         for component_id in sorted(tuple(self.hidden_ids)):
             component = self._component(component_id)
             ring = set(component["ring"])
             if ring and ring <= self.cut:
                 self.hidden_ids.remove(component_id)
                 self.exposed_ids.add(component_id)
+                released = True
                 events.append({
                     "index": len(self.events) + len(events),
                     "action": "expose_vessel",
@@ -420,6 +422,42 @@ class ClinicalWindowResectionEnv(GymEnvBase):
                     "is_large": bool(component["is_large"]),
                     "time_minutes": self.elapsed_minutes,
                 })
+
+        # A boundary vessel can separate the remaining domain into two tissue
+        # regions. If the current side is exhausted, the full in-domain ring is
+        # unreachable until that vessel is sealed. Release only the first such
+        # component touching the cut frontier; all ordinary ring releases above
+        # and every interior-vessel scenario retain their original behavior.
+        if released or self._frontier() or self.cut == self.domain:
+            return
+        domain_boundary = boundary_cells(self.domain)
+        for component_id in sorted(self.hidden_ids):
+            component = self._component(component_id)
+            cells = set(component["cells"])
+            if not cells & domain_boundary:
+                continue
+            if not any(
+                neighbor in self.cut
+                for cell in cells
+                for neighbor in neighbors4(cell)
+            ):
+                continue
+            ring = set(component["ring"])
+            self.hidden_ids.remove(component_id)
+            self.exposed_ids.add(component_id)
+            events.append({
+                "index": len(self.events) + len(events),
+                "action": "expose_vessel",
+                "component_id": component_id,
+                "cells": _cell_list(cells),
+                "area_mm2": float(component["area_mm2"]),
+                "is_large": bool(component["is_large"]),
+                "time_minutes": self.elapsed_minutes,
+                "release_rule": "boundary_frontier_deadlock",
+                "required_ring_cell_count": len(ring & self.cut),
+                "full_ring_cell_count": len(ring),
+            })
+            break
 
     def _frontier(self) -> set[Cell]:
         blocked = self._hidden_cells()

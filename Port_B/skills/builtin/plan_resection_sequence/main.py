@@ -124,62 +124,6 @@ def _remap_adapter_steps(
     return remapped
 
 
-def _enclose_boundary_vessel_proxies(
-    core_target: np.ndarray,
-    support_target: np.ndarray,
-    vascular_safe: np.ndarray,
-    rows: int,
-    cols: int,
-) -> Tuple[np.ndarray, Dict[str, int]]:
-    """Add sampled-liver support cells needed to keep vessel proxies internal.
-
-    The planar simulator requires every vessel proxy to have domain tissue on
-    each four-neighbour side.  A conservative four-of-five liver core can move
-    a genuine vessel proxy onto that core's boundary, so we add only adjacent
-    cells from the permissive one-of-five liver intersection until the proxy is
-    internal.  No vessel cell is deleted or relabelled.
-    """
-    core = np.asarray(core_target, dtype=bool).reshape(-1)
-    support = np.asarray(support_target, dtype=bool).reshape(-1)
-    safe = np.asarray(vascular_safe, dtype=bool).reshape(-1)
-    expected = int(rows) * int(cols)
-    if core.size != expected or support.size != expected or safe.size != expected:
-        raise ValueError("target and vascular masks must match the source grid")
-    if np.any(core & ~support):
-        raise ValueError("the liver support target must contain the conservative core")
-
-    domain = core.copy()
-    initially_boundary = 0
-    for iteration in range(expected + 1):
-        boundary = _outer_boundary_mask(domain, rows, cols)
-        boundary_vessels = domain & ~safe & boundary
-        count = int(boundary_vessels.sum())
-        if iteration == 0:
-            initially_boundary = count
-        if count == 0:
-            return domain, {
-                "core_cell_count": int(core.sum()),
-                "enclosure_added_cell_count": int((domain & ~core).sum()),
-                "initial_boundary_vessel_cell_count": initially_boundary,
-            }
-
-        additions = np.zeros(expected, dtype=bool)
-        for cell in np.flatnonzero(boundary_vessels):
-            for neighbor in _neighbors(int(cell), rows, cols):
-                if support[neighbor]:
-                    additions[neighbor] = True
-        additions &= ~domain
-        if not additions.any():
-            break
-        domain |= additions
-
-    remaining = int((domain & ~safe & _outer_boundary_mask(domain, rows, cols)).sum())
-    raise ValueError(
-        "Liver 支撑区域不足以包围裁剪边界上的血管代理："
-        f"仍有 {remaining} 个边界血管单元"
-    )
-
-
 def _cells(n_u: int, n_v: int) -> Iterable[Tuple[int, int, int]]:
     for i in range(n_u - 1):
         for j in range(n_v - 1):
@@ -452,22 +396,22 @@ def run(ctx) -> Dict[str, Any]:
         vessel_mask_variants,
     )
     liver_target = liver_core_target
+    boundary_vessel_proxy_count = int(
+        (
+            liver_target
+            & ~vascular_safe
+            & _outer_boundary_mask(liver_target, rows, cols)
+        ).sum()
+    )
     target_rule_audit = {
         "core_cell_count": int(liver_core_target.sum()),
+        "boundary_vessel_proxy_count": boundary_vessel_proxy_count,
+        "boundary_vessel_policy": "retain_and_apply_standard_simulator_rules",
+        # Retained for readers of earlier audit bundles. No support cells are
+        # added by the current adapter.
         "enclosure_added_cell_count": 0,
-        "initial_boundary_vessel_cell_count": 0,
+        "initial_boundary_vessel_cell_count": boundary_vessel_proxy_count,
     }
-    if algorithm == "learned_shielded":
-        liver_support_target = _liver_intersection_mask(
-            ctx, cell_samples, center_offset, 1,
-        )
-        liver_target, target_rule_audit = _enclose_boundary_vessel_proxies(
-            liver_core_target,
-            liver_support_target,
-            vascular_safe,
-            rows,
-            cols,
-        )
     safe = liver_target & vascular_safe
     if not safe.any():
         raise ValueError("Liver∩剖面在血管安全约束后没有可规划单元")
@@ -535,7 +479,6 @@ def run(ctx) -> Dict[str, Any]:
         adapter_target_rule = {
             "core_liver_samples_required": liver_intersection_min_samples,
             "cell_sample_count": 5,
-            "support_liver_samples_required": 1,
             **target_rule_audit,
         }
 
@@ -578,6 +521,9 @@ def run(ctx) -> Dict[str, Any]:
         return preview
     learned = None
     if algorithm == "learned_shielded":
+        # SkillEngine loads ``main.py`` through an explicit module spec rather
+        # than as a normal package submodule, so relative imports have no
+        # parent package on the public API execution path.
         from skills.builtin.plan_resection_sequence.learned_shielded import (
             plan_learned_shielded,
         )

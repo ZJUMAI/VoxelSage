@@ -1,3 +1,4 @@
+import inspect
 import os
 from pathlib import Path
 
@@ -12,11 +13,11 @@ from skills.builtin.plan_resection_sequence.learned_shielded import (
     validate_checkpoint,
 )
 from skills.builtin.plan_resection_sequence.main import (
-    _enclose_boundary_vessel_proxies,
     _learned_surface_resolution,
     _learned_target_crop,
     _remap_adapter_steps,
 )
+from skills.engine import SkillEngine
 
 
 def _flat_control_points(u_mm=40.0, v_mm=80.0):
@@ -76,36 +77,17 @@ def test_adapter_steps_map_back_to_complete_saved_surface_grid():
     assert remapped[1]["adapter_grid_ij"] == [1, 1]
 
 
-def test_boundary_vessel_proxy_is_enclosed_with_sampled_liver_support():
-    core = np.zeros((5, 5), dtype=bool)
-    core[1:4, 1:4] = True
-    support = core.copy()
-    support[0, 2] = True
-    vascular_safe = np.ones((5, 5), dtype=bool)
-    vascular_safe[1, 2] = False
-
-    target, audit = _enclose_boundary_vessel_proxies(
-        core, support, vascular_safe, rows=5, cols=5
+def test_dynamic_skill_module_uses_package_absolute_learned_import():
+    main_path = (
+        Path(__file__).resolve().parents[1]
+        / "skills/builtin/plan_resection_sequence/main.py"
     )
+    module = SkillEngine()._load_module("plan_resection_sequence", str(main_path))
 
-    assert target.reshape(5, 5)[0, 2]
-    assert audit == {
-        "core_cell_count": 9,
-        "enclosure_added_cell_count": 1,
-        "initial_boundary_vessel_cell_count": 1,
-    }
-
-
-def test_boundary_vessel_proxy_fails_when_liver_support_cannot_enclose_it():
-    core = np.zeros((5, 5), dtype=bool)
-    core[1:4, 1:4] = True
-    vascular_safe = np.ones((5, 5), dtype=bool)
-    vascular_safe[1, 2] = False
-
-    with pytest.raises(ValueError, match="支撑区域不足"):
-        _enclose_boundary_vessel_proxies(
-            core, core, vascular_safe, rows=5, cols=5
-        )
+    assert module.__name__ == "_skill_builtin_plan_resection_sequence"
+    source = inspect.getsource(module.run)
+    assert "from skills.builtin.plan_resection_sequence.learned_shielded import" in source
+    assert "from .learned_shielded import" not in source
 
 
 def test_checkpoint_validation_fails_closed_when_missing(tmp_path):
@@ -135,6 +117,19 @@ def test_surface_adapter_keeps_start_component_and_vessel_proxies():
     assert scenario["domain_cells"] == [[0, 0], [0, 1], [1, 0], [1, 1]]
     assert scenario["obstacle_cells"] == [[1, 1]]
     assert scenario["start_cell"] == [0, 0]
+
+
+def test_surface_adapter_keeps_boundary_vessel_proxies():
+    liver = np.ones(9, dtype=bool)
+    vascular_safe = np.ones(9, dtype=bool)
+    vascular_safe[1] = False
+
+    scenario, component = build_scenario(
+        liver, vascular_safe, start=0, rows=3, cols=3, cell_side_mm=4.0
+    )
+
+    assert component.all()
+    assert scenario["obstacle_cells"] == [[0, 1]]
 
 
 @pytest.mark.skipif(

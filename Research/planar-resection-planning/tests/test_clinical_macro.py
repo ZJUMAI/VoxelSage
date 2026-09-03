@@ -116,6 +116,32 @@ class ClinicalMacroEnvironmentTests(unittest.TestCase):
         self.assertEqual(result["max_no_progress_streak"], 0)
         self.assertEqual(result["max_same_edge_streak"], 0)
 
+    def test_standard_vessel_rules_accept_and_complete_boundary_barrier(self):
+        result = rollout_clinical_policy(
+            rectangle(
+                rows=5,
+                cols=5,
+                vessels=tuple((row, 2) for row in range(5)),
+            ),
+            serpentine_macro_target_policy,
+            clinical_config={"early_end_mode": "disabled"},
+            control_mode="macro",
+            include_replay=True,
+        )
+
+        self.assertTrue(result["completion"])
+        self.assertEqual(result["sealed_vessel_count"], 1)
+        self.assertEqual(result["legal_action_rate"], 1.0)
+        exposure = next(
+            event for event in result["replay"]["events"]
+            if event["action"] == "expose_vessel"
+        )
+        self.assertEqual(exposure["release_rule"], "boundary_frontier_deadlock")
+        self.assertLess(
+            exposure["required_ring_cell_count"],
+            exposure["full_ring_cell_count"],
+        )
+
     def test_spatial_policy_emits_grid_targets_plus_end(self):
         import torch
         from sb3_contrib import MaskablePPO
