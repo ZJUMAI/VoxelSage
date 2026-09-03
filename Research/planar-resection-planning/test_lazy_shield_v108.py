@@ -196,7 +196,7 @@ class LazyShieldContractTests(unittest.TestCase):
         self.assertEqual(tail.call_count_per_target[(2, 2)], 1)
         self.assertEqual(tail.call_count_per_target.get((3, 3), 0), 0)
 
-    # 3. 所有候选不安全 → fallback
+    # 3. 所有候选不安全 → infeasible (no safe candidate)
     def test_all_unsafe_fallback(self) -> None:
         env = _FakeEnv(frontier_targets=[(1, 1), (2, 2), (3, 3)])
         tail = self._build_tail(env, {
@@ -206,8 +206,9 @@ class LazyShieldContractTests(unittest.TestCase):
         })
         scores = {(1, 1): 3.0, (2, 2): 2.0, (3, 3): 1.0}
         chosen, diag = self._select_lazy(env, budget_ml=10.0, scores=scores, tail=tail)
-        self.assertEqual(chosen, (0, 0))  # fake serpentine
+        self.assertIsNone(chosen)  # no safe candidate -> infeasible
         self.assertTrue(diag["fallback_used"])
+        self.assertTrue(diag["infeasible"])
         self.assertEqual(diag["verified_candidate_count"], 3)
         self.assertEqual(tail.call_count_per_target[(1, 1)], 1)
         self.assertEqual(tail.call_count_per_target[(2, 2)], 1)
@@ -239,27 +240,30 @@ class LazyShieldContractTests(unittest.TestCase):
         chosen, diag = self._select_lazy(env, budget_ml=0.0, scores=scores, tail=tail)
         self.assertEqual(chosen, (1, 1))
         self.assertTrue(diag["selected_safe_exact"])
-        # budget = -EPS-1e-12 → unsafe
+        # budget = -EPS-1e-12 → unsafe → infeasible (no safe candidate)
         tail2 = _FakeTail({(1, 1): (5.0, 1e-9, True, None)})
         chosen, diag = self._select_lazy(env, budget_ml=-2e-9, scores=scores, tail=tail2)
-        self.assertEqual(chosen, (0, 0))
+        self.assertIsNone(chosen)
         self.assertTrue(diag["fallback_used"])
+        self.assertTrue(diag["infeasible"])
 
-    # 6. completion=False → unsafe
+    # 6. completion=False → unsafe → infeasible
     def test_completion_false_blocks(self) -> None:
         env = _FakeEnv(frontier_targets=[(1, 1)])
         tail = self._build_tail(env, {(1, 1): (5.0, 1.0, False, "serpentine tail lost all legal targets")})
         chosen, diag = self._select_lazy(env, budget_ml=100.0, scores={(1, 1): 1.0}, tail=tail)
-        self.assertEqual(chosen, (0, 0))
+        self.assertIsNone(chosen)
         self.assertTrue(diag["fallback_used"])
+        self.assertTrue(diag["infeasible"])
 
-    # 7. failure_reason non-None → unsafe
+    # 7. failure_reason non-None → unsafe → infeasible
     def test_failure_reason_blocks(self) -> None:
         env = _FakeEnv(frontier_targets=[(1, 1)])
         tail = self._build_tail(env, {(1, 1): (5.0, 1.0, True, "anything")})
         chosen, diag = self._select_lazy(env, budget_ml=100.0, scores={(1, 1): 1.0}, tail=tail)
-        self.assertEqual(chosen, (0, 0))
+        self.assertIsNone(chosen)
         self.assertTrue(diag["fallback_used"])
+        self.assertTrue(diag["infeasible"])
 
     # 8. state hash unchanged before/after verify
     def test_state_immutable_during_verify(self) -> None:

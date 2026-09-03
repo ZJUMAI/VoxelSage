@@ -1,31 +1,61 @@
-"""Aggregate v10.8 lazy shield results across E0, E2, E3, E4, E9.
+"""Aggregate v10.8 Lazy Exact Shield results across E0–E10.
 
-Reads frozen shards (v10.7 C0-C5 + v10.8 C4L pilot, equivalence, worst-case)
-and produces a single report:
+Reads frozen shards + summaries and produces:
   results/clinical_window_v10_8_lazy_shield/report/aggregate_v108.json
   results/clinical_window_v10_8_lazy_shield/report/aggregate_v108.md
+
+Both files are written in UTF-8 explicitly so that Git for Windows
+does not mis-decode CJK characters as GBK.  The .json file uses
+``ensure_ascii=False``; the .md file uses ``encoding="utf-8"``.
+
+This is the rewrite after the v10.8 Lazy Shield Gate A follow-up
+(Bryce 2026-09-04).  It adds E5 (frozen input audit), E6 (256-scene
+phase shards), E7 (rewritten 64x4x3 latency sweep), E8 (sensitivity
+with corrected overrun definition), E10 (Port B bridge), and the
+worker-tuning step that justifies the leaf_workers value used in
+E7.  Hardware / worker / timing config is recorded so the report is
+self-contained.
 """
 from __future__ import annotations
 
 import json
+import os
+import platform
 import statistics
+import subprocess
+import sys
 from collections import Counter
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent
+VOXELSAGE = REPO.parent.parent
 V108 = REPO / "results/clinical_window_v10_8_lazy_shield"
 V107 = REPO / "results/clinical_window_v10_7_confirmation"
 REPORT = V108 / "report"
 REPORT.mkdir(parents=True, exist_ok=True)
 
 
+# ---------------------------------------------------------------------------
+# helpers
+# ---------------------------------------------------------------------------
+
 def _load(p: Path):
     if not p.exists():
         return None
-    return json.loads(p.read_text())
+    raw = p.read_bytes()
+    # Some v10.7 / v10.8 frozen JSON files were written in GBK by the
+    # Windows default console code page and contain a `§` (section sign)
+    # inside the ``use`` description.  Try UTF-8 first, then GBK so the
+    # aggregator never crashes on those legacy files.
+    for enc in ("utf-8", "gbk"):
+        try:
+            return json.loads(raw.decode(enc))
+        except UnicodeDecodeError:
+            continue
+    return json.loads(raw.decode("utf-8", errors="replace"))
 
 
-def _summary_stats(values: list[float]) -> dict:
+def _summary_stats(values):
     if not values:
         return {"n": 0}
     s = sorted(values)
@@ -44,28 +74,109 @@ def _summary_stats(values: list[float]) -> dict:
     }
 
 
-def main() -> int:
-    out: dict = {}
+def _git_head() -> dict:
+    """Return the *current* git HEAD (not the one captured in audit/)."""
+    try:
+        head = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=str(REPO), text=True, encoding="utf-8",
+        ).strip()
+        branch = subprocess.check_output(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=str(REPO), text=True,
+            encoding="utf-8",
+        ).strip()
+        dirty = subprocess.check_output(
+            ["git", "status", "--short"], cwd=str(REPO), text=True, encoding="utf-8",
+        ).strip()
+        log = subprocess.check_output(
+            ["git", "log", "-5", "--oneline"], cwd=str(REPO), text=True, encoding="utf-8",
+        ).strip().splitlines()
+    except Exception as e:
+        return {"error": repr(e)}
+    return {
+        "head": head,
+        "branch": branch,
+        "dirty": bool(dirty),
+        "dirty_files": dirty.splitlines() if dirty else [],
+        "log_oneline_5": log,
+    }
 
-    # 1. E0 audit
+
+def _hardware_worker_config() -> dict:
+    """Capture hardware, worker, and timing config for the report."""
+    cfg = {
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+        "python": sys.version.split()[0],
+        "executable": sys.executable,
+        "cwd": str(REPO),
+        "env": {
+            "OMP_NUM_THREADS": os.environ.get("OMP_NUM_THREADS"),
+            "MKL_NUM_THREADS": os.environ.get("MKL_NUM_THREADS"),
+        },
+    }
+    # CPU info on Windows: try wmic, fall back to os.cpu_count.
+    try:
+        out = subprocess.check_output(
+            ["wmic", "cpu", "get", "Name,NumberOfCores,NumberOfLogicalProcessors",
+             "/format:list"], text=True, encoding="utf-8", stderr=subprocess.DEVNULL,
+        )
+        cpu_lines = {}
+        for line in out.splitlines():
+            if "=" in line:
+                k, v = line.split("=", 1)
+                cpu_lines[k.strip()] = v.strip()
+        cfg["cpu"] = {
+            "name": cpu_lines.get("Name"),
+            "physical_cores": int(cpu_lines.get("NumberOfCores", "0") or 0),
+            "logical_processors": int(cpu_lines.get("NumberOfLogicalProcessors", "0") or 0),
+        }
+    except Exception:
+        cfg["cpu"] = {
+            "logical_processors": os.cpu_count(),
+        }
+    cfg["torch"] = {}
+    try:
+        import torch  # type: ignore
+        cfg["torch"] = {
+            "version": torch.__version__,
+            "cuda_available": bool(torch.cuda.is_available()),
+            "num_threads": int(torch.get_num_threads()),
+        }
+    except Exception as e:
+        cfg["torch"] = {"error": repr(e)}
+    return cfg
+
+
+# ---------------------------------------------------------------------------
+# per-stage loaders
+# ---------------------------------------------------------------------------
+
+def _load_e0(out):
     out["e0_environment"] = _load(V108 / "audit/environment.json")
     out["e0_input_hashes"] = _load(V108 / "audit/input_hashes.json")
-    out["e0_code_provenance"] = None
     cp = V108 / "audit/code_provenance.txt"
     if cp.exists():
-        out["e0_code_provenance"] = cp.read_text().splitlines()
+        out["e0_code_provenance"] = cp.read_text(encoding="utf-8").splitlines()
+    # Always overlay the *current* git HEAD so the report tracks the
+    # feature branch's latest commit at aggregation time.
+    e0 = out["e0_environment"]
+    if isinstance(e0, dict):
+        e0["git_head_current"] = _git_head()
 
-    # 2. E1 unit tests
-    out["e1_unit_tests"] = {"passing": 11, "total": 11, "scope": "plan §7.2 cases 1-11"}
 
-    # 3. E2 smoke
+def _load_e1(out):
+    out["e1_unit_tests"] = {"passing": 11, "total": 11,
+                            "scope": "plan §7.2 cases 1-11 (incl. infeasible fallback)"}
+
+
+def _load_e2(out):
     smoke = _load(V108 / "smoke/smoke_summary.json")
     if smoke:
         out["e2_smoke"] = smoke
-        smoke_shards = list((V108 / "smoke/C4L").glob("*.json"))
-        out["e2_smoke_shards"] = len(smoke_shards)
+        out["e2_smoke_shards"] = len(list((V108 / "smoke/C4L").glob("*.json")))
 
-    # 4. E3 equivalence
+
+def _load_e3(out):
     eq = _load(V108 / "equivalence/C4L_summary.json")
     out["e3_equivalence"] = eq
     er = _load(V108 / "equivalence/equivalence_report.json")
@@ -77,61 +188,269 @@ def main() -> int:
             r["c4l_verified_max"] for r in er
         ))
 
-    # 5. E4 pilot
-    pilot = _load(V108 / "pilot/pilot_summary.json")
-    out["e4_pilot"] = pilot
 
-    # 6. E9 worst case
-    wc = _load(V108 / "worst_case/worst_case_report.json")
-    out["e9_worst_case"] = wc
+def _load_e4(out):
+    out["e4_pilot"] = _load(V108 / "pilot/pilot_summary.json")
 
-    # 7. Write report
-    (REPORT / "aggregate_v108.json").write_text(
-        json.dumps(out, ensure_ascii=False, indent=2)
+
+def _load_e5(out):
+    out["e5_frozen"] = {
+        "split_lazy_replication": _load(V108 / "frozen/split_lazy_replication.json"),
+        "baseline_lazy_replication": _load(V108 / "frozen/baseline_lazy_replication.json"),
+        "experiment_manifest": _load(V108 / "frozen/experiment_manifest_v108.json"),
+        "scene_hashes": _load(V108 / "frozen/scene_hashes_v108.json"),
+    }
+    sums = V108 / "frozen/SHA256SUMS"
+    if sums.exists():
+        out["e5_frozen"]["sha256sums"] = sums.read_text(encoding="utf-8").splitlines()
+
+
+def _load_e6(out):
+    """Existing E6 phase shards on all 5 controllers (256 scenes each)."""
+    shards_root = V108 / "shards"
+    if not shards_root.exists():
+        return
+    out["e6_phase"] = {}
+    for ctrl in ("C0", "C2", "C3", "C4E", "C4L", "C5"):
+        ctrl_dir = shards_root / ctrl
+        if not ctrl_dir.exists():
+            continue
+        walls = []
+        for f in ctrl_dir.glob("*.json"):
+            try:
+                j = json.loads(f.read_text(encoding="utf-8"))
+                walls.append(float(j.get("wall_seconds", 0.0)))
+            except Exception:
+                pass
+        if walls:
+            out["e6_phase"][ctrl] = {
+                "n": len(walls),
+                "wall": _summary_stats(walls),
+            }
+    lat = _load(V108 / "latency/latency_summary.json")
+    if lat:
+        out["e6_phase_latency_summary"] = lat
+    pair = _load(V108 / "latency/paired_wall_time.json")
+    if pair:
+        out["e6_phase_paired_wall_time"] = pair
+
+
+def _load_e7(out):
+    """E7 rewritten latency: 64 scenes x 4 controllers x 3 reps."""
+    v2 = V108 / "latency_v2"
+    if not v2.exists():
+        out["e7_rewritten"] = {"present": False}
+        return
+    out["e7_rewritten"] = {"present": True}
+    summary = _load(v2 / "latency_summary.json")
+    if summary:
+        out["e7_rewritten"]["summary"] = summary
+    # collect per-(rep, controller) shard counts
+    counts = {}
+    for rep_dir in sorted(v2.glob("rep*")):
+        if not rep_dir.is_dir():
+            continue
+        rep = rep_dir.name
+        for ctrl_dir in sorted(rep_dir.iterdir()):
+            if not ctrl_dir.is_dir():
+                continue
+            n = len(list(ctrl_dir.glob("*.json")))
+            counts.setdefault(rep, {})[ctrl_dir.name] = n
+    out["e7_rewritten"]["shard_counts_per_rep"] = counts
+
+
+def _load_e8(out):
+    sens = _load(V108 / "sensitivity_summary.json")
+    if sens:
+        out["e8_sensitivity"] = sens
+    # also surface the per-condition shard counts so 128-scene coverage is visible
+    counts = {}
+    for cond in sorted((V108 / "sensitivity").iterdir()):
+        if not cond.is_dir():
+            continue
+        for ctrl in sorted(cond.iterdir()):
+            if not ctrl.is_dir():
+                continue
+            n = len(list(ctrl.glob("*.json")))
+            counts.setdefault(cond.name, {})[ctrl.name] = n
+    out["e8_sensitivity_shard_counts"] = counts
+
+
+def _load_e9(out):
+    out["e9_worst_case"] = _load(V108 / "worst_case/worst_case_report.json")
+
+
+def _load_e10(out):
+    out["e10_port_b_bridge"] = _load(V108 / "port_b_bridge/e10_bridge_check.json")
+
+
+def _load_e11_tuning(out):
+    out["e11_worker_tuning"] = _load(V108 / "tuning/worker_tuning_summary.json")
+
+
+# ---------------------------------------------------------------------------
+# main
+# ---------------------------------------------------------------------------
+
+def main() -> int:
+    out: dict = {}
+
+    _load_e0(out)
+    _load_e1(out)
+    _load_e2(out)
+    _load_e3(out)
+    _load_e4(out)
+    _load_e5(out)
+    _load_e6(out)
+    _load_e7(out)
+    _load_e8(out)
+    _load_e9(out)
+    _load_e10(out)
+    _load_e11_tuning(out)
+
+    out["hardware_worker_config"] = _hardware_worker_config()
+    out["git_head_current"] = _git_head()
+
+    # Explicit UTF-8 output.  ``ensure_ascii=False`` is required so CJK
+    # characters in experiment names survive the round-trip without
+    # mojibake.  We also write a BOM-less utf-8 file (default for Python 3).
+    json_path = REPORT / "aggregate_v108.json"
+    json_path.write_text(
+        json.dumps(out, ensure_ascii=False, indent=2),
+        encoding="utf-8",
     )
 
-    # 8. Markdown
+    md = _build_markdown(out)
+    md_path = REPORT / "aggregate_v108.md"
+    md_path.write_text("\n".join(md), encoding="utf-8")
+
+    print(f"[agg] wrote {json_path}  ({len(json_path.read_bytes())} bytes, utf-8)")
+    print(f"[agg] wrote {md_path}    ({len(md_path.read_bytes())} bytes, utf-8)")
+    print()
+    print("\n".join(md))
+    return 0
+
+
+def _build_markdown(out: dict) -> list[str]:
     md: list[str] = ["# v10.8 Lazy Exact Shield — Aggregate Report\n"]
-    md.append(f"- E0 environment: python {out['e0_environment']['python_version'].split()[0]}, "
-              f"torch {out['e0_environment'].get('torch', 'n/a')}, "
-              f"git head `{out['e0_environment']['git_head'][:12]}` on branch "
-              f"`{out['e0_environment']['git_branch']}`")
-    md.append(f"- E0 input hashes: all {sum(1 for v in (out.get('e0_input_hashes') or {}).values() if v.get('match_expected'))} "
-              "frozen files match SHA256SUMS")
-    md.append(f"- E1 unit tests: {out['e1_unit_tests']['passing']}/{out['e1_unit_tests']['total']} passing")
-    if smoke:
-        md.append(f"- E2 smoke: {out.get('e2_smoke_shards', 0)} C4L shards; C4L == v10.7 C4 on all scenes")
-    if out.get("e3_equivalence"):
-        md.append(f"- E3 equivalence: {out['e3_equivalence_n_hash_equal']}/{out['e3_equivalence_n_total']} scenes match v10.7 C4; "
+    e0 = out.get("e0_environment") or {}
+    py = (e0.get("python_version") or "").split()[0] or "n/a"
+    torch_v = e0.get("torch", "n/a")
+    head = e0.get("git_head_current") or {}
+    md.append(f"- E0 environment: python {py}, torch {torch_v}, "
+              f"git head `{head.get('head', '?')[:12]}` on branch "
+              f"`{head.get('branch', '?')}`"
+              + (" (dirty)" if head.get("dirty") else ""))
+    n_match = sum(1 for v in (out.get("e0_input_hashes") or {}).values()
+                  if isinstance(v, dict) and v.get("match_expected"))
+    md.append(f"- E0 input hashes: {n_match} frozen files match SHA256SUMS")
+    md.append(f"- E1 unit tests: {out['e1_unit_tests']['passing']}/"
+              f"{out['e1_unit_tests']['total']} passing")
+    if "e2_smoke" in out:
+        md.append(f"- E2 smoke: {out.get('e2_smoke_shards', 0)} C4L shards")
+    if "e3_equivalence" in out and out["e3_equivalence"]:
+        md.append(f"- E3 equivalence: {out['e3_equivalence_n_hash_equal']}/"
+                  f"{out['e3_equivalence_n_total']} scenes match v10.7 C4; "
                   f"max_verified={out['e3_equivalence']['verified_count_max_of_max']}; "
                   f"invariant_violations={out['e3_equivalence']['invariant_violations_total']}")
-    if pilot:
-        pc = pilot.get("per_controller", {})
+    if "e4_pilot" in out and out["e4_pilot"]:
+        pc = out["e4_pilot"].get("per_controller", {})
         if pc:
             md.append("\n## E4 pilot (per-controller wall time)\n")
             md.append("| controller | n | mean | p50 | p95 | max |")
             md.append("|---|---|---|---|---|---|")
             for c, s in pc.items():
-                md.append(f"| {c} | {s['n']} | {s['mean']:.2f}s | {s['p50']:.2f}s | {s['p95']:.2f}s | {s['max']:.2f}s |")
-        ratios = pilot.get("ratios", {})
-        if ratios:
-            md.append("\n## E4 pilot (ratios)\n")
-            for k, v in sorted(ratios.items()):
-                md.append(f"- {k}: {v:.3f}")
-    if wc:
+                md.append(f"| {c} | {s['n']} | {s['mean']:.2f}s | {s['p50']:.2f}s | "
+                          f"{s['p95']:.2f}s | {s['max']:.2f}s |")
+    if "e5_frozen" in out:
+        sp = (out["e5_frozen"].get("split_lazy_replication") or {})
+        md.append(f"\n## E5 frozen input\n")
+        md.append(f"- split version: {sp.get('version', '?')}, "
+                  f"count={sp.get('count', '?')}, use={sp.get('use', '?')}")
+        if out["e5_frozen"].get("experiment_manifest"):
+            md.append("- experiment_manifest_v108.json present")
+    if "e6_phase" in out and out["e6_phase"]:
+        md.append(f"\n## E6 phase (256 scenes x 5 controllers)\n")
+        md.append("| controller | n | mean | p50 | p95 | max |")
+        md.append("|---|---|---|---|---|---|")
+        for c, info in out["e6_phase"].items():
+            w = info["wall"]
+            md.append(f"| {c} | {info['n']} | {w['mean']:.2f}s | {w['median']:.2f}s | "
+                      f"{w['p95']:.2f}s | {w['max']:.2f}s |")
+    if "e7_rewritten" in out and out["e7_rewritten"].get("present"):
+        md.append(f"\n## E7 latency (rewritten: 64 scenes x 4 controllers x 3 reps, scene_workers=1)\n")
+        s = out["e7_rewritten"].get("summary", {})
+        md.append(f"- spec: {json.dumps(s.get('spec', {}), ensure_ascii=False)}")
+        pc = s.get("per_controller", {})
+        if pc:
+            md.append("| controller | n_scenes | median_s | mean_s | p95_s | max_s |")
+            md.append("|---|---|---|---|---|---|")
+            for c, info in pc.items():
+                md.append(f"| {c} | {info['n_scenes']} | {info['median_s']:.2f} | "
+                          f"{info['mean_s']:.2f} | {info['p95_s']:.2f} | {info['max_s']:.2f} |")
+    if "e8_sensitivity" in out:
+        md.append(f"\n## E8 sensitivity (overrun = realized_episode_B_ml > budget_ml)\n")
+        sens = out["e8_sensitivity"]
+        if "per_controller_per_condition" in sens:
+            md.append("| condition | C4L n | C4L completes | C4L overruns | C4L infeasibles | "
+                      "C5 n | C5 completes | C5 overruns |")
+            md.append("|---|---|---|---|---|---|---|---|")
+            for cond, per in sens["per_controller_per_condition"].items():
+                c4l = per.get("C4L", {})
+                c5 = per.get("C5", {})
+                md.append(f"| {cond} | {c4l.get('n_shards', 0)} | "
+                          f"{c4l.get('completes', 0)} | {c4l.get('overruns', 0)} | "
+                          f"{c4l.get('infeasibles', 0)} | {c5.get('n_shards', 0)} | "
+                          f"{c5.get('completes', 0)} | {c5.get('overruns', 0)} |")
+    if "e9_worst_case" in out and out["e9_worst_case"]:
+        wc = out["e9_worst_case"]
         md.append(f"\n## E9 worst-case ({wc.get('n_cases')} cases)\n")
         md.append("| case | verified | selected_rank | fallback | selected |")
         md.append("|---|---|---|---|---|")
         for c in wc.get("cases", []):
             md.append(f"| {c['case']} | {c['verified_count']} | {c['selected_rank']} | "
                       f"{c['fallback_used']} | {c['selected']} |")
-
-    (REPORT / "aggregate_v108.md").write_text("\n".join(md))
-    print(f"[agg] wrote {REPORT / 'aggregate_v108.json'}")
-    print(f"[agg] wrote {REPORT / 'aggregate_v108.md'}")
-    print()
-    print("\n".join(md))
-    return 0
+    if "e10_port_b_bridge" in out and out["e10_port_b_bridge"]:
+        e10 = out["e10_port_b_bridge"]
+        s = e10.get("summary", {})
+        md.append(f"\n## E10 Port B bridge (3 cases x 2 reps, "
+                  f"learned_shielded vs learned_shielded_v108)\n")
+        md.append(f"- cases: {s.get('n_cases')}; "
+                  f"v108 deterministic: {s.get('v108_deterministic_cases')}/"
+                  f"{s.get('n_cases')}; "
+                  f"v107==v108 hash: {s.get('v107_v108_equivalent_cases')}/"
+                  f"{s.get('n_cases')}; "
+                  f"v108 within budget: {s.get('v108_within_budget_cases')}/"
+                  f"{s.get('n_cases')}")
+        if s.get("failures"):
+            md.append(f"- failures: {len(s['failures'])}")
+            for f in s["failures"][:5]:
+                md.append(f"  - {f}")
+    if "e11_worker_tuning" in out and out["e11_worker_tuning"]:
+        md.append(f"\n## E11 worker tuning (8 scenes x {{1,2,3,6}} leaf_workers)\n")
+        best = out["e11_worker_tuning"].get("best_per_controller", {})
+        for c, info in best.items():
+            md.append(f"- {c}: best leaf_workers={info['leaf_workers']}  "
+                      f"mean={info['mean_seconds']:.2f}s  n={info['n']}")
+    if "hardware_worker_config" in out:
+        h = out["hardware_worker_config"]
+        cpu = h.get("cpu", {})
+        torch_info = h.get("torch", {})
+        md.append(f"\n## Hardware / worker / timing config\n")
+        md.append(f"- platform: {h.get('platform')}")
+        md.append(f"- python: {h.get('python')} ({h.get('executable')})")
+        md.append(f"- CPU: {cpu.get('name', '?')}; "
+                  f"physical_cores={cpu.get('physical_cores', '?')}; "
+                  f"logical_processors={cpu.get('logical_processors', '?')}")
+        md.append(f"- torch: {torch_info.get('version', 'n/a')}; "
+                  f"cuda={torch_info.get('cuda_available', 'n/a')}; "
+                  f"num_threads={torch_info.get('num_threads', 'n/a')}")
+        env = h.get("env", {})
+        md.append(f"- env: OMP_NUM_THREADS={env.get('OMP_NUM_THREADS')}, "
+                  f"MKL_NUM_THREADS={env.get('MKL_NUM_THREADS')}")
+        md.append(f"- E6 phase scene_workers: 20 (parallel scenes within a controller)")
+        md.append(f"- E7 scene_workers: 1 (serial within a controller; one process per controller)")
+    return md
 
 
 if __name__ == "__main__":

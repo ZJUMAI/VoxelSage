@@ -77,6 +77,10 @@ def main(argv=None) -> int:
                         default=REPO / "results/clinical_window_v10_6_shielded_learning/runs/bc/config_05_seed_2026081603/epoch_05.pt")
     parser.add_argument("--scene-workers", type=int, default=20)
     parser.add_argument("--limit", type=int, default=64)
+    parser.add_argument("--offset", type=int, default=0,
+                        help="Skip the first N scenarios of the split; used to "
+                             "extend the 64-scene sensitivity subset to 128 "
+                             "scenes without re-running the first 64.")
     parser.add_argument("--controllers", default="C0,C3,C4E,C4L,C5")
     parser.add_argument("--conditions", default="S0,S1,S2,S3,S4")
     args = parser.parse_args(argv)
@@ -87,7 +91,7 @@ def main(argv=None) -> int:
 
     split = json.loads(args.split_file.read_text())
     base = json.loads(args.baseline_file.read_text())
-    scenes = split["scenarios"][:args.limit]
+    scenes = split["scenarios"][args.offset:args.offset + args.limit]
     margin = args.margin
 
     for cond in conds:

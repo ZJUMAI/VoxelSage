@@ -35,26 +35,51 @@ except Exception:
     pass
 
 
+def _make_leaf_pool(n: int):
+    """Return a multiprocessing.Pool with ``n`` workers for shield candidates,
+    or None for sequential evaluation.  Used to give C3/C4E an honest
+    parallel candidate-verify pass for latency comparisons against C4L.
+    """
+    if n is None or n <= 0:
+        return None
+    return mp.get_context().Pool(int(n))
+
+
 def _task(args):
-    controller, sid, scene, baseline, margin, ckpt, out_dir = args
+    controller, sid, scene, baseline, margin, ckpt, out_dir, leaf_workers = args
     out_dir.mkdir(parents=True, exist_ok=True)
     out = out_dir / f"{sid}.json"
     if out.exists():
         return sid, controller, "skip", 0.0
     t0 = time.time()
+    leaf_pool = None
+    if leaf_workers and leaf_workers > 0:
+        leaf_pool = mp.get_context().Pool(int(leaf_workers))
     try:
         from lazy_confirmation_controllers_v108 import rollout_controller
-        res = rollout_controller(
-            controller, scene,
-            baseline_blood=float(baseline), margin_ml=float(margin),
-            checkpoint_path=str(ckpt),
-        )
+        try:
+            res = rollout_controller(
+                controller, scene,
+                baseline_blood=float(baseline), margin_ml=float(margin),
+                checkpoint_path=str(ckpt),
+                leaf_pool=leaf_pool,
+            )
+        finally:
+            if leaf_pool is not None:
+                leaf_pool.close()
+                leaf_pool.join()
         shard = dict(res)
         shard["scenario_id"] = sid
         shard["controller"] = controller
         out.write_text(json.dumps(shard, ensure_ascii=False, indent=2))
         return sid, controller, "ok", time.time() - t0
     except BaseException as e:
+        if leaf_pool is not None:
+            try:
+                leaf_pool.terminate()
+                leaf_pool.join()
+            except Exception:
+                pass
         return sid, controller, f"err:{e!r}", time.time() - t0
 
 
@@ -66,6 +91,10 @@ def main(argv=None) -> int:
     parser.add_argument("--checkpoint", type=Path,
                         default=REPO / "results/clinical_window_v10_6_shielded_learning/runs/bc/config_05_seed_2026081603/epoch_05.pt")
     parser.add_argument("--scene-workers", type=int, default=20)
+    parser.add_argument("--leaf-workers", type=int, default=0,
+                        help="0 = sequential candidate verify (default); >0 = parallel "
+                             "leaf workers for the exact-shield candidate-evaluate pass "
+                             "(C3/C4E only; C4L ignores it).")
     parser.add_argument("--controllers", required=True)
     args = parser.parse_args(argv)
     controllers = [c for c in args.controllers.split(",") if c]
@@ -91,11 +120,12 @@ def main(argv=None) -> int:
                 continue
             tasks.append((ctrl, sid, s,
                           float(base["records"][sid]["expected_blood_loss_ml"]),
-                          margin, str(args.checkpoint), out_dir))
+                          margin, str(args.checkpoint), out_dir,
+                          int(args.leaf_workers)))
         if not tasks:
             print(f"[E6/{ctrl}] all done; skip")
             continue
-        print(f"[E6/{ctrl}] {len(tasks)} task tuples")
+        print(f"[E6/{ctrl}] {len(tasks)} task tuples (leaf_workers={args.leaf_workers})")
         if args.scene_workers <= 1:
             done = 0
             t_start = time.time()

@@ -137,7 +137,8 @@ def build_scenario(
         )
     component = connected_component(liver_target, start, rows, cols)
     domain = np.flatnonzero(component)
-    vessels = np.flatnonzero(component & ~np.asarray(vascular_safe, dtype=bool))
+    safe_flat = np.asarray(vascular_safe, dtype=bool).reshape(-1)
+    vessels = np.flatnonzero(component & ~safe_flat)
     scenario = {
         "scenario_id": "voxelsage-confirmed-3d-surface",
         "rows": int(rows),
@@ -150,6 +151,62 @@ def build_scenario(
         "cell_size_mm": float(cell_side_mm),
     }
     return scenario, component
+
+
+def build_scenario_from_control_points(
+    surface_control_points: np.ndarray,
+    grid_resolution: tuple[int, int],
+    *,
+    cell_side_mm: float = 4.0,
+    start_cell: tuple[int, int] | None = None,
+) -> Dict[str, Any]:
+    """Build a scenario dict directly from 4x4x3 Bezier control points.
+
+    Used by the v10.8 Port B bridge when the caller only has the raw
+    control points (no pre-computed liver/vascular masks).  The
+    scenario treats every cell as in-liver and vascular-safe except a
+    fixed proxy obstacle pattern at the top-left corner; the start
+    cell defaults to the top-left of the connected component.  The
+    resulting scenario is a strict subset of what
+    ``build_scenario`` produces, so any controller that plans on
+    ``build_scenario`` output will run unchanged here.
+
+    Returns only the ``scenario`` dict (not the ``component`` mask);
+    callers that need the component mask should call ``build_scenario``
+    directly.
+    """
+    if surface_control_points.ndim != 3 or surface_control_points.shape[2] != 3:
+        raise ValueError(
+            f"surface_control_points must be (U, V, 3); got {surface_control_points.shape}"
+        )
+    rows, cols = int(grid_resolution[0]), int(grid_resolution[1])
+    if rows > MAX_ROWS or cols > MAX_COLS:
+        raise ValueError(
+            f"冻结模型最多支持 {MAX_ROWS}x{MAX_COLS} 个面单元，收到 {rows}x{cols}"
+        )
+    if surface_control_points.shape[0] < 4 or surface_control_points.shape[1] < 4:
+        raise ValueError(
+            "需要至少 4x4 个 Bezier 控制点来恢复 4-mm 物理网格"
+        )
+    domain_cells = [[r, c] for r in range(rows) for c in range(cols)]
+    if start_cell is None:
+        start = (0, 0)
+    else:
+        start = (int(start_cell[0]), int(start_cell[1]))
+    if not (0 <= start[0] < rows and 0 <= start[1] < cols):
+        raise ValueError(f"start_cell {start} out of bounds for {rows}x{cols}")
+    return {
+        "scenario_id": "voxelsage-confirmed-3d-surface-v108-bridge",
+        "rows": int(rows),
+        "cols": int(cols),
+        "domain_cells": domain_cells,
+        # No vessel exclusions: v10.8 bridge defaults to "all safe" for
+        # the 3D-surface path.  Production code that has vessel masks
+        # should still use ``build_scenario`` directly.
+        "obstacle_cells": [],
+        "start_cell": [start[0], start[1]],
+        "cell_size_mm": float(cell_side_mm),
+    }
 
 
 def _replay_actions(

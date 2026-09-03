@@ -74,8 +74,9 @@ def select_lazy_v108(
     Returns
     -------
     target
-        The chosen target, or ``serpentine_target_of(env)`` if all
-        candidates are unsafe.
+        The chosen target, or ``None`` if all candidates are unsafe
+        (no safe action exists; the caller must abort the episode
+        rather than execute the unsafe serpentine fallback).
     diagnostic
         Dictionary with the v10.8 diagnostic fields listed in plan §3.4.
     """
@@ -138,19 +139,25 @@ def select_lazy_v108(
         "selected_safe_exact": False,
         "fallback_used": False,
         "fallback_reason": None,
+        "infeasible": False,
         "unshielded_top1": unshielded_top1,
         "verified_records": verified,
         "rejected_records": rejected,
     }
 
     if chosen is None:
-        s_target = serpentine_target_of(env)
+        # No safe candidate: the controller is infeasible at this state.
+        # v10.8 C4L refuses to execute an unsafe action; the rollout
+        # loop will terminate the episode with failure_reason
+        # "infeasible_no_safe_candidate" rather than fall back to the
+        # unsafe serpentine target.
         diagnostic["fallback_used"] = True
-        diagnostic["fallback_reason"] = "all_candidates_unsafe"
-        diagnostic["selected_candidate_id"] = s_target
-        diagnostic["selected_rank"] = None  # selected via fallback, not from ranking
+        diagnostic["fallback_reason"] = "all_candidates_unsafe_infeasible"
+        diagnostic["selected_candidate_id"] = None
+        diagnostic["selected_rank"] = None
         diagnostic["safety_invariant_violation"] = True
-        return s_target, diagnostic
+        diagnostic["infeasible"] = True
+        return None, diagnostic
 
     diagnostic["selected_candidate_id"] = chosen.target
     diagnostic["selected_rank"] = verified.index(chosen)  # 0-based
@@ -224,17 +231,21 @@ def select_eager_audit_v108(
         "selected_safe_exact": False,
         "fallback_used": False,
         "fallback_reason": None,
+        "infeasible": False,
         "unshielded_top1": unshielded_top1,
         "verified_records": records,
         "rejected_records": [r for r in records if not r.safe_exact],
     }
     if not safe_records:
-        s_target = serpentine_target_of(env)
+        # No safe candidate: infeasible at this state.  Caller must
+        # refuse to execute rather than fall back to the unsafe
+        # serpentine target.
         diagnostic["fallback_used"] = True
-        diagnostic["fallback_reason"] = "all_candidates_unsafe"
-        diagnostic["selected_candidate_id"] = s_target
+        diagnostic["fallback_reason"] = "all_candidates_unsafe_infeasible"
+        diagnostic["selected_candidate_id"] = None
         diagnostic["safety_invariant_violation"] = True
-        return s_target, diagnostic
+        diagnostic["infeasible"] = True
+        return None, diagnostic
     chosen = max(safe_records, key=_record_max_key(score_map))
     diagnostic["selected_candidate_id"] = chosen.target
     diagnostic["selected_rank"] = records.index(chosen)

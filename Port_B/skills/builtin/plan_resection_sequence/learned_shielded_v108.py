@@ -28,12 +28,12 @@ from typing import Any
 
 import numpy as np
 
-from learned_shielded import (
+from skills.builtin.plan_resection_sequence.learned_shielded import (
     EXPECTED_CHECKPOINT_SHA256,
     POLICY_ID,
     _repo_root,
     _research_modules,
-    build_scenario,
+    build_scenario_from_control_points,
     configured_checkpoint_path,
     validate_checkpoint,
 )
@@ -82,7 +82,9 @@ def plan_learned_shielded_v108(
 
     checkpoint, sha = validate_checkpoint()
     rows, cols = int(grid_resolution[0]), int(grid_resolution[1])
-    scenario = build_scenario(surface_control_points, grid_resolution=(rows, cols))
+    scenario = build_scenario_from_control_points(
+        surface_control_points, grid_resolution=(rows, cols),
+    )
 
     t0 = time.time()
     baseline_res = v107_rollout(

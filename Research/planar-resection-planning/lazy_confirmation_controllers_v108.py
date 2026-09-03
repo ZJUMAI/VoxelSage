@@ -166,9 +166,17 @@ def rollout_controller(
             shield_intervention_count += 1
         if diag.get("fallback_used"):
             safety_invariant_violations += 1
-        s_selections += int(chosen == serpentine_target_of(env))
+        s_selections += int(chosen == serpentine_target_of(env)) if chosen is not None else 0
         if diag.get("selected_B_total") is not None:
             selected_max = max(selected_max, float(diag["selected_B_total"]))
+
+        if chosen is None:
+            # v10.8 C4L is infeasible at this state: no safe action
+            # exists.  Refuse to execute the unsafe serpentine fallback.
+            # Mark the episode as failure and stop the loop.
+            env.failure_reason = "infeasible_no_safe_candidate"
+            env.terminated = True
+            break
 
         actions.append(chosen)
         _step_macro_target(env, chosen)
@@ -187,6 +195,7 @@ def rollout_controller(
         "shield_intervention_count": int(shield_intervention_count),
         "s_selection_count": int(s_selections),
         "safety_invariant_violations": int(safety_invariant_violations),
+        "infeasible_count": int(1 if env.failure_reason == "infeasible_no_safe_candidate" else 0),
         "macro_action_count": len(actions),
         "transfer_count": int(env.transfer_count),
         "clamp_cycle_count": int(env.clamp_cycle_count),
