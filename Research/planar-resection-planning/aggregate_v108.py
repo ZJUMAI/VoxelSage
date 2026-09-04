@@ -333,6 +333,48 @@ def _load_e8(out):
             counts.setdefault(cond.name, {})[ctrl.name] = n
     out["e8_sensitivity_shard_counts"] = counts
 
+    # C4E fail-closed verification (Bryce follow-up 2026-09-04):
+    # confirm v10.7 eager C4 (== C4E) still uses the original
+    # serpentine-S fallback in S1/S2, while v10.8 lazy C4 (== C4L)
+    # uses the new infeasible fallback.  128 scenes per (cond, ctrl).
+    c4e_check = {}
+    for cond in ("S1", "S2"):
+        for ctrl in ("C4E", "C4L"):
+            p = V108 / "sensitivity" / cond / ctrl
+            if not p.exists():
+                continue
+            n = complete = overrun = infeasible = fallback_S = 0
+            for f in p.glob("*.json"):
+                try:
+                    j = json.loads(f.read_text(encoding="utf-8"))
+                except Exception:
+                    continue
+                n += 1
+                if bool(j.get("completion", False)):
+                    complete += 1
+                realized = float(j.get("realized_episode_B_ml", 0.0))
+                budget = float(j.get("budget_ml", 0.0))
+                fail = j.get("failure_reason") or ""
+                s_selections = int(j.get("s_selection_count", 0))
+                shield_interventions = int(j.get("shield_intervention_count", 0))
+                if realized > budget + 1e-9:
+                    overrun += 1
+                if "infeasible" in fail or bool(j.get("infeasible", False)):
+                    infeasible += 1
+                # C4E (v10.7) fallback-to-S indicator: completed with
+                # overrun but no shield intervention (controller went
+                # straight to serpentine S for every step).
+                if (realized > budget + 1e-9
+                        and shield_interventions == 0
+                        and s_selections > 0
+                        and "infeasible" not in fail):
+                    fallback_S += 1
+            c4e_check[f"{cond}/{ctrl}"] = {
+                "n": n, "complete": complete, "overrun": overrun,
+                "infeasible": infeasible, "fallback_to_S": fallback_S,
+            }
+    out["e8_c4_c4l_failclosed_verification"] = c4e_check
+
 
 def _load_e9(out):
     out["e9_worst_case"] = _load(V108 / "worst_case/worst_case_report.json")
@@ -462,6 +504,17 @@ def _build_markdown(out: dict) -> list[str]:
                           f"{c4l.get('completes', 0)} | {c4l.get('overruns', 0)} | "
                           f"{c4l.get('infeasibles', 0)} | {c5.get('n_shards', 0)} | "
                           f"{c5.get('completes', 0)} | {c5.get('overruns', 0)} |")
+    if "e8_c4_c4l_failclosed_verification" in out:
+        md.append("\n## E8 C4/C4L fail-closed verification (128 scenes per cell)\n")
+        md.append("C4E = v10.7 eager C4 (unchanged, original serpentine-S fallback).  "
+                  "C4L = v10.8 lazy C4 (new infeasible fallback when all candidates unsafe).  "
+                  "Both controllers are run on the same 128 scenes per condition to make "
+                  "the two fall-closed behaviors comparable.\n")
+        md.append("| cond/ctrl | n | complete | overrun | infeasible | fallback to S |")
+        md.append("|---|---|---|---|---|---|")
+        for k, v in out["e8_c4_c4l_failclosed_verification"].items():
+            md.append(f"| {k} | {v['n']} | {v['complete']} | {v['overrun']} | "
+                      f"{v['infeasible']} | {v['fallback_to_S']} |")
     if "e9_worst_case" in out and out["e9_worst_case"]:
         wc = out["e9_worst_case"]
         md.append(f"\n## E9 worst-case ({wc.get('n_cases')} cases)\n")
