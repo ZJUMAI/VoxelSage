@@ -12,9 +12,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import multiprocessing as mp
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -42,8 +44,22 @@ SENSITIVITY_CONDITIONS = {
 }
 
 
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _repository_commit() -> str:
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=REPO, text=True
+    ).strip()
+
+
 def _task(args):
-    controller, cond, sid, scene, baseline, margin, ckpt, cfg, out_dir = args
+    controller, cond, sid, scene, baseline, margin, ckpt, cfg, out_dir, metadata = args
     out_dir.mkdir(parents=True, exist_ok=True)
     out = out_dir / f"{sid}.json"
     if out.exists():
@@ -60,7 +76,10 @@ def _task(args):
         shard["scenario_id"] = sid
         shard["controller"] = controller
         shard["condition"] = cond
-        out.write_text(json.dumps(shard, ensure_ascii=False, indent=2))
+        shard["evaluation_metadata"] = metadata
+        tmp = out.with_suffix(f"{out.suffix}.{os.getpid()}.tmp")
+        tmp.write_text(json.dumps(shard, ensure_ascii=False, indent=2), encoding="utf-8")
+        tmp.replace(out)
         return sid, controller, cond, "ok", time.time() - t0
     except BaseException as e:
         return sid, controller, cond, f"err:{e!r}", time.time() - t0
@@ -83,21 +102,46 @@ def main(argv=None) -> int:
                              "scenes without re-running the first 64.")
     parser.add_argument("--controllers", default="C0,C3,C4E,C4L,C5")
     parser.add_argument("--conditions", default="S0,S1,S2,S3,S4")
+    parser.add_argument(
+        "--output-root", type=Path, default=SHARDS_OUT,
+        help="Independent shard root; use a fresh directory for a new semantics audit.",
+    )
     args = parser.parse_args(argv)
     controllers = [c for c in args.controllers.split(",") if c]
     conds = [c for c in args.conditions.split(",") if c]
 
-    SHARDS_OUT.mkdir(parents=True, exist_ok=True)
+    args.output_root.mkdir(parents=True, exist_ok=True)
 
     split = json.loads(args.split_file.read_text())
     base = json.loads(args.baseline_file.read_text())
     scenes = split["scenarios"][args.offset:args.offset + args.limit]
     margin = args.margin
+    metadata = {
+        "semantics": "lazy_exact_fail_closed_no_fallback",
+        "repository_commit": _repository_commit(),
+        "runner": Path(__file__).name,
+        "split_sha256": _sha256(args.split_file),
+        "baseline_sha256": _sha256(args.baseline_file),
+        "checkpoint_sha256": _sha256(args.checkpoint),
+        "margin_ml": margin,
+    }
+    manifest = {
+        **metadata,
+        "controllers": controllers,
+        "conditions": conds,
+        "offset": args.offset,
+        "limit": args.limit,
+        "scene_workers": args.scene_workers,
+        "output_root": str(args.output_root.resolve()),
+    }
+    (args.output_root / "run_manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
 
     for cond in conds:
         cfg = SENSITIVITY_CONDITIONS[cond]
         for ctrl in controllers:
-            out_dir = SHARDS_OUT / cond / ctrl
+            out_dir = args.output_root / cond / ctrl
             out_dir.mkdir(parents=True, exist_ok=True)
             tasks = []
             for s in scenes:
@@ -109,7 +153,7 @@ def main(argv=None) -> int:
                     continue
                 tasks.append((ctrl, cond, sid, s,
                               float(base["records"][sid]["expected_blood_loss_ml"]),
-                              margin, str(args.checkpoint), cfg, out_dir))
+                              margin, str(args.checkpoint), cfg, out_dir, metadata))
             if not tasks:
                 print(f"[E8/{cond}/{ctrl}] all done; skip")
                 continue
