@@ -15,14 +15,14 @@ and ``completion == false``.  These episodes do NOT count as overruns
 (they do not commit to an unsafe plan), but they are reported
 separately as ``infeasibles``.
 
-Shards captured before the fallback rewrite (e.g. C4L on S1, S2) may
-still show the older "fall back to serpentine S" behaviour; for those
-the ``failure_reason`` will be ``None`` and ``realized_episode_B_ml``
-reflects the unsafe S path.  Re-running those shards is the v10.8
-follow-up plan (see also E8 128-scene补跑).
+Legacy S1/S2 directories may still contain the older "fall back to
+serpentine S" behaviour.  Pass a fresh isolated result directory with
+``--final-c4l-root`` to replace those cells; the aggregator verifies the
+recorded commit and fail-closed semantics before reporting them.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import statistics
 from collections import defaultdict
@@ -50,12 +50,30 @@ def _stats(vals):
     }
 
 
-def main():
-    out: dict = {"conditions": [], "per_controller_per_condition": {}}
-    fallback_version_note = (
-        "S1/S2 C4L shards captured before the infeasible fallback rewrite; "
-        "realized_episode_B_ml reflects the unsafe S-fallback path."
+def _load_rows(directory: Path) -> dict[str, dict]:
+    rows = {}
+    for path in sorted(directory.glob("*.json")):
+        row = json.loads(path.read_text(encoding="utf-8"))
+        rows[row["scenario_id"]] = row
+    return rows
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--final-c4l-root", type=Path,
+        help="Fresh fail-closed C4L root used to replace S1/S2 legacy shards.",
     )
+    args = parser.parse_args(argv)
+    out: dict = {"conditions": [], "per_controller_per_condition": {}}
+    final_manifest = None
+    if args.final_c4l_root:
+        args.final_c4l_root = args.final_c4l_root.resolve()
+        final_manifest = json.loads(
+            (args.final_c4l_root / "run_manifest.json").read_text(encoding="utf-8")
+        )
+        if final_manifest.get("semantics") != "lazy_exact_fail_closed_no_fallback":
+            raise RuntimeError("Final C4L root does not declare fail-closed semantics")
     for cond in sorted(SENS.iterdir()):
         if not cond.is_dir():
             continue
@@ -64,6 +82,9 @@ def main():
         for ctrl in sorted(cond.iterdir()):
             if not ctrl.is_dir():
                 continue
+            source_dir = ctrl
+            if args.final_c4l_root and cond.name in {"S1", "S2"} and ctrl.name == "C4L":
+                source_dir = args.final_c4l_root / cond.name / ctrl.name
             walls = []
             completes = 0
             invariants = 0
@@ -71,11 +92,19 @@ def main():
             infeasibles = 0
             realized_B_values = []
             budget_values = []
-            for f in ctrl.glob("*.json"):
+            scenario_ids = set()
+            for f in source_dir.glob("*.json"):
                 try:
-                    j = json.loads(f.read_text())
+                    j = json.loads(f.read_text(encoding="utf-8"))
                 except Exception:
                     continue
+                scenario_ids.add(j.get("scenario_id"))
+                if source_dir != ctrl:
+                    metadata = j.get("evaluation_metadata") or {}
+                    if metadata.get("semantics") != final_manifest["semantics"]:
+                        raise RuntimeError(f"Unexpected semantics in {f}")
+                    if metadata.get("repository_commit") != final_manifest["repository_commit"]:
+                        raise RuntimeError(f"Mixed repository commit in {f}")
                 walls.append(float(j.get("wall_seconds", 0.0)))
                 if j.get("completion", False):
                     completes += 1
@@ -102,6 +131,8 @@ def main():
                 "overruns": overruns,
                 "infeasibles": infeasibles,
                 "n_shards": len(realized_B_values),
+                "n_unique_scenarios": len(scenario_ids),
+                "source": str(source_dir.relative_to(V108)),
             }
         out["per_controller_per_condition"][cond.name] = per_ctrl
     out["overrun_definition"] = (
@@ -112,7 +143,49 @@ def main():
         "all-unsafe -> terminate with failure_reason=infeasible_no_safe_candidate; "
         "no unsafe S action is executed"
     )
-    out["notes"] = fallback_version_note
+    if args.final_c4l_root:
+        audit = {
+            "source": str(args.final_c4l_root.relative_to(V108)),
+            "manifest": final_manifest,
+            "conditions": {},
+        }
+        for cond in ("S1", "S2"):
+            c4 = _load_rows(args.final_c4l_root / cond / "C4L")
+            c5 = _load_rows(SENS / cond / "C5")
+            if len(c4) != 128 or len(c5) != 128 or set(c4) != set(c5):
+                raise RuntimeError(f"Incomplete paired C4L/C5 sensitivity data for {cond}")
+            complete = {sid for sid, row in c4.items() if row.get("completion", False)}
+            infeasible = set(c4) - complete
+            c5_overrun = {
+                sid for sid, row in c5.items()
+                if float(row.get("realized_episode_B_ml", 0.0))
+                > float(row.get("budget_ml", 0.0)) + 1e-9
+            }
+            audit["conditions"][cond] = {
+                "n": len(c4),
+                "c4l_complete": len(complete),
+                "c4l_infeasible": len(infeasible),
+                "c4l_overrun": sum(
+                    float(row.get("realized_episode_B_ml", 0.0))
+                    > float(row.get("budget_ml", 0.0)) + 1e-9
+                    for row in c4.values()
+                ),
+                "infeasible_at_zero_macro_actions": sum(
+                    int(c4[sid].get("macro_action_count", -1)) == 0 for sid in infeasible
+                ),
+                "c5_overrun": len(c5_overrun),
+                "c5_overrun_and_c4l_infeasible": len(c5_overrun & infeasible),
+                "c5_in_budget_and_c4l_infeasible": len(infeasible - c5_overrun),
+            }
+        out["final_failclosed_audit"] = audit
+        out["notes"] = (
+            "S1/S2 C4L results come from a fresh, isolated 128-scene run with "
+            "uniform lazy-exact fail-closed semantics; legacy mixed shards are not summarized."
+        )
+    else:
+        out["notes"] = (
+            "No final C4L root supplied; S1/S2 may contain legacy mixed-semantics shards."
+        )
     REPORT.write_text(json.dumps(out, ensure_ascii=False, indent=2))
     print(f"[E8] wrote {REPORT}")
     print()
