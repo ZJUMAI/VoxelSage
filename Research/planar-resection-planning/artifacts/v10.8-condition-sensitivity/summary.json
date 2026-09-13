@@ -1,0 +1,1074 @@
+{
+  "version": "v10.8-condition-budget-sensitivity-v1",
+  "n_per_condition_controller": 128,
+  "verified_shards": 1920,
+  "source_root": "D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\sensitivity_condition_budget_20260913",
+  "source_manifest": {
+    "semantics": "lazy_exact_fail_closed_no_fallback",
+    "budget_semantics": "same_condition_c0_plus_frozen_margin_v1",
+    "repository_commit": "e134767c62c6e2e9250854075028b144cc41f4ec",
+    "runner": "evaluate_v108_sensitivity.py",
+    "split_sha256": "56a928b5004b964bab51b96b376cf17166846fff9d1da71a912c1918c485db20",
+    "reference_s0_baseline_sha256": "b7e2b554d6a0526322b2ed11c2ae9639aae5bf23755600fa7399c18905d1c6d3",
+    "runner_sha256": "325aa6d2cdcdd1cd810558ca9766deb1485ef279aa87f31a7ff3461d672685ab",
+    "checkpoint_sha256": "c07904502d6b71a74484adb1c27971c77cdf6a61bb20b04f1f39d786d61a70be",
+    "margin_ml": 16.07054347826075,
+    "controllers": [
+      "C0",
+      "C4L",
+      "C5"
+    ],
+    "conditions": [
+      "S0",
+      "S1",
+      "S2",
+      "S3",
+      "S4"
+    ],
+    "offset": 0,
+    "limit": 128,
+    "scene_workers": 20,
+    "output_root": "D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\sensitivity_condition_budget_20260913"
+  },
+  "source_manifest_sha256": "b35842638025cc1320e10372a65a9901688bf4106f24a2052cd93341a489595f",
+  "input_files": {
+    "split_sha256": "D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\frozen\\split_lazy_replication.json",
+    "reference_s0_baseline_sha256": "D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\frozen\\baseline_lazy_replication.json",
+    "checkpoint_sha256": "D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_6_shielded_learning\\runs\\bc\\config_05_seed_2026081603\\epoch_05.pt",
+    "runner_sha256": "D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\evaluate_v108_sensitivity.py"
+  },
+  "report_script_sha256": "8164d49ce01f3bec1bfd9ed6885da5238778132bbea52e08d27ba7f4a8115061",
+  "scenario_ids": [
+    "clinical-d-v10.8-lazy-0000",
+    "clinical-d-v10.8-lazy-0001",
+    "clinical-d-v10.8-lazy-0002",
+    "clinical-d-v10.8-lazy-0003",
+    "clinical-d-v10.8-lazy-0004",
+    "clinical-d-v10.8-lazy-0005",
+    "clinical-d-v10.8-lazy-0006",
+    "clinical-d-v10.8-lazy-0007",
+    "clinical-d-v10.8-lazy-0008",
+    "clinical-d-v10.8-lazy-0009",
+    "clinical-d-v10.8-lazy-0010",
+    "clinical-d-v10.8-lazy-0011",
+    "clinical-d-v10.8-lazy-0012",
+    "clinical-d-v10.8-lazy-0013",
+    "clinical-d-v10.8-lazy-0014",
+    "clinical-d-v10.8-lazy-0015",
+    "clinical-d-v10.8-lazy-0016",
+    "clinical-d-v10.8-lazy-0017",
+    "clinical-d-v10.8-lazy-0018",
+    "clinical-d-v10.8-lazy-0019",
+    "clinical-d-v10.8-lazy-0020",
+    "clinical-d-v10.8-lazy-0021",
+    "clinical-d-v10.8-lazy-0022",
+    "clinical-d-v10.8-lazy-0023",
+    "clinical-d-v10.8-lazy-0024",
+    "clinical-d-v10.8-lazy-0025",
+    "clinical-d-v10.8-lazy-0026",
+    "clinical-d-v10.8-lazy-0027",
+    "clinical-d-v10.8-lazy-0028",
+    "clinical-d-v10.8-lazy-0029",
+    "clinical-d-v10.8-lazy-0030",
+    "clinical-d-v10.8-lazy-0031",
+    "clinical-d-v10.8-lazy-0032",
+    "clinical-d-v10.8-lazy-0033",
+    "clinical-d-v10.8-lazy-0034",
+    "clinical-d-v10.8-lazy-0035",
+    "clinical-d-v10.8-lazy-0036",
+    "clinical-d-v10.8-lazy-0037",
+    "clinical-d-v10.8-lazy-0038",
+    "clinical-d-v10.8-lazy-0039",
+    "clinical-d-v10.8-lazy-0040",
+    "clinical-d-v10.8-lazy-0041",
+    "clinical-d-v10.8-lazy-0042",
+    "clinical-d-v10.8-lazy-0043",
+    "clinical-d-v10.8-lazy-0044",
+    "clinical-d-v10.8-lazy-0045",
+    "clinical-d-v10.8-lazy-0046",
+    "clinical-d-v10.8-lazy-0047",
+    "clinical-d-v10.8-lazy-0048",
+    "clinical-d-v10.8-lazy-0049",
+    "clinical-d-v10.8-lazy-0050",
+    "clinical-d-v10.8-lazy-0051",
+    "clinical-d-v10.8-lazy-0052",
+    "clinical-d-v10.8-lazy-0053",
+    "clinical-d-v10.8-lazy-0054",
+    "clinical-d-v10.8-lazy-0055",
+    "clinical-d-v10.8-lazy-0056",
+    "clinical-d-v10.8-lazy-0057",
+    "clinical-d-v10.8-lazy-0058",
+    "clinical-d-v10.8-lazy-0059",
+    "clinical-d-v10.8-lazy-0060",
+    "clinical-d-v10.8-lazy-0061",
+    "clinical-d-v10.8-lazy-0062",
+    "clinical-d-v10.8-lazy-0063",
+    "clinical-d-v10.8-lazy-0064",
+    "clinical-d-v10.8-lazy-0065",
+    "clinical-d-v10.8-lazy-0066",
+    "clinical-d-v10.8-lazy-0067",
+    "clinical-d-v10.8-lazy-0068",
+    "clinical-d-v10.8-lazy-0069",
+    "clinical-d-v10.8-lazy-0070",
+    "clinical-d-v10.8-lazy-0071",
+    "clinical-d-v10.8-lazy-0072",
+    "clinical-d-v10.8-lazy-0073",
+    "clinical-d-v10.8-lazy-0074",
+    "clinical-d-v10.8-lazy-0075",
+    "clinical-d-v10.8-lazy-0076",
+    "clinical-d-v10.8-lazy-0077",
+    "clinical-d-v10.8-lazy-0078",
+    "clinical-d-v10.8-lazy-0079",
+    "clinical-d-v10.8-lazy-0080",
+    "clinical-d-v10.8-lazy-0081",
+    "clinical-d-v10.8-lazy-0082",
+    "clinical-d-v10.8-lazy-0083",
+    "clinical-d-v10.8-lazy-0084",
+    "clinical-d-v10.8-lazy-0085",
+    "clinical-d-v10.8-lazy-0086",
+    "clinical-d-v10.8-lazy-0087",
+    "clinical-d-v10.8-lazy-0088",
+    "clinical-d-v10.8-lazy-0089",
+    "clinical-d-v10.8-lazy-0090",
+    "clinical-d-v10.8-lazy-0091",
+    "clinical-d-v10.8-lazy-0092",
+    "clinical-d-v10.8-lazy-0093",
+    "clinical-d-v10.8-lazy-0094",
+    "clinical-d-v10.8-lazy-0095",
+    "clinical-d-v10.8-lazy-0096",
+    "clinical-d-v10.8-lazy-0097",
+    "clinical-d-v10.8-lazy-0098",
+    "clinical-d-v10.8-lazy-0099",
+    "clinical-d-v10.8-lazy-0100",
+    "clinical-d-v10.8-lazy-0101",
+    "clinical-d-v10.8-lazy-0102",
+    "clinical-d-v10.8-lazy-0103",
+    "clinical-d-v10.8-lazy-0104",
+    "clinical-d-v10.8-lazy-0105",
+    "clinical-d-v10.8-lazy-0106",
+    "clinical-d-v10.8-lazy-0107",
+    "clinical-d-v10.8-lazy-0108",
+    "clinical-d-v10.8-lazy-0109",
+    "clinical-d-v10.8-lazy-0110",
+    "clinical-d-v10.8-lazy-0111",
+    "clinical-d-v10.8-lazy-0112",
+    "clinical-d-v10.8-lazy-0113",
+    "clinical-d-v10.8-lazy-0114",
+    "clinical-d-v10.8-lazy-0115",
+    "clinical-d-v10.8-lazy-0116",
+    "clinical-d-v10.8-lazy-0117",
+    "clinical-d-v10.8-lazy-0118",
+    "clinical-d-v10.8-lazy-0119",
+    "clinical-d-v10.8-lazy-0120",
+    "clinical-d-v10.8-lazy-0121",
+    "clinical-d-v10.8-lazy-0122",
+    "clinical-d-v10.8-lazy-0123",
+    "clinical-d-v10.8-lazy-0124",
+    "clinical-d-v10.8-lazy-0125",
+    "clinical-d-v10.8-lazy-0126",
+    "clinical-d-v10.8-lazy-0127"
+  ],
+  "margin_ml": 16.07054347826075,
+  "root_cause": "The old v10.8 runners reused S0 C0 blood loss for every condition; S1/S2 were often over-restricted and S3/S4 often over-permissive. Each corrected budget uses direct C0 under that condition plus the unchanged fixed margin.",
+  "definitions": {
+    "complete": "completion=true and failure_reason=null; failure is the complement",
+    "overrun": "realized_episode_B_ml > budget_ml + 1e-9, independently of completion/infeasibility",
+    "paired_deltas": "named first controller minus second, same scenarios where both completed; failures explicitly excluded",
+    "upper_cvar10": "mean of the largest ceil(10% * n) values; descriptive, no significance test",
+    "shard_set_sha256": "SHA256 of sorted-key compact JSON mapping scenario_id to each shard file SHA256"
+  },
+  "conditions": {
+    "S0": {
+      "condition_config": {
+        "max_clamp_minutes": 15.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 1.0
+      },
+      "baseline_sha256": "43aa5404fb2685f0c8aaf7ff16eae8fba5e18847326dd84a517f86d180ddbb3f",
+      "controller_shard_set_sha256": {
+        "C0": "29f87fcd508bc374b751a910a635ccc5d028957e25b36803914d2829ff564f2e",
+        "C4L": "3253ccb497f1a224f7ba5bdbf9e0447ecfb546cfd3a29065605c526f7b93c146",
+        "C5": "f263216ec351d5c25e542403e3c97c6571d6f83a1000676b1f20ef2482928de4"
+      },
+      "controllers": {
+        "C0": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 34.463043478260914,
+            "median": 33.0086956521738,
+            "min": 21.286956521739036,
+            "max": 56.62608695652266,
+            "upper_cvar10": 48.86688963210761
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 293.2961956521706,
+            "median": 282.49565217389113,
+            "min": 0.0,
+            "max": 960.2782608695652,
+            "upper_cvar10": 790.5739130434649
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -16.070543478260753,
+            "median": -16.07054347826075,
+            "min": -16.070543478260788,
+            "max": -16.07054347826073,
+            "upper_cvar10": -16.07054347826073
+          }
+        },
+        "C4L": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.571195652173934,
+            "median": 32.34782608695638,
+            "min": 21.147826086956428,
+            "max": 54.678260869566046,
+            "upper_cvar10": 47.5826086956527
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 187.02078804347894,
+            "median": 198.6782608695652,
+            "min": 0.0,
+            "max": 662.2608695652782,
+            "upper_cvar10": 512.4561872909726
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -122.34595108695238,
+            "median": -76.0879347826228,
+            "min": -583.1314130434644,
+            "max": -16.07054347814619,
+            "upper_cvar10": -16.07054347825193
+          }
+        },
+        "C5": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 14,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.480978260869584,
+            "median": 32.24347826086942,
+            "min": 21.147826086956428,
+            "max": 54.678260869566046,
+            "upper_cvar10": 47.56120401337845
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 198.9531249999983,
+            "median": 198.6782608695652,
+            "min": 0.0,
+            "max": 662.2608695652175,
+            "upper_cvar10": 530.2862876254072
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -110.41361413043303,
+            "median": -67.80967391305757,
+            "min": -583.1314130434644,
+            "max": 223.99902173918156,
+            "upper_cvar10": 88.0445066889526
+          }
+        }
+      },
+      "margin_divided_by_mean_C0_B": 0.05479288076862519,
+      "C4L_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.8918478260869793,
+          "median": -0.8347826086956474,
+          "min": -2.504347826087084,
+          "max": 0.0,
+          "upper_cvar10": -0.19264214046822767
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -106.27540760869162,
+          "median": -60.01739130436205,
+          "min": -567.0608695652036,
+          "max": 1.1459633242338896e-10,
+          "upper_cvar10": 8.815102494106842e-12
+        }
+      },
+      "C5_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.9820652173913279,
+          "median": -0.83478260869569,
+          "min": -2.782608695652307,
+          "max": -0.1391304347826079,
+          "upper_cvar10": -0.27826086956521795
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -94.34307065217229,
+          "median": -51.739130434796834,
+          "min": -567.0608695652036,
+          "max": 240.0695652174423,
+          "upper_cvar10": 104.11505016721334
+        }
+      },
+      "C4L_minus_C5": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": 0.09021739130434858,
+          "median": 0.0,
+          "min": -0.4173913043478521,
+          "max": 2.086956521739122,
+          "upper_cvar10": 0.8240802675585357
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -11.932336956519348,
+          "median": 0.0,
+          "min": -264.90434782608696,
+          "max": 66.22608695658255,
+          "upper_cvar10": 10.188628762546482
+        }
+      }
+    },
+    "S1": {
+      "condition_config": {
+        "max_clamp_minutes": 12.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 1.0
+      },
+      "baseline_sha256": "1f7f53a763959fe05d94ba0dff2c3032d630555e7d52ee4584903d882a0d17e4",
+      "controller_shard_set_sha256": {
+        "C0": "8799fc672d92604ec5fa56c423a9e836d283adac8b8dca2628788093c4064edd",
+        "C4L": "b517d4fb20adfd7c6ac0aed54e690a107abefe4e8ed6e6b2e514bf1eb22cb9e1",
+        "C5": "d5932beb444e2c67d4f82599dc9608102455f2edf429a11fa3a77f1120178ad6"
+      },
+      "controllers": {
+        "C0": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 34.463043478260914,
+            "median": 33.008695652173806,
+            "min": 21.286956521739036,
+            "max": 56.62608695652266,
+            "upper_cvar10": 48.86688963210761
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 374.7206521739148,
+            "median": 331.1304347825885,
+            "min": 0.0,
+            "max": 1291.4086956521742,
+            "upper_cvar10": 975.4020066889583
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -16.070543478260756,
+            "median": -16.07054347826075,
+            "min": -16.070543478260788,
+            "max": -16.07054347826073,
+            "upper_cvar10": -16.07054347826073
+          }
+        },
+        "C4L": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.52500000000003,
+            "median": 32.313043478260724,
+            "min": 21.147826086956428,
+            "max": 55.23478260869651,
+            "upper_cvar10": 47.571906354515576
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 221.9123641304376,
+            "median": 198.6782608695652,
+            "min": 0.0,
+            "max": 761.5999999999999,
+            "upper_cvar10": 582.82140468228
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -168.878831521738,
+            "median": -115.40967391304335,
+            "min": -910.1227173913045,
+            "max": -16.07054347826073,
+            "upper_cvar10": -16.070543478260745
+          }
+        },
+        "C5": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 10,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.473913043478284,
+            "median": 32.313043478260724,
+            "min": 21.147826086956428,
+            "max": 55.23478260869651,
+            "upper_cvar10": 47.539799331104206
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 237.56345108695788,
+            "median": 206.95652173912043,
+            "min": 0.0,
+            "max": 761.5999999999999,
+            "upper_cvar10": 609.2481605351246
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -153.22774456521768,
+            "median": -115.40967391304335,
+            "min": -910.1227173913045,
+            "max": 395.77293478257627,
+            "upper_cvar10": 86.93012541805774
+          }
+        }
+      },
+      "margin_divided_by_mean_C0_B": 0.04288673011489666,
+      "C4L_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.9380434782608901,
+          "median": -0.83478260869569,
+          "min": -2.782608695652293,
+          "max": 7.105427357601002e-15,
+          "upper_cvar10": -0.24080267558528726
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -152.80828804347723,
+          "median": -99.33913043478262,
+          "min": -894.0521739130437,
+          "max": 0.0,
+          "upper_cvar10": 0.0
+        }
+      },
+      "C5_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.9891304347826312,
+          "median": -0.9391304347826264,
+          "min": -2.782608695652293,
+          "max": -0.1391304347826079,
+          "upper_cvar10": -0.27826086956521906
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -137.15720108695692,
+          "median": -99.33913043478262,
+          "min": -894.0521739130437,
+          "max": 411.84347826083706,
+          "upper_cvar10": 103.00066889631849
+        }
+      },
+      "C4L_minus_C5": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": 0.05108695652174111,
+          "median": 0.0,
+          "min": -0.2782608695652158,
+          "max": 1.11304347826092,
+          "upper_cvar10": 0.5244147157190818
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -15.651086956520308,
+          "median": 0.0,
+          "min": -444.9565217390979,
+          "max": 33.11304347826087,
+          "upper_cvar10": 5.094314381273821
+        }
+      }
+    },
+    "S2": {
+      "condition_config": {
+        "max_clamp_minutes": 10.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 1.0
+      },
+      "baseline_sha256": "0f714a4d44f98721eec6b2d8c56906a9cd79caaa1f06f0195a26739555422bee",
+      "controller_shard_set_sha256": {
+        "C0": "218c8cf1e41836248c3ac57a43b20760233aa56ed19a62a467c3db700e6c9b44",
+        "C4L": "8cbecadf2b9cd722030d6558476d8b0d216acbad670304305d9a274cbf86f34f",
+        "C5": "6f42f83ebf55aba20caf7b5880d0aa95f9d7d07aef61cbc96e3b8b794c7578da"
+      },
+      "controllers": {
+        "C0": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 34.46304347826092,
+            "median": 33.00869565217381,
+            "min": 21.286956521739036,
+            "max": 56.62608695652266,
+            "upper_cvar10": 48.866889632107615
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 485.7657608695649,
+            "median": 463.5826086956522,
+            "min": 0.0,
+            "max": 1812.9391304347205,
+            "upper_cvar10": 1287.7471571906265
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -16.070543478260763,
+            "median": -16.07054347826076,
+            "min": -16.070543478260788,
+            "max": -16.07054347826073,
+            "upper_cvar10": -16.07054347826073
+          }
+        },
+        "C4L": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.52282608695655,
+            "median": 32.38260869565203,
+            "min": 21.147826086956428,
+            "max": 54.67826086956606,
+            "upper_cvar10": 47.61471571906408
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 293.18301630434775,
+            "median": 264.90434782608696,
+            "min": 0.0,
+            "max": 811.2695652174581,
+            "upper_cvar10": 673.8822742474949
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -208.6532880434779,
+            "median": -148.52271739130424,
+            "min": -1191.583586956493,
+            "max": -3.6531521738615993,
+            "upper_cvar10": -14.478570234107144
+          }
+        },
+        "C5": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 12,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.45434782608698,
+            "median": 32.17391304347811,
+            "min": 21.147826086956428,
+            "max": 54.67826086956606,
+            "upper_cvar10": 47.42207357859585
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 304.6464673913029,
+            "median": 264.90434782608696,
+            "min": 0.0,
+            "max": 860.9391304347826,
+            "upper_cvar10": 682.6381270902964
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -197.18983695652275,
+            "median": -148.5227173913042,
+            "min": -1191.583586956493,
+            "max": 248.8338043478262,
+            "upper_cvar10": 90.9100585284346
+          }
+        }
+      },
+      "margin_divided_by_mean_C0_B": 0.03308290697453237,
+      "C4L_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.9402173913043688,
+          "median": -0.8347826086956829,
+          "min": -2.7826086956523,
+          "max": 0.139130434782615,
+          "upper_cvar10": -0.24615384615384828
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -192.58274456521713,
+          "median": -132.45217391304345,
+          "min": -1175.5130434782322,
+          "max": 12.417391304399132,
+          "upper_cvar10": 1.5919732441536036
+        }
+      },
+      "C5_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -1.0086956521739363,
+          "median": -0.9043478260869691,
+          "min": -2.782608695652307,
+          "max": -0.1391304347826079,
+          "upper_cvar10": -0.27826086956522017
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -181.119293478262,
+          "median": -132.45217391304345,
+          "min": -1175.5130434782322,
+          "max": 264.90434782608696,
+          "upper_cvar10": 106.98060200669536
+        }
+      },
+      "C4L_minus_C5": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": 0.06847826086956751,
+          "median": 0.0,
+          "min": -0.2782608695652158,
+          "max": 2.086956521739218,
+          "upper_cvar10": 0.652842809364571
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -11.463451086955116,
+          "median": 0.0,
+          "min": -264.90434782608696,
+          "max": 151.07826086960097,
+          "upper_cvar10": 22.44682274248015
+        }
+      }
+    },
+    "S3": {
+      "condition_config": {
+        "max_clamp_minutes": 15.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 0.5
+      },
+      "baseline_sha256": "e728d786ebb32c4a21434baa0e1c0e56a753eedf3e1b74700116cbbbc46a0298",
+      "controller_shard_set_sha256": {
+        "C0": "44c6f381ed51bc810831085beb2f7a39f5d5fb08e44f6783906607dba5a8fe95",
+        "C4L": "0bcb37909a6fd112181f9ac0c3b828b6bc356dec2cdcf8de3f720e3ae3cbce1e",
+        "C5": "88ccc8040ea32c37211022a27022eb047140735e6317d9b86c7eae64f1fdbba1"
+      },
+      "controllers": {
+        "C0": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 34.463043478260914,
+            "median": 33.0086956521738,
+            "min": 21.286956521739036,
+            "max": 56.62608695652266,
+            "upper_cvar10": 48.86688963210761
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 146.6480978260853,
+            "median": 141.24782608694557,
+            "min": 0.0,
+            "max": 480.1391304347826,
+            "upper_cvar10": 395.28695652173246
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -16.07054347826075,
+            "median": -16.07054347826075,
+            "min": -16.07054347826076,
+            "max": -16.07054347826073,
+            "upper_cvar10": -16.07054347826073
+          }
+        },
+        "C4L": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.570108695652195,
+            "median": 32.34782608695638,
+            "min": 21.147826086956428,
+            "max": 54.678260869566046,
+            "upper_cvar10": 47.5826086956527
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 96.56623641304336,
+            "median": 99.3391304347826,
+            "min": 0.0,
+            "max": 331.1304347826391,
+            "upper_cvar10": 261.3224080267572
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -66.15240489130267,
+            "median": -41.940108695666645,
+            "min": -268.5575000000558,
+            "max": -7.792282608680994,
+            "upper_cvar10": -14.796964882937493
+          }
+        },
+        "C5": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 11,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.48532608695654,
+            "median": 32.24347826086942,
+            "min": 21.147826086956428,
+            "max": 54.678260869566046,
+            "upper_cvar10": 47.56120401337845
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 101.88566576086814,
+            "median": 99.3391304347826,
+            "min": 0.0,
+            "max": 331.13043478260875,
+            "upper_cvar10": 265.1431438127036
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -60.832975543477886,
+            "median": -41.94010869565918,
+            "min": -268.5575000000558,
+            "max": 103.9642391304604,
+            "upper_cvar10": 35.986981605345925
+          }
+        }
+      },
+      "margin_divided_by_mean_C0_B": 0.10958576153725039,
+      "C4L_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.8929347826087184,
+          "median": -0.8347826086956474,
+          "min": -2.504347826087084,
+          "max": 0.0,
+          "upper_cvar10": -0.1712374581939803
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -50.08186141304192,
+          "median": -25.869565217405892,
+          "min": -252.48695652179512,
+          "max": 8.278260869579755,
+          "upper_cvar10": 1.2735785953232517
+        }
+      },
+      "C5_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.9777173913043712,
+          "median": -0.83478260869569,
+          "min": -2.782608695652307,
+          "max": 0.0,
+          "upper_cvar10": -0.2568561872909706
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -44.76243206521714,
+          "median": -25.869565217398417,
+          "min": -252.48695652179512,
+          "max": 120.03478260872114,
+          "upper_cvar10": 52.05752508360667
+        }
+      },
+      "C4L_minus_C5": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": 0.08478260869565282,
+          "median": 0.0,
+          "min": -0.4173913043478521,
+          "max": 2.086956521739122,
+          "upper_cvar10": 0.7919732441471639
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -5.319429347824778,
+          "median": 0.0,
+          "min": -132.45217391304348,
+          "max": 33.113043478291274,
+          "upper_cvar10": 7.641471571908692
+        }
+      }
+    },
+    "S4": {
+      "condition_config": {
+        "max_clamp_minutes": 15.0,
+        "unclamp_minutes": 5.0,
+        "bleeding_probability": 0.25
+      },
+      "baseline_sha256": "792d0728caf9846cd39718db119a15708588acf6e33ad132c611289de94bd6c5",
+      "controller_shard_set_sha256": {
+        "C0": "1af1358becf079c5c51b62d272d772a37fcfce8ab79051eb7bc8c18b87f69f10",
+        "C4L": "42931ace08fd81ec42341c49e6cea9900ea5e296de27ca8679c7193e6c7cbc6b",
+        "C5": "1db523d9307a1d192026d05b44159253ff2cb928e35e0f73b47d6bf2255e5a7d"
+      },
+      "controllers": {
+        "C0": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 34.463043478260914,
+            "median": 33.0086956521738,
+            "min": 21.286956521739036,
+            "max": 56.62608695652266,
+            "upper_cvar10": 48.86688963210761
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 73.32404891304265,
+            "median": 70.62391304347278,
+            "min": 0.0,
+            "max": 240.0695652173913,
+            "upper_cvar10": 197.64347826086623
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -16.07054347826075,
+            "median": -16.07054347826075,
+            "min": -16.07054347826076,
+            "max": -16.07054347826073,
+            "upper_cvar10": -16.070543478260745
+          }
+        },
+        "C4L": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 0,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.54836956521741,
+            "median": 32.34782608695638,
+            "min": 21.147826086956428,
+            "max": 54.678260869566046,
+            "upper_cvar10": 47.5826086956527
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 48.47713994565217,
+            "median": 49.6695652173913,
+            "min": 0.0,
+            "max": 165.56521739131955,
+            "upper_cvar10": 129.06923076923144
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -40.91745244565122,
+            "median": -29.00532608696369,
+            "min": -142.3140217391583,
+            "max": -3.653152173905653,
+            "upper_cvar10": -12.24980769230425
+          }
+        },
+        "C5": {
+          "n": 128,
+          "completes": 128,
+          "failures": 0,
+          "infeasibles": 0,
+          "overruns": 8,
+          "failure_and_overrun": 0,
+          "invariant_events": 0,
+          "episodes_with_invariant_violation": 0,
+          "observed_T_min_all_episodes": {
+            "n": 128,
+            "mean": 33.4842391304348,
+            "median": 32.24347826086942,
+            "min": 21.147826086956428,
+            "max": 54.678260869566046,
+            "upper_cvar10": 47.56120401337845
+          },
+          "observed_B_ml_all_episodes": {
+            "n": 128,
+            "mean": 50.684137228260155,
+            "median": 49.6695652173913,
+            "min": 0.0,
+            "max": 165.56521739130437,
+            "upper_cvar10": 129.70602006688694
+          },
+          "realized_B_minus_budget_ml": {
+            "n": 128,
+            "mean": -38.710455163043235,
+            "median": -29.005326086959954,
+            "min": -142.3140217391583,
+            "max": 43.94684782609983,
+            "upper_cvar10": 9.958219063542586
+          }
+        }
+      },
+      "margin_divided_by_mean_C0_B": 0.21917152307450077,
+      "C4L_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.9146739130435009,
+          "median": -0.83478260869569,
+          "min": -2.504347826087084,
+          "max": 0.0,
+          "upper_cvar10": -0.19264214046822986
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -24.84690896739047,
+          "median": -12.934782608702946,
+          "min": -126.24347826089756,
+          "max": 12.417391304355096,
+          "upper_cvar10": 3.820735785956499
+        }
+      },
+      "C5_minus_C0": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": -0.9788043478261104,
+          "median": -0.83478260869569,
+          "min": -2.782608695652307,
+          "max": 0.0,
+          "upper_cvar10": -0.2568561872909706
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -22.639911684782483,
+          "median": -12.934782608699209,
+          "min": -126.24347826089756,
+          "max": 60.01739130436057,
+          "upper_cvar10": 26.028762541803335
+        }
+      },
+      "C4L_minus_C5": {
+        "n_paired_complete": 128,
+        "n_excluded_failure": 0,
+        "delta_T_min": {
+          "n": 128,
+          "mean": 0.06413043478260946,
+          "median": 0.0,
+          "min": -0.4173913043478521,
+          "max": 2.086956521739122,
+          "upper_cvar10": 0.674247491638806
+        },
+        "delta_B_ml": {
+          "n": 128,
+          "mean": -2.2069972826079844,
+          "median": 0.0,
+          "min": -66.22608695652174,
+          "max": 16.556521739145637,
+          "upper_cvar10": 3.820735785954346
+        }
+      }
+    }
+  },
+  "evaluation_command": "C:\\Users\\Bingh\\miniconda3\\envs\\v108\\python.exe D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\evaluate_v108_sensitivity.py --controllers C0,C4L,C5 --conditions S0,S1,S2,S3,S4 --limit 128 --offset 0 --scene-workers 20 --margin 16.07054347826075 --split-file D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\frozen\\split_lazy_replication.json --baseline-file D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\frozen\\baseline_lazy_replication.json --checkpoint D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_6_shielded_learning\\runs\\bc\\config_05_seed_2026081603\\epoch_05.pt --output-root D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\sensitivity_condition_budget_20260913",
+  "report_command": "D:\\26SummerCamp\\VoxelSage\\.venv\\Scripts\\python.exe D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\report_v108_condition_sensitivity.py --source D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\sensitivity_condition_budget_20260913 --output D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\artifacts\\v10.8-condition-sensitivity --split-file D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\frozen\\split_lazy_replication.json --reference-baseline-file D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_8_lazy_shield\\frozen\\baseline_lazy_replication.json --checkpoint D:\\26SummerCamp\\VoxelSage\\Research\\planar-resection-planning\\results\\clinical_window_v10_6_shielded_learning\\runs\\bc\\config_05_seed_2026081603\\epoch_05.pt --expected-count 128 --evaluation-python C:\\Users\\Bingh\\miniconda3\\envs\\v108\\python.exe"
+}

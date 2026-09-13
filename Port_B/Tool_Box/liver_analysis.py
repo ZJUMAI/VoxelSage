@@ -62,9 +62,8 @@ def compute_tumor_diameter(
     计算肿瘤最大三维直径（mm）。
 
     策略：
-    - 先过滤最大连通域
     - ≥ convex_hull_threshold 体素 → 凸包法（scipy.spatial.ConvexHull）
-    - < convex_hull_threshold 体素 → 轴对齐法（bounding box 最长轴）
+    - < convex_hull_threshold 体素 → 物理坐标中直接搜索最大点对距离
 
     Args:
         mask_path: 二值 mask 的 NIfTI 路径。
@@ -74,7 +73,7 @@ def compute_tumor_diameter(
     Returns:
         {
             max_diameter_mm: 最大直径 (mm) | None,
-            method: "convex_hull" | "axis_aligned" | "too_small" | "empty",
+            method: "convex_hull" | "pairwise" | "too_small" | "empty",
             voxel_count: 体素数,
             hull_vertices_count: 凸包顶点数 (仅 convex_hull 模式),
             note: str 附注,
@@ -101,12 +100,11 @@ def compute_tumor_diameter(
     world_coords = nib.affines.apply_affine(affine, coords)
 
     if voxel_count < convex_hull_threshold:
-        # ---- 轴对齐法 ----
-        min_bounds = world_coords.min(axis=0)
-        max_bounds = world_coords.max(axis=0)
-        diameter = float(np.linalg.norm(max_bounds - min_bounds))
+        # 小分量直接计算点对距离，避免世界坐标轴对齐包围盒随旋转变大。
+        from scipy.spatial.distance import pdist
+        diameter = float(pdist(world_coords).max(initial=0.0))
         return {"max_diameter_mm": round(diameter, 2),
-                "method": "axis_aligned",
+                "method": "pairwise",
                 "voxel_count": voxel_count,
                 "hull_vertices_count": 0,
                 "note": ""}
@@ -223,7 +221,7 @@ def compute_tumor_vessel_distance(
     spacing: Tuple[float, float, float],
 ) -> Dict:
     """
-    计算肿瘤表面到血管表面的最小距离（mm）。
+    计算已对齐的肿瘤与血管前景体素中心间的最小距离（mm）。
 
     Args:
         tumor_mask: (H, W, D) 二值数组 — 肿瘤。
@@ -246,6 +244,10 @@ def compute_tumor_vessel_distance(
         return {"min_distance_mm": None, "interpretation": "无肿瘤",
                 "tumor_voxels": 0, "tumor_contacts_vessel": False}
 
+    if not vessel_binary.any():
+        return {"min_distance_mm": None, "interpretation": "无血管",
+                "tumor_voxels": tumor_voxels, "tumor_contacts_vessel": False}
+
     # 检查是否有重叠
     overlap = tumor_binary & vessel_binary
     if overlap.sum() > 0:
@@ -256,26 +258,18 @@ def compute_tumor_vessel_distance(
 
     from scipy import ndimage
 
-    # 对血管补集做距离变换（得到每个体素到最近血管的距离）
-    # ndimage.distance_transform_edt 计算的是欧几里得距离（体素单位）
+    # 按每个轴的毫米间距做距离变换，适用于正交网格及其刚体旋转。
     vessel_complement = 1 - vessel_binary
-    dist_vox = ndimage.distance_transform_edt(vessel_complement)
+    dist_mm = ndimage.distance_transform_edt(vessel_complement, sampling=spacing)
 
     # 在肿瘤区域取最小值
-    tumor_region_dist = dist_vox[tumor_binary > 0]
+    tumor_region_dist = dist_mm[tumor_binary > 0]
     if len(tumor_region_dist) == 0:
         return {"min_distance_mm": None, "interpretation": "计算异常",
                 "tumor_voxels": tumor_voxels,
                 "tumor_contacts_vessel": False}
 
-    min_voxel_dist = float(tumor_region_dist.min())
-
-    # 体素距离 → 物理距离（mm）
-    # 取 spacing 的均值作为近似，或用更精确的向量范数
-    spacing_arr = np.array(spacing)
-    # 距离变换是各向同性的，使用均值 spacing 近似
-    # 更好的方式：min_voxel_dist * spacing.mean()
-    min_mm = min_voxel_dist * spacing_arr.mean()
+    min_mm = float(tumor_region_dist.min())
 
     return {
         "min_distance_mm": round(min_mm, 2),
@@ -391,10 +385,9 @@ def _compute_diameter_on_mask(
 
     convex_hull_threshold = 100
     if voxel_count < convex_hull_threshold:
-        min_b = world_coords.min(axis=0)
-        max_b = world_coords.max(axis=0)
-        d = float(np.linalg.norm(max_b - min_b))
-        return {"max_diameter_mm": round(d, 2), "method": "axis_aligned",
+        from scipy.spatial.distance import pdist
+        d = float(pdist(world_coords).max(initial=0.0))
+        return {"max_diameter_mm": round(d, 2), "method": "pairwise",
                 "voxel_count": voxel_count, "hull_vertices_count": 0, "note": ""}
 
     from scipy.spatial import ConvexHull

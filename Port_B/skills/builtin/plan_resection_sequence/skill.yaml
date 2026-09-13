@@ -60,8 +60,7 @@ inputs:
     required: false
   liver_intersection_min_samples:
     type: integer
-    description: "一个面单元至少有多少个角点/中心采样点落在 Liver 内才纳入规划；默认 1"
-    default: 1
+    description: "一个面单元至少有多少个角点/中心采样点落在 Liver 内才纳入规划；省略时确定性模式默认 1，learned_shielded 默认 4（共 5 个采样点）"
     required: false
   step_time_seconds:
     type: number

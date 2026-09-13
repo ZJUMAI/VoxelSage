@@ -272,18 +272,15 @@ def _vascular_safe_mask(
     for img in imgs:
         vessel |= np.asarray(img.get_fdata()) > 0
     spacing = np.sqrt((affine[:3, :3] ** 2).sum(axis=0))
-    distance = distance_transform_edt(~vessel, sampling=spacing)
+    # An empty foreground has no nearest vessel; EDT would invent a distance.
+    distance = distance_transform_edt(~vessel, sampling=spacing) if vessel.any() else None
     world = centers + np.asarray(center_offset, dtype=np.float64)
     vox = nib.affines.apply_affine(np.linalg.inv(affine), world)
     idx = np.rint(vox).astype(int)
     result = np.zeros(len(centers), dtype=bool)
     for i, p in enumerate(idx):
-        if np.all(p >= 0) and np.all(p < np.array(distance.shape)):
-            result[i] = distance[tuple(p)] >= threshold
-    # If the coordinate convention does not overlap the mask, keep the
-    # planner usable and report that no vessel mask was sampled.
-    if not result.any():
-        return np.ones(len(centers), dtype=bool)
+        if np.all(p >= 0) and np.all(p < np.array(vessel.shape)):
+            result[i] = distance is None or distance[tuple(p)] >= threshold
     return result
 
 

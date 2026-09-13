@@ -1632,7 +1632,11 @@ def _generate_threejs(
             if downsample_factor > 1.0:
                 orig_shape = mask_data.shape
                 mask_data = downsample_volume(mask_data, downsample_factor)
-                spacing_mult = np.array(orig_shape) / np.array(mask_data.shape)
+                # scipy.ndimage.zoom (grid_mode=False) preserves the first
+                # and last voxel centres, so scale intervals, not voxel counts.
+                spacing_mult = (np.array(orig_shape) - 1) / np.maximum(
+                    np.array(mask_data.shape) - 1, 1
+                )
             else:
                 spacing_mult = np.ones(3)
 
@@ -1652,7 +1656,9 @@ def _generate_threejs(
             if verts is None:
                 return None, None
 
-            verts_vox = verts / effective_spacing
+            # Marching Cubes already includes the downsampled physical spacing.
+            # Recover indices on the affine's original grid without cancelling it.
+            verts_vox = verts / orig_spacing
             verts_world = voxel_to_world(verts_vox, affine)
             quantize_vertices(verts_world, precision_mm=0.1)
 

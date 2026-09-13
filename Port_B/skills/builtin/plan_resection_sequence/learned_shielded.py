@@ -91,7 +91,7 @@ def _research_modules():
     if research_text not in sys.path:
         sys.path.insert(0, research_text)
     from clinical_macro_environment import ClinicalMacroResectionEnv
-    from confirmation_controllers_v107 import rollout_controller
+    from lazy_confirmation_controllers_v108 import rollout_controller
     from plan_target_order_v104 import _step_macro_target
 
     return ClinicalMacroResectionEnv, rollout_controller, _step_macro_target
@@ -274,7 +274,7 @@ def plan_learned_shielded(
     margin_ml: float = DEFAULT_MARGIN_ML,
     checkpoint_path: Path | None = None,
 ) -> Dict[str, Any]:
-    """Run the frozen C4 ranker and exact simulator shield on a 3D surface grid."""
+    """Run the frozen C4 ranker with lazy exact verification on a surface grid."""
     if abs(float(cell_side_mm) - 4.0) > 1e-6:
         raise ValueError("冻结模型只验证过 4.0-mm 面单元，不能更改 learned_cell_side_mm")
     checkpoint, checkpoint_sha = validate_checkpoint(checkpoint_path)
@@ -296,10 +296,10 @@ def plan_learned_shielded(
         cfg=clinical_config,
     )
     learned = rollout_controller(
-        "C4", scenario,
+        "C4L", scenario,
         baseline_blood=float(baseline["realized_episode_B_ml"]),
         margin_ml=float(margin_ml), cfg=clinical_config,
-        checkpoint_path=checkpoint,
+        checkpoint_path=checkpoint, verify_mode="lazy",
     )
     wall_seconds = time.perf_counter() - wall_start
     if not learned.get("completion"):
@@ -322,6 +322,9 @@ def plan_learned_shielded(
         "simulator": {
             "baseline_controller": "C0",
             "controller": "C4",
+            "verify_mode": str(learned["verify_mode"]),
+            "verified_count_mean": float(learned["verified_count_mean"]),
+            "verified_count_max": int(learned["verified_count_max"]),
             "cell_side_mm": float(cell_side_mm),
             "baseline_elapsed_minutes": float(baseline["elapsed_minutes"]),
             "baseline_simulated_blood_ml": float(baseline["realized_episode_B_ml"]),
