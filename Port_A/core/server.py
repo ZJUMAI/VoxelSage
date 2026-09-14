@@ -852,6 +852,33 @@ def append_conversation(session: Dict[str, Any], role: str, content: str) -> Non
         "active_volumes": active,
         "time": now_iso(),
     })
+
+
+def _unavailable_answer_for_contract(query: str, reason: str) -> Optional[str]:
+    """Return a faithful null result when the caller requested a JSON value contract."""
+    unit_match = re.search(
+        r'["\']unit["\']\s*:\s*["\']([^"\']+)["\']',
+        query,
+        flags=re.IGNORECASE,
+    )
+    if not unit_match:
+        return None
+    payload = json.dumps(
+        {"value": None, "unit": unit_match.group(1)},
+        ensure_ascii=False,
+    )
+    return f"{reason}\n\n{payload}"
+
+
+def _has_successful_skill_evidence(session: Dict[str, Any]) -> bool:
+    """Segmentation state alone is not numerical evidence for an analytical answer."""
+    for case_data in session.get("tool_store", {}).values():
+        for skill_name, result in case_data.items():
+            if skill_name == "segmentation":
+                continue
+            if isinstance(result, dict) and not result.get("_error"):
+                return True
+    return False
     session["updated_at"] = now_iso()
 
 
@@ -954,6 +981,17 @@ def format_tool_context(session: Dict[str, Any]) -> str:
                     if validation.get("warning"):
                         sections.append(f"    [{validation['severity'].upper()}] {validation['warning']}")
 
+            if result.get("evidence_source"):
+                sections.append(f"  数据来源: {result['evidence_source']}")
+            for key, label, unit in [
+                ("largest_lesion_diameter_mm", "全体病灶的最大直径", "mm"),
+                ("largest_lesion_volume_cm3", "全体病灶的最大体积", "cm³"),
+                ("total_lesion_volume_cm3", "全部肝脏病灶总体积", "cm³"),
+            ]:
+                value = result.get(key)
+                if isinstance(value, (int, float)):
+                    sections.append(f"  {label}: {value:g} {unit}")
+
             # 血管体积
             vessels = result.get("vessel_volumes", {})
             if vessels and isinstance(vessels, dict):
@@ -967,14 +1005,29 @@ def format_tool_context(session: Dict[str, Any]) -> str:
             # 肿瘤结果 - 重点突出 + P0 优化：医学验证
             tumors = result.get("tumor_results", {})
             if isinstance(tumors, dict):
-                num_tumors = len(tumors)
+                explicit_count = result.get("tumor_count")
+                num_tumors = explicit_count if isinstance(explicit_count, int) else len(tumors)
                 sections.append(f"  • 肿瘤数量: {num_tumors}")
 
                 if tumors:
+                    total_volume = result.get("total_tumor_volume_cm3")
+                    if isinstance(total_volume, (int, float)):
+                        sections.append(f"  • 全部病灶总体积: {total_volume:.2f} cm³（覆盖 {result.get('volume_lesion_count', len(tumors))} 个病灶；使用此总体积回答总量问题，详情截断不影响该值）")
+                    else:
+                        volumes = [t.get("volume_cm3") for t in tumors.values() if isinstance(t, dict)]
+                        if len(volumes) == len(tumors) and all(isinstance(v, (int, float)) for v in volumes):
+                            sections.append(f"  • 全部病灶总体积（逐病灶舍入值之和）: {sum(volumes):.2f} cm³（覆盖全部 {len(tumors)} 个病灶）")
+                    largest_volume = result.get("largest_tumor_volume_cm3")
+                    if isinstance(largest_volume, (int, float)):
+                        sections.append(f"  • 最大单个病灶体积: {largest_volume:.2f} cm³（不是总体积）")
                     sections.append(f"  • 肿瘤详情:")
                     for t_name, t_data in list(tumors.items())[:10]:  # 最多显示10个
                         if isinstance(t_data, dict):
                             diam = t_data.get("max_diameter_mm")
+                            if not isinstance(diam, (int, float)):
+                                diameter_data = t_data.get("diameter", {})
+                                if isinstance(diameter_data, dict):
+                                    diam = diameter_data.get("max_diameter_mm")
                             vol = t_data.get("volume_cm3")
                             parts = [f"{t_name}:"]
                             if isinstance(diam, (int, float)):
@@ -1457,11 +1510,12 @@ def build_system_prompt(session: Dict[str, Any]) -> str:
 4. 病灶体积问题
    问题特征: "lesion volume", "tumor volume"
    调用技能: liver_analysis
-   提取数据: tumor_results[tumor_name].volume_cm3
+   提取数据: 总体积使用 total_tumor_volume_cm3；指定单个病灶使用 tumor_results[tumor_name].volume_cm3
    示例:
      Q: "Indicate the liver lesion volume (cm³):"
      → 调用 liver_analysis()
-     → 如果有多个肿瘤，计算总和或报告最大的
+     → 未指定单个或最大病灶时，回答全部病灶总体积；不能以最大单病灶或部分病灶之和代替总体积
+     → 优先使用工具的总体积字段；详情仅展示前10个不代表其余病灶未计算
      → 回答: "The total lesion volume is 134.4 cm³."
 
 【不支持的问题类型】
@@ -1494,7 +1548,10 @@ def build_system_prompt(session: Dict[str, Any]) -> str:
 【关键规则】
 - 同一 case 的 liver_analysis 只调用一次，之后直接使用结果
 - 不得编造工具未返回的数值
-- 病灶计数 = len(tumor_results)，不是分割文件数量
+- 工具说明中的算法介绍不代表本次实际执行的方法；除非本次结果明确返回 method，否则不要声称使用了凸包法等具体测量算法。
+- 只回答用户所问的内容。不得推测缺失数据的原因、分割噪声、碎片、假阳性、形态或病例诊断；通用医学提示不能作为本病例证据。未被询问时不添加临床建议。
+- 工具返回的 largest_lesion_diameter_mm 和 largest_lesion_volume_cm3 是全体病灶的汇总最大值，无需逐病灶详情来再次确认。数据来源为参考掩膜 oracle 时必须忠实注明，不得称为自动分割预测。
+- 病灶计数优先使用工具返回的 tumor_count；缺少该字段时才使用 len(tumor_results)，不是分割文件数量
 - 体积单位统一为 cm³
 - 工具失败时明确说明，不要猜测答案
 - 工具参数中不得填写 case_id,CT 路径,mask 路径或输出目录；这些由 Port B 上下文自动注入
@@ -1690,9 +1747,35 @@ async def run_agent_loop(
                     round=round_index,
                     failures=len(recent_failures))
 
-        text, tool_calls = await run_one_model_round(websocket, session, messages)
+        original_tools = session.get("available_tools", [])
+        round_tools, filter_reasons = ToolOptimizer.filter_redundant_tools(
+            session, original_tools
+        )
+        session["available_tools"] = round_tools
+        try:
+            text, tool_calls = await run_one_model_round(websocket, session, messages)
+        finally:
+            session["available_tools"] = original_tools
+        if filter_reasons:
+            log(
+                "TOOL_FILTER",
+                "已隐藏冗余技能",
+                session_id=session["session_id"],
+                round=round_index,
+                skills=",".join(x["filtered_tool"] for x in filter_reasons),
+            )
 
         if not tool_calls:
+            # A model may occasionally emit a remembered-looking measurement without
+            # calling a skill. For explicit structured measurement requests, replace
+            # such an ungrounded answer with null rather than allowing fabrication.
+            if not _has_successful_skill_evidence(session):
+                unavailable = _unavailable_answer_for_contract(
+                    current_q,
+                    "未获得回答所需的工具证据，无法提供测量结果。",
+                )
+                if unavailable is not None:
+                    text = unavailable
             # 最终回答:将 user 问题和 assistant 回答写入 conversation
             append_conversation(session, "user", current_q)
             append_conversation(session, "assistant", text)
@@ -1784,7 +1867,12 @@ async def run_agent_loop(
                 for call, resp in failed_calls:
                     sn = call.get("function", {}).get("name", "?")
                     names.add(f"{sn}({resp.get('error_code', '?')})")
-                err_text = f"关键技能调用失败: {', '.join(names)}。无法提供完整分析，建议检查数据质量或联系技术支持。"
+                err_text = f"关键技能调用失败: {', '.join(names)}。无法获得回答所需的证据。"
+                # 调用方明确要求结构化结果时，失败出口也必须遵守同一协议。
+                # 这里只返回 null，不让缺失证据被误写成测量值。
+                contracted_error = _unavailable_answer_for_contract(current_q, err_text)
+                if contracted_error is not None:
+                    err_text = contracted_error
 
                 await ws_send(websocket, "answer_start", session_id=session["session_id"])
                 for i in range(0, len(err_text), 80):
