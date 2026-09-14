@@ -1,0 +1,4115 @@
+[
+  {
+    "id": "missing_bench_00062",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001064"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_24e4d52dac924b36b42d529f",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001064"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:08",
+        "finished_at": "2026-09-13T20:40:08"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.985
+  },
+  {
+    "id": "missing_bench_00015",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001297"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_2f1f82386b944b2f8986e172",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001297"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:08",
+        "finished_at": "2026-09-13T20:40:08"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.641
+  },
+  {
+    "id": "missing_bench_00210",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000672"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_4b9eda1f0cd14d4db266c456",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000672"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:10",
+        "finished_at": "2026-09-13T20:40:10"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.015
+  },
+  {
+    "id": "missing_bench_00301",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001215"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_de1689c28d594246a5329a52",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001215"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:12",
+        "finished_at": "2026-09-13T20:40:12"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.625
+  },
+  {
+    "id": "missing_bench_00298",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001249"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_7411d3936fb74fe98269513c",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001249"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:13",
+        "finished_at": "2026-09-13T20:40:13"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 5.265
+  },
+  {
+    "id": "missing_bench_00421",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1f845954eb664eaa917bcf6f",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:15",
+        "finished_at": "2026-09-13T20:40:15"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.484
+  },
+  {
+    "id": "missing_bench_00449",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000420"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_25bd57eb45fb41558019c6d7",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000420"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:16",
+        "finished_at": "2026-09-13T20:40:16"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.328
+  },
+  {
+    "id": "missing_bench_00565",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000951"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_63af34749d37432496e618db",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000951"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:18",
+        "finished_at": "2026-09-13T20:40:18"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.781
+  },
+  {
+    "id": "missing_bench_00584",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001149"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_3e81e246dbf443ec8729474d",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001149"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:21",
+        "finished_at": "2026-09-13T20:40:22"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.391
+  },
+  {
+    "id": "missing_bench_00673",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_8bef1358721044c69b854d91",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:24",
+        "finished_at": "2026-09-13T20:40:24"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.547
+  },
+  {
+    "id": "missing_bench_00918",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000413"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_29ff853deda143fea70e49ef",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000413"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:27",
+        "finished_at": "2026-09-13T20:40:27"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.625
+  },
+  {
+    "id": "missing_bench_00921",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001297"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_a1d6a50e97eb4618812962f2",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001297"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:31",
+        "finished_at": "2026-09-13T20:40:31"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.375
+  },
+  {
+    "id": "missing_bench_00956",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000560"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_9f2a1a3831ca40338133d270",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000560"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:34",
+        "finished_at": "2026-09-13T20:40:34"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.844
+  },
+  {
+    "id": "missing_bench_00745",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001185"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_84695f4cc47e4feb8ede04fb",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001185"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:37",
+        "finished_at": "2026-09-13T20:40:37"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 13.281
+  },
+  {
+    "id": "missing_bench_01233",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000877"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_29b53c736b754271b59ce7cc",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000877"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:37",
+        "finished_at": "2026-09-13T20:40:37"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.906
+  },
+  {
+    "id": "missing_bench_01308",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001123"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_dcd2b99d9b5844fabab34919",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001123"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:40",
+        "finished_at": "2026-09-13T20:40:40"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.547
+  },
+  {
+    "id": "missing_bench_01303",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001215"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_660a30900cd4498dbbc5f144",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001215"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:41",
+        "finished_at": "2026-09-13T20:40:41"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.703
+  },
+  {
+    "id": "missing_bench_01388",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001343"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1449169d82e048e28fb2999a",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001343"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:42",
+        "finished_at": "2026-09-13T20:40:42"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.563
+  },
+  {
+    "id": "missing_bench_01530",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001149"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_34aa4ec6ecf74aeb8aea4e24",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001149"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:44",
+        "finished_at": "2026-09-13T20:40:44"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.391
+  },
+  {
+    "id": "missing_bench_01536",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000134"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_5272dbd9968e4ea99351b798",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000134"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:46",
+        "finished_at": "2026-09-13T20:40:46"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.812
+  },
+  {
+    "id": "missing_bench_01547",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000420"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_86417e50fec74b9bafb3bc86",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000420"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:47",
+        "finished_at": "2026-09-13T20:40:47"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.953
+  },
+  {
+    "id": "missing_bench_01571",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ebba0ea493f94466b7faaf2a",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:48",
+        "finished_at": "2026-09-13T20:40:48"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.719
+  },
+  {
+    "id": "missing_bench_01624",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000346"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_73ad8dc506db4a2fba198928",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000346"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:50",
+        "finished_at": "2026-09-13T20:40:50"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.031
+  },
+  {
+    "id": "missing_bench_01634",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000985"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_bd94f17fbb794352812027c2",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000985"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:51",
+        "finished_at": "2026-09-13T20:40:51"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.859
+  },
+  {
+    "id": "missing_bench_01704",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000855"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_35c4f097e59a4b03ad80943f",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000855"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:54",
+        "finished_at": "2026-09-13T20:40:54"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.687
+  },
+  {
+    "id": "missing_bench_01698",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001168"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ee457afe3e0d4900b00bca45",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001168"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:56",
+        "finished_at": "2026-09-13T20:40:56"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 6.172
+  },
+  {
+    "id": "missing_bench_02119",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000405"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_cf2d766733dc484b8951cf90",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000405"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:58",
+        "finished_at": "2026-09-13T20:40:58"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.516
+  },
+  {
+    "id": "missing_bench_02149",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000660"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ab34fda818b743d4b9318c0b",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000660"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:40:58",
+        "finished_at": "2026-09-13T20:40:58"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.343
+  },
+  {
+    "id": "missing_bench_02314",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001022"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_961301a1ddaf4c1cbb41d0b4",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001022"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:01",
+        "finished_at": "2026-09-13T20:41:01"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.172
+  },
+  {
+    "id": "missing_bench_02318",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000513"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_496f332b6dbf4848bc538411",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000513"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:02",
+        "finished_at": "2026-09-13T20:41:02"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.047
+  },
+  {
+    "id": "missing_bench_02339",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000420"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_837b5dd4f87144e382744ec5",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000420"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:05",
+        "finished_at": "2026-09-13T20:41:06"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.375
+  },
+  {
+    "id": "missing_bench_02550",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001297"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_bd7b6333c2cf4ecd96bf7f0b",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001297"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:06",
+        "finished_at": "2026-09-13T20:41:06"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.735
+  },
+  {
+    "id": "missing_bench_02564",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_76f9ef20c5824be28c3f6fa1",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:08",
+        "finished_at": "2026-09-13T20:41:08"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.688
+  },
+  {
+    "id": "missing_bench_02650",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000396"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_4f5d18c261a54670b041b304",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000396"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:08",
+        "finished_at": "2026-09-13T20:41:08"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.312
+  },
+  {
+    "id": "missing_bench_02707",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001149"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_893c2fdd18fa4e72ad60a7f6",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001149"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:11",
+        "finished_at": "2026-09-13T20:41:11"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.406
+  },
+  {
+    "id": "missing_bench_02913",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000981"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_b3e7814dcecd4af98ee181fe",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000981"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:13",
+        "finished_at": "2026-09-13T20:41:13"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.157
+  },
+  {
+    "id": "missing_bench_02734",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000607"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_f998f0a823074dba82f523e1",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000607"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:13",
+        "finished_at": "2026-09-13T20:41:13"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.734
+  },
+  {
+    "id": "missing_bench_02940",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000065"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_3c08979752b641169b5356a4",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000065"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:16",
+        "finished_at": "2026-09-13T20:41:16"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.203
+  },
+  {
+    "id": "missing_bench_03136",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000985"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_8ea8ff34702b45c69e7d899a",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000985"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:16",
+        "finished_at": "2026-09-13T20:41:16"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.234
+  },
+  {
+    "id": "missing_bench_03226",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000513"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_6faa8fa1ac6749759eb8ba81",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000513"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:19",
+        "finished_at": "2026-09-13T20:41:19"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.563
+  },
+  {
+    "id": "missing_bench_03161",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000700"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_aa61d7a4be3746c4a2c6ebe9",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000700"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:20",
+        "finished_at": "2026-09-13T20:41:20"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.36
+  },
+  {
+    "id": "missing_bench_03396",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000127"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_b62dfa334c6a41428659ae1c",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000127"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:22",
+        "finished_at": "2026-09-13T20:41:22"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.953
+  },
+  {
+    "id": "missing_bench_03427",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000925"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_e273fa9f202348d3b989e612",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000925"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:22",
+        "finished_at": "2026-09-13T20:41:22"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.125
+  },
+  {
+    "id": "missing_bench_03465",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001064"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_f853ff1b58fd452ba5784dfc",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001064"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:24",
+        "finished_at": "2026-09-13T20:41:24"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.11
+  },
+  {
+    "id": "missing_bench_03610",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000524"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1795eab1f0a64cbf94167276",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:25",
+        "finished_at": "2026-09-13T20:41:25"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.563
+  },
+  {
+    "id": "missing_bench_03654",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000794"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_8600b4159bc746db8979a156",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000794"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:27",
+        "finished_at": "2026-09-13T20:41:27"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.39
+  },
+  {
+    "id": "missing_bench_03628",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000065"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_04b4d15475d14b65ad43f7c5",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000065"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:28",
+        "finished_at": "2026-09-13T20:41:28"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.907
+  },
+  {
+    "id": "missing_bench_03817",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000225"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_f44380c9ffa7413e9ad45a00",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000225"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:31",
+        "finished_at": "2026-09-13T20:41:31"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.718
+  },
+  {
+    "id": "missing_bench_03908",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000513"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_4a16cc4b2f6c493981dbc52c",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000513"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:35",
+        "finished_at": "2026-09-13T20:41:35"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.953
+  },
+  {
+    "id": "missing_bench_03728",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000010"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_22ab6f25da314aef96424d28",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000010"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:36",
+        "finished_at": "2026-09-13T20:41:36"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 8.765
+  },
+  {
+    "id": "missing_bench_03915",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001249"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_dd35a7cb51dd47ec8672b6f2",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001249"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:38",
+        "finished_at": "2026-09-13T20:41:38"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.031
+  },
+  {
+    "id": "missing_bench_04064",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000190"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ee100fe4f8e74cca883d11ee",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000190"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:39",
+        "finished_at": "2026-09-13T20:41:39"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.5
+  },
+  {
+    "id": "missing_bench_04200",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_980f05d79d6341d8863f459e",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:40",
+        "finished_at": "2026-09-13T20:41:40"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.39
+  },
+  {
+    "id": "missing_bench_04597",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001496"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_6ab6fab0f0664d6e8d98e4a0",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001496"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:42",
+        "finished_at": "2026-09-13T20:41:42"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.015
+  },
+  {
+    "id": "missing_bench_04418",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000826"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_dc28d337c22f4893be1778da",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000826"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:44",
+        "finished_at": "2026-09-13T20:41:44"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 5.016
+  },
+  {
+    "id": "missing_bench_04635",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000607"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_d0725815914b42bcb9421196",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000607"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:44",
+        "finished_at": "2026-09-13T20:41:44"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.797
+  },
+  {
+    "id": "missing_bench_04650",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000581"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_71ee6889b5bd4e94886580a5",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000581"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:46",
+        "finished_at": "2026-09-13T20:41:46"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.343
+  },
+  {
+    "id": "missing_bench_04764",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000607"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_22dc990b58c54a27ab4f763c",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000607"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:46",
+        "finished_at": "2026-09-13T20:41:46"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.328
+  },
+  {
+    "id": "missing_bench_04767",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_a0f527fe94c9456fb6fc95d2",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:48",
+        "finished_at": "2026-09-13T20:41:48"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.797
+  },
+  {
+    "id": "missing_bench_04826",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000396"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_4c49e8990b9d4e78b42eea22",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000396"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:48",
+        "finished_at": "2026-09-13T20:41:48"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.875
+  },
+  {
+    "id": "missing_bench_05079",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000413"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_77564e372f4b4806810df2f8",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000413"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:50",
+        "finished_at": "2026-09-13T20:41:50"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.266
+  },
+  {
+    "id": "missing_bench_05003",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001529"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_e18c9e1718ac4f338db3590b",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001529"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:51",
+        "finished_at": "2026-09-13T20:41:52"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.281
+  },
+  {
+    "id": "missing_bench_05211",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000346"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_def6065b7ec84a348139a771",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000346"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:56",
+        "finished_at": "2026-09-13T20:41:56"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.672
+  },
+  {
+    "id": "missing_bench_05151",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000524"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_38150c849a2640c2904075a1",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:41:58",
+        "finished_at": "2026-09-13T20:41:58"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 7.297
+  },
+  {
+    "id": "missing_bench_05287",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ba4ecbe9b9244237b7e1aa38",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:00",
+        "finished_at": "2026-09-13T20:42:00"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.875
+  },
+  {
+    "id": "missing_bench_05278",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001297"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_c565e7002bfe4d7daaa27fad",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001297"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:03",
+        "finished_at": "2026-09-13T20:42:03"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 6.922
+  },
+  {
+    "id": "missing_bench_05348",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000198"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_bb398be16d674936b2468b4b",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000198"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:03",
+        "finished_at": "2026-09-13T20:42:03"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.313
+  },
+  {
+    "id": "missing_bench_05373",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000524"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_fab10f159ca640f68cec6349",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:05",
+        "finished_at": "2026-09-13T20:42:05"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.422
+  },
+  {
+    "id": "missing_bench_05378",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001061"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_372c19ecb84b41dc82b50d0e",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001061"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:07",
+        "finished_at": "2026-09-13T20:42:08"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.14
+  },
+  {
+    "id": "missing_bench_05651",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000815"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1b0ce7d789ad456ea5e320ee",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000815"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:11",
+        "finished_at": "2026-09-13T20:42:11"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.891
+  },
+  {
+    "id": "missing_bench_05353",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001543"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_b082496153dd44c9b0264741",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001543"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:14",
+        "finished_at": "2026-09-13T20:42:14"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 10.985
+  },
+  {
+    "id": "missing_bench_05677",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000413"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_c5a5c9af8cfa4f8f9fae7ef7",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000413"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:16",
+        "finished_at": "2026-09-13T20:42:16"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.266
+  },
+  {
+    "id": "missing_bench_05660",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000607"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_85acd67f6e4c4c5cbb382fd0",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000607"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:16",
+        "finished_at": "2026-09-13T20:42:16"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.891
+  },
+  {
+    "id": "missing_bench_05776",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001185"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_f261521a318347559f37b6d4",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001185"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:19",
+        "finished_at": "2026-09-13T20:42:19"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.25
+  },
+  {
+    "id": "missing_bench_05853",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001168"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_e60e3a1aef2743219c8af3ba",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001168"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:20",
+        "finished_at": "2026-09-13T20:42:20"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.234
+  },
+  {
+    "id": "missing_bench_05928",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000396"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_7bd2852cd3f3444aba0d3e5e",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000396"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:21",
+        "finished_at": "2026-09-13T20:42:21"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.75
+  },
+  {
+    "id": "missing_bench_05893",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000929"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_a2cd0afc7ea6441bb23f35a9",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000929"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:23",
+        "finished_at": "2026-09-13T20:42:23"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.86
+  },
+  {
+    "id": "missing_bench_06002",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001064"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_d5276784a8604aabb96508ef",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001064"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:24",
+        "finished_at": "2026-09-13T20:42:24"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.562
+  },
+  {
+    "id": "missing_bench_06023",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000672"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_aed74372862a43e09a0dba54",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000672"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:26",
+        "finished_at": "2026-09-13T20:42:26"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.547
+  },
+  {
+    "id": "missing_bench_06056",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001064"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_473bdcc1fa9d488f9de747ba",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001064"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:26",
+        "finished_at": "2026-09-13T20:42:26"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.531
+  },
+  {
+    "id": "missing_bench_06125",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000847"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_3a100e0eb82843e18ad6dd40",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000847"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:29",
+        "finished_at": "2026-09-13T20:42:29"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.407
+  },
+  {
+    "id": "missing_bench_06120",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000776"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_3d856f0e972f4f1bb9cc0027",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000776"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:30",
+        "finished_at": "2026-09-13T20:42:30"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.594
+  },
+  {
+    "id": "missing_bench_06220",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000664"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_adfd52a830034bf68495147a",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000664"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:32",
+        "finished_at": "2026-09-13T20:42:32"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.921
+  },
+  {
+    "id": "missing_bench_06331",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001029"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1736b097fc7944e8aaed500a",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001029"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:33",
+        "finished_at": "2026-09-13T20:42:33"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.375
+  },
+  {
+    "id": "missing_bench_06343",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001029"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_7bd7a5da83bd4b61a6b7beb0",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001029"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:34",
+        "finished_at": "2026-09-13T20:42:34"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.016
+  },
+  {
+    "id": "missing_bench_06358",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001029"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_a47d256a129f481b914abfba",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001029"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:35",
+        "finished_at": "2026-09-13T20:42:35"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.156
+  },
+  {
+    "id": "missing_bench_06424",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000513"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_97007917805f4445b7d5d19c",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000513"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:37",
+        "finished_at": "2026-09-13T20:42:37"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.985
+  },
+  {
+    "id": "missing_bench_06426",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001070"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_335dff5d9bd446c4b116d9cc",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001070"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:40",
+        "finished_at": "2026-09-13T20:42:40"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.937
+  },
+  {
+    "id": "missing_bench_06383",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000668"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ea6e9d8779094ca1a5f238cf",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000668"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:42",
+        "finished_at": "2026-09-13T20:42:42"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 7.782
+  },
+  {
+    "id": "missing_bench_06453",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000413"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ef7f140b827d472db31e5f18",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000413"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:44",
+        "finished_at": "2026-09-13T20:42:44"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.656
+  },
+  {
+    "id": "missing_bench_06441",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001185"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_74d93b66d9ea47a9978b3f9a",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001185"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:44",
+        "finished_at": "2026-09-13T20:42:44"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.484
+  },
+  {
+    "id": "missing_bench_06519",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000413"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_21812f94710e474a960c6124",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000413"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:46",
+        "finished_at": "2026-09-13T20:42:47"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.25
+  },
+  {
+    "id": "missing_bench_06632",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000413"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_dbfe8d8d7de34918a5abef39",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000413"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:48",
+        "finished_at": "2026-09-13T20:42:49"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.172
+  },
+  {
+    "id": "missing_bench_06797",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000413"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ce561e053a4f4c50a3da50a9",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000413"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:49",
+        "finished_at": "2026-09-13T20:42:49"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.797
+  },
+  {
+    "id": "missing_bench_06919",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001354"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_101f69fe4f174584a7d2c7eb",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001354"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:52",
+        "finished_at": "2026-09-13T20:42:53"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.188
+  },
+  {
+    "id": "missing_bench_06914",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000575"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_465ed0b04f984e0285fa5707",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000575"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:53",
+        "finished_at": "2026-09-13T20:42:53"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.781
+  },
+  {
+    "id": "missing_bench_06922",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001029"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_9aaa023bdf974a7bbccc535b",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001029"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:55",
+        "finished_at": "2026-09-13T20:42:55"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.781
+  },
+  {
+    "id": "missing_bench_07043",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000303"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_738736cf159b4cbe8bdf34b4",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000303"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:57",
+        "finished_at": "2026-09-13T20:42:57"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.891
+  },
+  {
+    "id": "missing_bench_07059",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000396"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_765ee2f2e74c4d1885e86305",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000396"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:58",
+        "finished_at": "2026-09-13T20:42:58"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.641
+  },
+  {
+    "id": "missing_bench_07098",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000847"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_a9d5855357dd404cb1f3f79c",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000847"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:42:59",
+        "finished_at": "2026-09-13T20:42:59"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.094
+  },
+  {
+    "id": "missing_bench_07301",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000815"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_8d28b981e5524c7eb63f893f",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000815"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:01",
+        "finished_at": "2026-09-13T20:43:01"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.937
+  },
+  {
+    "id": "missing_bench_07384",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000985"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_7bbcd0f6e45642b2b9f48550",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000985"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:02",
+        "finished_at": "2026-09-13T20:43:02"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.656
+  },
+  {
+    "id": "missing_bench_07517",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000877"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1816f2ced40b44dea8b82308",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000877"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:03",
+        "finished_at": "2026-09-13T20:43:03"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.109
+  },
+  {
+    "id": "missing_bench_07667",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000127"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ac9fae4ee60d49dd90c6b644",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000127"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:05",
+        "finished_at": "2026-09-13T20:43:05"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.234
+  },
+  {
+    "id": "missing_bench_07727",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001123"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_01835f11fba542de83ee5296",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001123"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:08",
+        "finished_at": "2026-09-13T20:43:08"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.406
+  },
+  {
+    "id": "missing_bench_07740",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000396"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_73c085d34fd44553b23dc0aa",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000396"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:10",
+        "finished_at": "2026-09-13T20:43:10"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.797
+  },
+  {
+    "id": "missing_bench_07912",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001064"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_23af319643464a1d9e753154",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001064"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:12",
+        "finished_at": "2026-09-13T20:43:12"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.75
+  },
+  {
+    "id": "missing_bench_07595",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001185"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_e248008b3552431da1ffe179",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001185"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:12",
+        "finished_at": "2026-09-13T20:43:13"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 10.578
+  },
+  {
+    "id": "missing_bench_07969",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000513"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1e958e5e855f45cc9c2b21dd",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000513"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:16",
+        "finished_at": "2026-09-13T20:43:16"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.078
+  },
+  {
+    "id": "missing_bench_07929",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_588d4f9d0ee041f9a701158f",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:16",
+        "finished_at": "2026-09-13T20:43:17"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.281
+  },
+  {
+    "id": "missing_bench_07992",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_3ca1f435c27748a1815ec3ec",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:17",
+        "finished_at": "2026-09-13T20:43:17"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.813
+  },
+  {
+    "id": "missing_bench_08026",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000538"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_684b4503f44846949334db55",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000538"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:19",
+        "finished_at": "2026-09-13T20:43:19"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.703
+  },
+  {
+    "id": "missing_bench_08190",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000065"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_9942585107a143569950f031",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000065"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:19",
+        "finished_at": "2026-09-13T20:43:19"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.015
+  },
+  {
+    "id": "missing_bench_08255",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001485"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_e68536ade21c42c0b5738ca7",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001485"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:21",
+        "finished_at": "2026-09-13T20:43:22"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.281
+  },
+  {
+    "id": "missing_bench_08504",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001123"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_d1956655b38b4a879928a5af",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001123"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:23",
+        "finished_at": "2026-09-13T20:43:23"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.922
+  },
+  {
+    "id": "missing_bench_08603",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000524"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_dda351ee87314e8181e776c7",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:24",
+        "finished_at": "2026-09-13T20:43:24"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.484
+  },
+  {
+    "id": "missing_bench_08661",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000879"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_851a4cae6ad24571b68014d9",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000879"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:27",
+        "finished_at": "2026-09-13T20:43:27"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.438
+  },
+  {
+    "id": "missing_bench_08679",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000815"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_ae7e04b44a6b4a4085815532",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000815"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:30",
+        "finished_at": "2026-09-13T20:43:30"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.812
+  },
+  {
+    "id": "missing_bench_08637",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001582"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_807946dab4b94d3f97127b7c",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001582"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:32",
+        "finished_at": "2026-09-13T20:43:32"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 8.719
+  },
+  {
+    "id": "missing_bench_08729",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_129dc9deff804840a074f9ca",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:33",
+        "finished_at": "2026-09-13T20:43:33"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.734
+  },
+  {
+    "id": "missing_bench_08858",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000771"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_85526fe1b99941998137a1d5",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000771"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:35",
+        "finished_at": "2026-09-13T20:43:35"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.234
+  },
+  {
+    "id": "missing_bench_08847",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_622f020452464e7ea02fcc50",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:38",
+        "finished_at": "2026-09-13T20:43:38"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 5.641
+  },
+  {
+    "id": "missing_bench_08889",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001343"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_c559503880ea41aaa3bc8583",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001343"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:38",
+        "finished_at": "2026-09-13T20:43:38"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.766
+  },
+  {
+    "id": "missing_bench_08961",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001149"
+    ],
+    "answer": "关键技能调用失败: tumor_diameter(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_92b88ded13fb46e2af19e875",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "convex_hull_threshold": 100,
+          "min_voxels": 10,
+          "target_case_id": "MISSING_BDMAP_00001149",
+          "tumor_label": "hepatic tumor"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:42",
+        "finished_at": "2026-09-13T20:43:42"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.516
+  },
+  {
+    "id": "missing_bench_08953",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001149"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_874a5ab118184c949f765502",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001149"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:45",
+        "finished_at": "2026-09-13T20:43:45"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 7.156
+  },
+  {
+    "id": "missing_bench_09034",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001297"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_66fca7be31324e5b9f88c197",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001297"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:46",
+        "finished_at": "2026-09-13T20:43:46"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 4.656
+  },
+  {
+    "id": "missing_bench_09068",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000524"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_52b825a1fc684bb8a1609829",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:48",
+        "finished_at": "2026-09-13T20:43:48"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.266
+  },
+  {
+    "id": "missing_bench_09143",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_4f6ac6007fde4b2691560914",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:50",
+        "finished_at": "2026-09-13T20:43:50"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.14
+  },
+  {
+    "id": "missing_bench_09148",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001016"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_746000eb00ce40e7a430edf4",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001016"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:53",
+        "finished_at": "2026-09-13T20:43:53"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.235
+  },
+  {
+    "id": "missing_bench_09300",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000951"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_8b5287a43eee4ceeaa825489",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000951"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:55",
+        "finished_at": "2026-09-13T20:43:55"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.546
+  },
+  {
+    "id": "missing_bench_09077",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001343"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_32db13e1e1534676ad5341c1",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001343"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:43:58",
+        "finished_at": "2026-09-13T20:43:58"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 11.485
+  },
+  {
+    "id": "missing_bench_09381",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000396"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_a520ac3bcb37409a9a02a18a",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000396"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:44:00",
+        "finished_at": "2026-09-13T20:44:00"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 1.984
+  },
+  {
+    "id": "missing_bench_09373",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000095"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_fadf8d100b3541bba6bfb141",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000095"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:44:01",
+        "finished_at": "2026-09-13T20:44:01"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 5.688
+  },
+  {
+    "id": "missing_bench_09738",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00001572"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_b1ca59ccbafb4ff4a67b9093",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00001572"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:44:03",
+        "finished_at": "2026-09-13T20:44:03"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.328
+  },
+  {
+    "id": "missing_bench_09503",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000503"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_be840ae9b1384148a575f6d8",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000503"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:44:03",
+        "finished_at": "2026-09-13T20:44:03"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 3.719
+  },
+  {
+    "id": "missing_bench_09937",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000831"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_1cc2d89c50d447ac9f170493",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000831"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:44:05",
+        "finished_at": "2026-09-13T20:44:06"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 2.36
+  },
+  {
+    "id": "missing_bench_00475",
+    "kind": "missing",
+    "cases": [
+      "MISSING_BDMAP_00000951"
+    ],
+    "answer": "关键技能调用失败: tumor_diameter(PORT_B_HTTP_404)。无法获得回答所需的证据。\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [
+      {
+        "call_id": "call_fe6c87eb6db144f09176a625",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "MISSING_BDMAP_00000951"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": null,
+        "cache_hit": false,
+        "started_at": "2026-09-13T20:46:08",
+        "finished_at": "2026-09-13T20:46:08"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 5.922
+  }
+]

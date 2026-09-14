@@ -1,0 +1,2050 @@
+[
+  {
+    "case": "BDMAP_00000010",
+    "ct_shape": [
+      480,
+      433,
+      666
+    ],
+    "ct_sha256": "d14b3014e25dd007d7350d70254c3420f57ab531c33cfb0888386276c2f080d2",
+    "masks": {
+      "liver": {
+        "shape": [
+          480,
+          433,
+          666
+        ],
+        "same_grid": true,
+        "foreground": 618350,
+        "volume_cm3": 1398.5962977409363
+      },
+      "liver_lesion": {
+        "shape": [
+          480,
+          433,
+          666
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000065",
+    "ct_shape": [
+      512,
+      333,
+      152
+    ],
+    "ct_sha256": "1ae44d0dc903c6932a9b1a3aa7824bd0192dea947a21a4df50a33c0dfc536ed4",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          333,
+          152
+        ],
+        "same_grid": true,
+        "foreground": 1194081,
+        "volume_cm3": 1579.6939498901368
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          333,
+          152
+        ],
+        "same_grid": true,
+        "foreground": 528,
+        "volume_cm3": 0.6985107421875
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000095",
+    "ct_shape": [
+      441,
+      324,
+      48
+    ],
+    "ct_sha256": "9547ab99ab373919719c78a1c594b912ec81f35f638a52d0d5fcb56a6f3aa3d0",
+    "masks": {
+      "liver": {
+        "shape": [
+          441,
+          324,
+          48
+        ],
+        "same_grid": true,
+        "foreground": 331765,
+        "volume_cm3": 1581.9772530118048
+      },
+      "liver_lesion": {
+        "shape": [
+          441,
+          324,
+          48
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000127",
+    "ct_shape": [
+      239,
+      169,
+      185
+    ],
+    "ct_sha256": "69aae15b519e46ce9966b103013f967e971bf8e74b5e280f24d4770557e6f497",
+    "masks": {
+      "liver": {
+        "shape": [
+          239,
+          169,
+          185
+        ],
+        "same_grid": true,
+        "foreground": 643013,
+        "volume_cm3": 2170.168875
+      },
+      "liver_lesion": {
+        "shape": [
+          239,
+          169,
+          185
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000134",
+    "ct_shape": [
+      459,
+      369,
+      38
+    ],
+    "ct_sha256": "921f7fb868052ead2ac8b7d94586a2873e025b6f37753dec207dc119729abb4e",
+    "masks": {
+      "liver": {
+        "shape": [
+          459,
+          369,
+          38
+        ],
+        "same_grid": true,
+        "foreground": 443637,
+        "volume_cm3": 1096.6368713378906
+      },
+      "liver_lesion": {
+        "shape": [
+          459,
+          369,
+          38
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000190",
+    "ct_shape": [
+      450,
+      344,
+      113
+    ],
+    "ct_sha256": "bfe0404b1e7201fb1760a9c08ee85310728f8924272adb4f2e55f40232e12e88",
+    "masks": {
+      "liver": {
+        "shape": [
+          450,
+          344,
+          113
+        ],
+        "same_grid": true,
+        "foreground": 514636,
+        "volume_cm3": 1479.1065046189108
+      },
+      "liver_lesion": {
+        "shape": [
+          450,
+          344,
+          113
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000198",
+    "ct_shape": [
+      429,
+      336,
+      466
+    ],
+    "ct_sha256": "35c625d6f4f6225f4d76d23ee7c019351271639ff150c68a7f3355fe2f24ffb0",
+    "masks": {
+      "liver": {
+        "shape": [
+          429,
+          336,
+          466
+        ],
+        "same_grid": true,
+        "foreground": 3780170,
+        "volume_cm3": 1695.9962620735168
+      },
+      "liver_lesion": {
+        "shape": [
+          429,
+          336,
+          466
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000225",
+    "ct_shape": [
+      512,
+      385,
+      91
+    ],
+    "ct_sha256": "8f9fc47ebd502cdbd2876e977fb790c483bc91f20640dbb63a2773e21af31b79",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          385,
+          91
+        ],
+        "same_grid": true,
+        "foreground": 647645,
+        "volume_cm3": 1478.8325140326724
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          385,
+          91
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000303",
+    "ct_shape": [
+      512,
+      348,
+      504
+    ],
+    "ct_sha256": "b42d008f8f25ec3d8c6952d55b2419178c2cf6ce055e4a47d087a80c0eafe72e",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          348,
+          504
+        ],
+        "same_grid": true,
+        "foreground": 2759480,
+        "volume_cm3": 1031.604934805705
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          348,
+          504
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000346",
+    "ct_shape": [
+      512,
+      361,
+      134
+    ],
+    "ct_sha256": "298cb5b8022b58c76ee65fecdabaf879369d9f1669685b55cc9c79d0e54a1869",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          361,
+          134
+        ],
+        "same_grid": true,
+        "foreground": 890691,
+        "volume_cm3": 1043.778515625
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          361,
+          134
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000396",
+    "ct_shape": [
+      489,
+      312,
+      146
+    ],
+    "ct_sha256": "6d1e79989b11d625d46228833ba4419fcf06e26de3c5b6af63a7b8cadaa0ac7f",
+    "masks": {
+      "liver": {
+        "shape": [
+          489,
+          312,
+          146
+        ],
+        "same_grid": true,
+        "foreground": 1012027,
+        "volume_cm3": 1672.4017959594726
+      },
+      "liver_lesion": {
+        "shape": [
+          489,
+          312,
+          146
+        ],
+        "same_grid": true,
+        "foreground": 7657,
+        "volume_cm3": 12.653398132324218
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000405",
+    "ct_shape": [
+      448,
+      359,
+      55
+    ],
+    "ct_sha256": "8ca1d4dc006f305780bd6335287557e4d6dcfae3676cd0ee42e4cbbb17c8bc76",
+    "masks": {
+      "liver": {
+        "shape": [
+          448,
+          359,
+          55
+        ],
+        "same_grid": true,
+        "foreground": 515643,
+        "volume_cm3": 1843.9748845481872
+      },
+      "liver_lesion": {
+        "shape": [
+          448,
+          359,
+          55
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000413",
+    "ct_shape": [
+      510,
+      315,
+      260
+    ],
+    "ct_sha256": "30c66f068cc82496fc7edf58de4834674f7dc962161102b9e44a5e39a71d42d3",
+    "masks": {
+      "liver": {
+        "shape": [
+          510,
+          315,
+          260
+        ],
+        "same_grid": true,
+        "foreground": 3340466,
+        "volume_cm3": 3340.466
+      },
+      "liver_lesion": {
+        "shape": [
+          510,
+          315,
+          260
+        ],
+        "same_grid": true,
+        "foreground": 348986,
+        "volume_cm3": 348.986
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000420",
+    "ct_shape": [
+      450,
+      273,
+      131
+    ],
+    "ct_sha256": "4be3e21b49b72e11baa8952a9e8e762cf7bb41e3374183ac1e9c8ce729bbefcc",
+    "masks": {
+      "liver": {
+        "shape": [
+          450,
+          273,
+          131
+        ],
+        "same_grid": true,
+        "foreground": 349850,
+        "volume_cm3": 1707.5198079419938
+      },
+      "liver_lesion": {
+        "shape": [
+          450,
+          273,
+          131
+        ],
+        "same_grid": true,
+        "foreground": 25092,
+        "volume_cm3": 122.46702021117767
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000503",
+    "ct_shape": [
+      512,
+      413,
+      73
+    ],
+    "ct_sha256": "8a0ea3292932a2b2bc76e4b3825e2b50a49a9eac8d160262dad0f61dd38ac351",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          413,
+          73
+        ],
+        "same_grid": true,
+        "foreground": 1222484,
+        "volume_cm3": 1510.9436645507812
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          413,
+          73
+        ],
+        "same_grid": true,
+        "foreground": 121,
+        "volume_cm3": 0.1495513916015625
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000513",
+    "ct_shape": [
+      427,
+      360,
+      56
+    ],
+    "ct_sha256": "73e466e640a5867d99509eb5785e3b6b3436a62efce1f5664da2a2236e01ce1c",
+    "masks": {
+      "liver": {
+        "shape": [
+          427,
+          360,
+          56
+        ],
+        "same_grid": true,
+        "foreground": 852182,
+        "volume_cm3": 3854.9652751679428
+      },
+      "liver_lesion": {
+        "shape": [
+          427,
+          360,
+          56
+        ],
+        "same_grid": true,
+        "foreground": 356214,
+        "volume_cm3": 1611.384188505124
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000524",
+    "ct_shape": [
+      501,
+      477,
+      391
+    ],
+    "ct_sha256": "35d850d1f56855259f22cc8118daa4eae7edaaae370ec995178af7be7dbd11db",
+    "masks": {
+      "liver": {
+        "shape": [
+          501,
+          477,
+          391
+        ],
+        "same_grid": true,
+        "foreground": 1184773,
+        "volume_cm3": 2060.112727327347
+      },
+      "liver_lesion": {
+        "shape": [
+          501,
+          477,
+          391
+        ],
+        "same_grid": true,
+        "foreground": 53457,
+        "volume_cm3": 92.95235970497133
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000538",
+    "ct_shape": [
+      447,
+      325,
+      702
+    ],
+    "ct_sha256": "fc82ab6daf4439e0bc31d6b218d97d0ec54837bdc9907c2f530dba0e321d2be1",
+    "masks": {
+      "liver": {
+        "shape": [
+          447,
+          325,
+          702
+        ],
+        "same_grid": true,
+        "foreground": 2662963,
+        "volume_cm3": 1408.131665673057
+      },
+      "liver_lesion": {
+        "shape": [
+          447,
+          325,
+          702
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000560",
+    "ct_shape": [
+      254,
+      186,
+      143
+    ],
+    "ct_sha256": "15b47dfee0bdc7a78c092d5d73e32c627cc5614a76b0cc2e9764994b486b7f92",
+    "masks": {
+      "liver": {
+        "shape": [
+          254,
+          186,
+          143
+        ],
+        "same_grid": true,
+        "foreground": 624465,
+        "volume_cm3": 2107.569375
+      },
+      "liver_lesion": {
+        "shape": [
+          254,
+          186,
+          143
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000575",
+    "ct_shape": [
+      512,
+      390,
+      402
+    ],
+    "ct_sha256": "85171cb624c1ec72f82ba79841e9f5dccad662ed78858b8f8b534936e59a5c43",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          390,
+          402
+        ],
+        "same_grid": true,
+        "foreground": 1311868,
+        "volume_cm3": 2477.4805135726933
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          390,
+          402
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000581",
+    "ct_shape": [
+      512,
+      422,
+      340
+    ],
+    "ct_sha256": "413851a2adfc7b55cfe5dd4c5a30fbd4d0837506b08c59eedd58d64d6ca3b8d8",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          422,
+          340
+        ],
+        "same_grid": true,
+        "foreground": 677460,
+        "volume_cm3": 1134.2578416824342
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          422,
+          340
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000607",
+    "ct_shape": [
+      511,
+      339,
+      239
+    ],
+    "ct_sha256": "b82ce1d580d04a8aa8107d165a729ea9d8139a33a7db9fcfac307868195d7a65",
+    "masks": {
+      "liver": {
+        "shape": [
+          511,
+          339,
+          239
+        ],
+        "same_grid": true,
+        "foreground": 1713527,
+        "volume_cm3": 2208.33157699196
+      },
+      "liver_lesion": {
+        "shape": [
+          511,
+          339,
+          239
+        ],
+        "same_grid": true,
+        "foreground": 268297,
+        "volume_cm3": 345.77146266864304
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000660",
+    "ct_shape": [
+      63,
+      383,
+      486
+    ],
+    "ct_sha256": "ac26c77a8455c5b01de77ccc32aac9d8def385d2ff43b0d79e55b7863d8ab705",
+    "masks": {
+      "liver": {
+        "shape": [
+          63,
+          383,
+          486
+        ],
+        "same_grid": true,
+        "foreground": 948892,
+        "volume_cm3": 3472.1228952026363
+      },
+      "liver_lesion": {
+        "shape": [
+          63,
+          383,
+          486
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000664",
+    "ct_shape": [
+      218,
+      157,
+      152
+    ],
+    "ct_sha256": "e20303231adf917ac452fefe90327f0f0f2d1b4502b71b67b028d52bb68509c7",
+    "masks": {
+      "liver": {
+        "shape": [
+          218,
+          157,
+          152
+        ],
+        "same_grid": true,
+        "foreground": 428017,
+        "volume_cm3": 1444.557375
+      },
+      "liver_lesion": {
+        "shape": [
+          218,
+          157,
+          152
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000668",
+    "ct_shape": [
+      500,
+      461,
+      852
+    ],
+    "ct_sha256": "544ec84c5d2806b4ad90d8e61d8fee1f32bd48bbfbbaec0ce1e5e57835b00c01",
+    "masks": {
+      "liver": {
+        "shape": [
+          500,
+          461,
+          852
+        ],
+        "same_grid": true,
+        "foreground": 2767001,
+        "volume_cm3": 1774.3410800933839
+      },
+      "liver_lesion": {
+        "shape": [
+          500,
+          461,
+          852
+        ],
+        "same_grid": true,
+        "foreground": 168,
+        "volume_cm3": 0.1077301025390625
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000672",
+    "ct_shape": [
+      502,
+      398,
+      663
+    ],
+    "ct_sha256": "bc22ae8d13ee1369fbdb2696ba5536a4d7e54e3b17f4b2c93d4dc6789fe84da7",
+    "masks": {
+      "liver": {
+        "shape": [
+          502,
+          398,
+          663
+        ],
+        "same_grid": true,
+        "foreground": 726206,
+        "volume_cm3": 1383.8052239799501
+      },
+      "liver_lesion": {
+        "shape": [
+          502,
+          398,
+          663
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000700",
+    "ct_shape": [
+      407,
+      284,
+      81
+    ],
+    "ct_sha256": "d6a777f90b110c46b312da28d6530d6a148bfa2791519d9a43d0931ee3a9a74e",
+    "masks": {
+      "liver": {
+        "shape": [
+          407,
+          284,
+          81
+        ],
+        "same_grid": true,
+        "foreground": 374163,
+        "volume_cm3": 1144.048287407243
+      },
+      "liver_lesion": {
+        "shape": [
+          407,
+          284,
+          81
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000771",
+    "ct_shape": [
+      510,
+      373,
+      57
+    ],
+    "ct_sha256": "1bb520e5701cbcab7624994cc93bde3c835ab401c6a50fda29172f93d567f8ed",
+    "masks": {
+      "liver": {
+        "shape": [
+          510,
+          373,
+          57
+        ],
+        "same_grid": true,
+        "foreground": 617695,
+        "volume_cm3": 1526.8949890136719
+      },
+      "liver_lesion": {
+        "shape": [
+          510,
+          373,
+          57
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000776",
+    "ct_shape": [
+      242,
+      188,
+      151
+    ],
+    "ct_sha256": "b449d0e71047c1e4138d0b1d485d87f4a15c4d3f54eacc161bacf726d2cf84d6",
+    "masks": {
+      "liver": {
+        "shape": [
+          242,
+          188,
+          151
+        ],
+        "same_grid": true,
+        "foreground": 370133,
+        "volume_cm3": 1249.198875
+      },
+      "liver_lesion": {
+        "shape": [
+          242,
+          188,
+          151
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000794",
+    "ct_shape": [
+      103,
+      409,
+      512
+    ],
+    "ct_sha256": "da77edf0f10a660c1fbbb5b11f65a1f3964b8214e7a8dd247c682cf1bbbfaf6c",
+    "masks": {
+      "liver": {
+        "shape": [
+          103,
+          409,
+          512
+        ],
+        "same_grid": true,
+        "foreground": 1590455,
+        "volume_cm3": 2155.777983679382
+      },
+      "liver_lesion": {
+        "shape": [
+          103,
+          409,
+          512
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000815",
+    "ct_shape": [
+      512,
+      404,
+      340
+    ],
+    "ct_sha256": "aaeb676a8e0233bff924f7fe7a09e5e4dd23a2853a88c9a983686d43b77a0a55",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          404,
+          340
+        ],
+        "same_grid": true,
+        "foreground": 843379,
+        "volume_cm3": 1332.3296353435517
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          404,
+          340
+        ],
+        "same_grid": true,
+        "foreground": 4002,
+        "volume_cm3": 6.322167377471924
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000826",
+    "ct_shape": [
+      193,
+      417,
+      512
+    ],
+    "ct_sha256": "6f1f7d647cca08bbe2ecb7459d994d89727d94731f59aaeb4d691a41685230ad",
+    "masks": {
+      "liver": {
+        "shape": [
+          193,
+          417,
+          512
+        ],
+        "same_grid": true,
+        "foreground": 1384570,
+        "volume_cm3": 1711.2757873535156
+      },
+      "liver_lesion": {
+        "shape": [
+          193,
+          417,
+          512
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000831",
+    "ct_shape": [
+      508,
+      392,
+      671
+    ],
+    "ct_sha256": "aa17c9d5681e9c869ab6cab03b6353fe202e9290b7baa749eb53e190bbc54237",
+    "masks": {
+      "liver": {
+        "shape": [
+          508,
+          392,
+          671
+        ],
+        "same_grid": true,
+        "foreground": 5313433,
+        "volume_cm3": 1942.3914936775561
+      },
+      "liver_lesion": {
+        "shape": [
+          508,
+          392,
+          671
+        ],
+        "same_grid": true,
+        "foreground": 725310,
+        "volume_cm3": 265.1461318286489
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000847",
+    "ct_shape": [
+      401,
+      253,
+      121
+    ],
+    "ct_sha256": "5e482350bc65f04449b617fa2c738c092882920bb1c8ab93675b3e51a37f3e1e",
+    "masks": {
+      "liver": {
+        "shape": [
+          401,
+          253,
+          121
+        ],
+        "same_grid": true,
+        "foreground": 736103,
+        "volume_cm3": 1273.9661028671264
+      },
+      "liver_lesion": {
+        "shape": [
+          401,
+          253,
+          121
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000855",
+    "ct_shape": [
+      418,
+      345,
+      92
+    ],
+    "ct_sha256": "cf5fc19f3d2b0223b8ee189a0cc65761425233093bac499973a9d47085cc2981",
+    "masks": {
+      "liver": {
+        "shape": [
+          418,
+          345,
+          92
+        ],
+        "same_grid": true,
+        "foreground": 769998,
+        "volume_cm3": 1421.6576843261719
+      },
+      "liver_lesion": {
+        "shape": [
+          418,
+          345,
+          92
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000877",
+    "ct_shape": [
+      480,
+      361,
+      45
+    ],
+    "ct_sha256": "79d1cc077bde975240b85cfb8c1841a659e78e66876265a0ce5988718034e17d",
+    "masks": {
+      "liver": {
+        "shape": [
+          480,
+          361,
+          45
+        ],
+        "same_grid": true,
+        "foreground": 410493,
+        "volume_cm3": 1227.797501768005
+      },
+      "liver_lesion": {
+        "shape": [
+          480,
+          361,
+          45
+        ],
+        "same_grid": true,
+        "foreground": 13223,
+        "volume_cm3": 39.55040978988272
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000879",
+    "ct_shape": [
+      462,
+      330,
+      205
+    ],
+    "ct_sha256": "1ae58f428ab955f99b20ad0fa90c01c9c88d1efc28a6c7d728eb693fb3495118",
+    "masks": {
+      "liver": {
+        "shape": [
+          462,
+          330,
+          205
+        ],
+        "same_grid": true,
+        "foreground": 2598177,
+        "volume_cm3": 1588.847613062162
+      },
+      "liver_lesion": {
+        "shape": [
+          462,
+          330,
+          205
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000925",
+    "ct_shape": [
+      512,
+      456,
+      340
+    ],
+    "ct_sha256": "79476644980928127fd142d3d37f9b1d6b3a072d8fcb24a687077af4217687de",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          456,
+          340
+        ],
+        "same_grid": true,
+        "foreground": 702811,
+        "volume_cm3": 1176.7025181865695
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          456,
+          340
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000929",
+    "ct_shape": [
+      512,
+      393,
+      103
+    ],
+    "ct_sha256": "8253b66e7d26e8b6808ce489fa31000a65a6ddd26f5166e642458b37fd110ab2",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          393,
+          103
+        ],
+        "same_grid": true,
+        "foreground": 760622,
+        "volume_cm3": 2367.888075017378
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          393,
+          103
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000951",
+    "ct_shape": [
+      510,
+      345,
+      338
+    ],
+    "ct_sha256": "54d1e31deae0be482ee5ea93ba6fe03aa7b785705093eb61a3ea33284740376d",
+    "masks": {
+      "liver": {
+        "shape": [
+          510,
+          345,
+          338
+        ],
+        "same_grid": true,
+        "foreground": 902610,
+        "volume_cm3": 1291.193962097168
+      },
+      "liver_lesion": {
+        "shape": [
+          510,
+          345,
+          338
+        ],
+        "same_grid": true,
+        "foreground": 1651,
+        "volume_cm3": 2.361774444580078
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000981",
+    "ct_shape": [
+      449,
+      283,
+      39
+    ],
+    "ct_sha256": "9d248319c57d2b14b9d0fe1a7a57db363de8c9fd205d7d52ce2550cde5fcded7",
+    "masks": {
+      "liver": {
+        "shape": [
+          449,
+          283,
+          39
+        ],
+        "same_grid": true,
+        "foreground": 278209,
+        "volume_cm3": 936.0506161773015
+      },
+      "liver_lesion": {
+        "shape": [
+          449,
+          283,
+          39
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00000985",
+    "ct_shape": [
+      512,
+      402,
+      116
+    ],
+    "ct_sha256": "836c0fc16193d9289a3a375958831a6882c98b5c55d07b607691727abfa97be7",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          402,
+          116
+        ],
+        "same_grid": true,
+        "foreground": 606732,
+        "volume_cm3": 1823.929286727905
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          402,
+          116
+        ],
+        "same_grid": true,
+        "foreground": 203,
+        "volume_cm3": 0.6102490806579589
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001016",
+    "ct_shape": [
+      459,
+      340,
+      36
+    ],
+    "ct_sha256": "aedeee34571886c596686fd388046dce7f70e9d28508f86c796ee0e17836f443",
+    "masks": {
+      "liver": {
+        "shape": [
+          459,
+          340,
+          36
+        ],
+        "same_grid": true,
+        "foreground": 604801,
+        "volume_cm3": 1495.0220031738281
+      },
+      "liver_lesion": {
+        "shape": [
+          459,
+          340,
+          36
+        ],
+        "same_grid": true,
+        "foreground": 17110,
+        "volume_cm3": 42.29461669921875
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001022",
+    "ct_shape": [
+      510,
+      421,
+      549
+    ],
+    "ct_sha256": "0d38ce70c8b9f916508174c4f96621b36e7f6ad3a4e7b18a198b3fa1fd41778a",
+    "masks": {
+      "liver": {
+        "shape": [
+          510,
+          421,
+          549
+        ],
+        "same_grid": true,
+        "foreground": 3252644,
+        "volume_cm3": 1344.2567981559866
+      },
+      "liver_lesion": {
+        "shape": [
+          510,
+          421,
+          549
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001029",
+    "ct_shape": [
+      236,
+      176,
+      147
+    ],
+    "ct_sha256": "991c3fcb25a19fd351bd2c8b713260bc6b06fc1946fda36a11a6d5bf82a9c326",
+    "masks": {
+      "liver": {
+        "shape": [
+          236,
+          176,
+          147
+        ],
+        "same_grid": true,
+        "foreground": 409449,
+        "volume_cm3": 1381.890375
+      },
+      "liver_lesion": {
+        "shape": [
+          236,
+          176,
+          147
+        ],
+        "same_grid": true,
+        "foreground": 245,
+        "volume_cm3": 0.826875
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001061",
+    "ct_shape": [
+      512,
+      428,
+      235
+    ],
+    "ct_sha256": "532ab928d0db16e71332edd5bfdfd8e97e2c20dbe67744d9635c8cc2ac169cee",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          428,
+          235
+        ],
+        "same_grid": true,
+        "foreground": 3896061,
+        "volume_cm3": 1409.8965862426758
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          428,
+          235
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001064",
+    "ct_shape": [
+      505,
+      312,
+      448
+    ],
+    "ct_sha256": "5b936a35e5c773e02bd9bb17a7946db456d9c54d8cb2881ece22a8d57f8774a3",
+    "masks": {
+      "liver": {
+        "shape": [
+          505,
+          312,
+          448
+        ],
+        "same_grid": true,
+        "foreground": 2398011,
+        "volume_cm3": 1252.318214035034
+      },
+      "liver_lesion": {
+        "shape": [
+          505,
+          312,
+          448
+        ],
+        "same_grid": true,
+        "foreground": 74316,
+        "volume_cm3": 38.81019744873047
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001070",
+    "ct_shape": [
+      489,
+      295,
+      218
+    ],
+    "ct_sha256": "ad59c651e02841fdcc7737f533473218e383749843790e111ad6c5cc7e0bf014",
+    "masks": {
+      "liver": {
+        "shape": [
+          489,
+          295,
+          218
+        ],
+        "same_grid": true,
+        "foreground": 2942729,
+        "volume_cm3": 2227.724342536926
+      },
+      "liver_lesion": {
+        "shape": [
+          489,
+          295,
+          218
+        ],
+        "same_grid": true,
+        "foreground": 21041,
+        "volume_cm3": 15.928598213195801
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001123",
+    "ct_shape": [
+      214,
+      178,
+      144
+    ],
+    "ct_sha256": "db076cd0db7c1926bff34ee45a3a2638d5e5877ba4039011e3539b5d05da1345",
+    "masks": {
+      "liver": {
+        "shape": [
+          214,
+          178,
+          144
+        ],
+        "same_grid": true,
+        "foreground": 356736,
+        "volume_cm3": 1203.984
+      },
+      "liver_lesion": {
+        "shape": [
+          214,
+          178,
+          144
+        ],
+        "same_grid": true,
+        "foreground": 149,
+        "volume_cm3": 0.502875
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001149",
+    "ct_shape": [
+      407,
+      339,
+      61
+    ],
+    "ct_sha256": "d34eec5b79dbe30867c29c15bc06456afe0841024a79fa14e3e1928a3ac3c67c",
+    "masks": {
+      "liver": {
+        "shape": [
+          407,
+          339,
+          61
+        ],
+        "same_grid": true,
+        "foreground": 463032,
+        "volume_cm3": 2207.906474210848
+      },
+      "liver_lesion": {
+        "shape": [
+          407,
+          339,
+          61
+        ],
+        "same_grid": true,
+        "foreground": 7939,
+        "volume_cm3": 37.85606502090551
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001168",
+    "ct_shape": [
+      512,
+      367,
+      287
+    ],
+    "ct_sha256": "cd3925834fa967be056e58b499d877afdd4eed69335c3670695839b47ef827f4",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          367,
+          287
+        ],
+        "same_grid": true,
+        "foreground": 3954513,
+        "volume_cm3": 1759.5458377873663
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          367,
+          287
+        ],
+        "same_grid": true,
+        "foreground": 379585,
+        "volume_cm3": 168.89493265960118
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001185",
+    "ct_shape": [
+      509,
+      408,
+      629
+    ],
+    "ct_sha256": "3358f3f96f4620a95555bc0038bfbb8e079fb2d3171c1594c6c1013e74a630d2",
+    "masks": {
+      "liver": {
+        "shape": [
+          509,
+          408,
+          629
+        ],
+        "same_grid": true,
+        "foreground": 3693452,
+        "volume_cm3": 1577.977036590455
+      },
+      "liver_lesion": {
+        "shape": [
+          509,
+          408,
+          629
+        ],
+        "same_grid": true,
+        "foreground": 12253,
+        "volume_cm3": 5.234927279234398
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001215",
+    "ct_shape": [
+      512,
+      417,
+      100
+    ],
+    "ct_sha256": "15531be6cb0bc8ab326a716ca9099fac1d457fd134c19b1ffe82b088ab3e8c2f",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          417,
+          100
+        ],
+        "same_grid": true,
+        "foreground": 536486,
+        "volume_cm3": 1637.225341796875
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          417,
+          100
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001249",
+    "ct_shape": [
+      442,
+      328,
+      151
+    ],
+    "ct_sha256": "58175e08aa14568d794fdba3aa5c30196bf27c035165aab5def6b87b01f0e52c",
+    "masks": {
+      "liver": {
+        "shape": [
+          442,
+          328,
+          151
+        ],
+        "same_grid": true,
+        "foreground": 1571772,
+        "volume_cm3": 1709.674275378629
+      },
+      "liver_lesion": {
+        "shape": [
+          442,
+          328,
+          151
+        ],
+        "same_grid": true,
+        "foreground": 96653,
+        "volume_cm3": 105.13302676098736
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001292",
+    "ct_shape": [
+      299,
+      205,
+      165
+    ],
+    "ct_sha256": "ea278edcc82526403bd7be5748318f6c303bc8191f817aea521e1ca724946f94",
+    "masks": {
+      "liver": {
+        "shape": [
+          299,
+          205,
+          165
+        ],
+        "same_grid": true,
+        "foreground": 557860,
+        "volume_cm3": 1882.7775024780187
+      },
+      "liver_lesion": {
+        "shape": [
+          299,
+          205,
+          165
+        ],
+        "same_grid": false,
+        "foreground": 30,
+        "volume_cm3": 0.10125000014350642
+      }
+    },
+    "geometry_passed": false
+  },
+  {
+    "case": "BDMAP_00001297",
+    "ct_shape": [
+      512,
+      416,
+      443
+    ],
+    "ct_sha256": "11900cca80d61222e73273e31cb0b4a3f13fadab1cfd1bf4f9a48c757ce45fa3",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          416,
+          443
+        ],
+        "same_grid": true,
+        "foreground": 3026510,
+        "volume_cm3": 945.7843890932853
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          416,
+          443
+        ],
+        "same_grid": true,
+        "foreground": 1640,
+        "volume_cm3": 0.512500007636845
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001343",
+    "ct_shape": [
+      510,
+      321,
+      781
+    ],
+    "ct_sha256": "db893dc7e93622472a963f29d03c816a68ee9a4c2bcbd946e91b4721a2c478d4",
+    "masks": {
+      "liver": {
+        "shape": [
+          510,
+          321,
+          781
+        ],
+        "same_grid": true,
+        "foreground": 3227302,
+        "volume_cm3": 1574.8227807185292
+      },
+      "liver_lesion": {
+        "shape": [
+          510,
+          321,
+          781
+        ],
+        "same_grid": true,
+        "foreground": 275918,
+        "volume_cm3": 134.63938361216123
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001354",
+    "ct_shape": [
+      236,
+      162,
+      166
+    ],
+    "ct_sha256": "0a20cc22888c6fd1175f4264552b7880beeb409722f1c6e983a83f23bd3398d5",
+    "masks": {
+      "liver": {
+        "shape": [
+          236,
+          162,
+          166
+        ],
+        "same_grid": true,
+        "foreground": 470433,
+        "volume_cm3": 1587.711375
+      },
+      "liver_lesion": {
+        "shape": [
+          236,
+          162,
+          166
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001485",
+    "ct_shape": [
+      512,
+      409,
+      551
+    ],
+    "ct_sha256": "46d6f307fd39ae8e234eef6392b33296c4ee28a1c92d821513487aef9ef58c6b",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          409,
+          551
+        ],
+        "same_grid": true,
+        "foreground": 3952333,
+        "volume_cm3": 1159.1162321769627
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          409,
+          551
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001496",
+    "ct_shape": [
+      94,
+      323,
+      512
+    ],
+    "ct_sha256": "7bd7f94145791d88abf5bed7622395f6357c3f30fffbe07db4cd8c69ab7c8f68",
+    "masks": {
+      "liver": {
+        "shape": [
+          94,
+          323,
+          512
+        ],
+        "same_grid": true,
+        "foreground": 582188,
+        "volume_cm3": 883.0627157592774
+      },
+      "liver_lesion": {
+        "shape": [
+          94,
+          323,
+          512
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001529",
+    "ct_shape": [
+      478,
+      396,
+      547
+    ],
+    "ct_sha256": "327ddb6b3ca7a0436a07acbfcfd6ebb6ff14dedcfe4273dee3d64729ad70e937",
+    "masks": {
+      "liver": {
+        "shape": [
+          478,
+          396,
+          547
+        ],
+        "same_grid": true,
+        "foreground": 2826626,
+        "volume_cm3": 1245.6216264136986
+      },
+      "liver_lesion": {
+        "shape": [
+          478,
+          396,
+          547
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001543",
+    "ct_shape": [
+      512,
+      450,
+      290
+    ],
+    "ct_sha256": "6d2215e68359b927ffb07f193cde43af7280c0cc59838bd676526bb341c13a69",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          450,
+          290
+        ],
+        "same_grid": true,
+        "foreground": 640007,
+        "volume_cm3": 1031.0232395839691
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          450,
+          290
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001572",
+    "ct_shape": [
+      512,
+      436,
+      626
+    ],
+    "ct_sha256": "7aa81e6a0f9f180fdf63915cde8397299c6646324379f81a7676f0aa25377783",
+    "masks": {
+      "liver": {
+        "shape": [
+          512,
+          436,
+          626
+        ],
+        "same_grid": true,
+        "foreground": 2660187,
+        "volume_cm3": 1159.9667952763884
+      },
+      "liver_lesion": {
+        "shape": [
+          512,
+          436,
+          626
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  },
+  {
+    "case": "BDMAP_00001582",
+    "ct_shape": [
+      261,
+      175,
+      139
+    ],
+    "ct_sha256": "46393e9e7c21304f2f7609cc89425ce62266ea3f9b1789346a14aad7b57857ef",
+    "masks": {
+      "liver": {
+        "shape": [
+          261,
+          175,
+          139
+        ],
+        "same_grid": true,
+        "foreground": 353075,
+        "volume_cm3": 1191.628125
+      },
+      "liver_lesion": {
+        "shape": [
+          261,
+          175,
+          139
+        ],
+        "same_grid": true,
+        "foreground": 0,
+        "volume_cm3": 0.0
+      }
+    },
+    "geometry_passed": true
+  }
+]

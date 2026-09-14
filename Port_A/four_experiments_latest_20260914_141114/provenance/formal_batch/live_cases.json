@@ -1,0 +1,443 @@
+[
+  {
+    "case": "BDMAP_00000010",
+    "port_b_case": "LIVE_BDMAP_00000010",
+    "missing_case": "MISSING_BDMAP_00000010",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000065",
+    "port_b_case": "LIVE_BDMAP_00000065",
+    "missing_case": "MISSING_BDMAP_00000065",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000095",
+    "port_b_case": "LIVE_BDMAP_00000095",
+    "missing_case": "MISSING_BDMAP_00000095",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000127",
+    "port_b_case": "LIVE_BDMAP_00000127",
+    "missing_case": "MISSING_BDMAP_00000127",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000134",
+    "port_b_case": "LIVE_BDMAP_00000134",
+    "missing_case": "MISSING_BDMAP_00000134",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000190",
+    "port_b_case": "LIVE_BDMAP_00000190",
+    "missing_case": "MISSING_BDMAP_00000190",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000198",
+    "port_b_case": "LIVE_BDMAP_00000198",
+    "missing_case": "MISSING_BDMAP_00000198",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000225",
+    "port_b_case": "LIVE_BDMAP_00000225",
+    "missing_case": "MISSING_BDMAP_00000225",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000303",
+    "port_b_case": "LIVE_BDMAP_00000303",
+    "missing_case": "MISSING_BDMAP_00000303",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000346",
+    "port_b_case": "LIVE_BDMAP_00000346",
+    "missing_case": "MISSING_BDMAP_00000346",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000396",
+    "port_b_case": "LIVE_BDMAP_00000396",
+    "missing_case": "MISSING_BDMAP_00000396",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000405",
+    "port_b_case": "LIVE_BDMAP_00000405",
+    "missing_case": "MISSING_BDMAP_00000405",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000413",
+    "port_b_case": "LIVE_BDMAP_00000413",
+    "missing_case": "MISSING_BDMAP_00000413",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000420",
+    "port_b_case": "LIVE_BDMAP_00000420",
+    "missing_case": "MISSING_BDMAP_00000420",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000503",
+    "port_b_case": "LIVE_BDMAP_00000503",
+    "missing_case": "MISSING_BDMAP_00000503",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000513",
+    "port_b_case": "LIVE_BDMAP_00000513",
+    "missing_case": "MISSING_BDMAP_00000513",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000524",
+    "port_b_case": "LIVE_BDMAP_00000524",
+    "missing_case": "MISSING_BDMAP_00000524",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000538",
+    "port_b_case": "LIVE_BDMAP_00000538",
+    "missing_case": "MISSING_BDMAP_00000538",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000560",
+    "port_b_case": "LIVE_BDMAP_00000560",
+    "missing_case": "MISSING_BDMAP_00000560",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000575",
+    "port_b_case": "LIVE_BDMAP_00000575",
+    "missing_case": "MISSING_BDMAP_00000575",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000581",
+    "port_b_case": "LIVE_BDMAP_00000581",
+    "missing_case": "MISSING_BDMAP_00000581",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000607",
+    "port_b_case": "LIVE_BDMAP_00000607",
+    "missing_case": "MISSING_BDMAP_00000607",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000660",
+    "port_b_case": "LIVE_BDMAP_00000660",
+    "missing_case": "MISSING_BDMAP_00000660",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000664",
+    "port_b_case": "LIVE_BDMAP_00000664",
+    "missing_case": "MISSING_BDMAP_00000664",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000668",
+    "port_b_case": "LIVE_BDMAP_00000668",
+    "missing_case": "MISSING_BDMAP_00000668",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000672",
+    "port_b_case": "LIVE_BDMAP_00000672",
+    "missing_case": "MISSING_BDMAP_00000672",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000700",
+    "port_b_case": "LIVE_BDMAP_00000700",
+    "missing_case": "MISSING_BDMAP_00000700",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000771",
+    "port_b_case": "LIVE_BDMAP_00000771",
+    "missing_case": "MISSING_BDMAP_00000771",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000776",
+    "port_b_case": "LIVE_BDMAP_00000776",
+    "missing_case": "MISSING_BDMAP_00000776",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000794",
+    "port_b_case": "LIVE_BDMAP_00000794",
+    "missing_case": "MISSING_BDMAP_00000794",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000815",
+    "port_b_case": "LIVE_BDMAP_00000815",
+    "missing_case": "MISSING_BDMAP_00000815",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000826",
+    "port_b_case": "LIVE_BDMAP_00000826",
+    "missing_case": "MISSING_BDMAP_00000826",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000831",
+    "port_b_case": "LIVE_BDMAP_00000831",
+    "missing_case": "MISSING_BDMAP_00000831",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000847",
+    "port_b_case": "LIVE_BDMAP_00000847",
+    "missing_case": "MISSING_BDMAP_00000847",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000855",
+    "port_b_case": "LIVE_BDMAP_00000855",
+    "missing_case": "MISSING_BDMAP_00000855",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000877",
+    "port_b_case": "LIVE_BDMAP_00000877",
+    "missing_case": "MISSING_BDMAP_00000877",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000879",
+    "port_b_case": "LIVE_BDMAP_00000879",
+    "missing_case": "MISSING_BDMAP_00000879",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000925",
+    "port_b_case": "LIVE_BDMAP_00000925",
+    "missing_case": "MISSING_BDMAP_00000925",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000929",
+    "port_b_case": "LIVE_BDMAP_00000929",
+    "missing_case": "MISSING_BDMAP_00000929",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000951",
+    "port_b_case": "LIVE_BDMAP_00000951",
+    "missing_case": "MISSING_BDMAP_00000951",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000981",
+    "port_b_case": "LIVE_BDMAP_00000981",
+    "missing_case": "MISSING_BDMAP_00000981",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00000985",
+    "port_b_case": "LIVE_BDMAP_00000985",
+    "missing_case": "MISSING_BDMAP_00000985",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001016",
+    "port_b_case": "LIVE_BDMAP_00001016",
+    "missing_case": "MISSING_BDMAP_00001016",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001022",
+    "port_b_case": "LIVE_BDMAP_00001022",
+    "missing_case": "MISSING_BDMAP_00001022",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001029",
+    "port_b_case": "LIVE_BDMAP_00001029",
+    "missing_case": "MISSING_BDMAP_00001029",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001061",
+    "port_b_case": "LIVE_BDMAP_00001061",
+    "missing_case": "MISSING_BDMAP_00001061",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001064",
+    "port_b_case": "LIVE_BDMAP_00001064",
+    "missing_case": "MISSING_BDMAP_00001064",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001070",
+    "port_b_case": "LIVE_BDMAP_00001070",
+    "missing_case": "MISSING_BDMAP_00001070",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001123",
+    "port_b_case": "LIVE_BDMAP_00001123",
+    "missing_case": "MISSING_BDMAP_00001123",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001149",
+    "port_b_case": "LIVE_BDMAP_00001149",
+    "missing_case": "MISSING_BDMAP_00001149",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001168",
+    "port_b_case": "LIVE_BDMAP_00001168",
+    "missing_case": "MISSING_BDMAP_00001168",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001185",
+    "port_b_case": "LIVE_BDMAP_00001185",
+    "missing_case": "MISSING_BDMAP_00001185",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001215",
+    "port_b_case": "LIVE_BDMAP_00001215",
+    "missing_case": "MISSING_BDMAP_00001215",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001249",
+    "port_b_case": "LIVE_BDMAP_00001249",
+    "missing_case": "MISSING_BDMAP_00001249",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001297",
+    "port_b_case": "LIVE_BDMAP_00001297",
+    "missing_case": "MISSING_BDMAP_00001297",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001343",
+    "port_b_case": "LIVE_BDMAP_00001343",
+    "missing_case": "MISSING_BDMAP_00001343",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001354",
+    "port_b_case": "LIVE_BDMAP_00001354",
+    "missing_case": "MISSING_BDMAP_00001354",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001485",
+    "port_b_case": "LIVE_BDMAP_00001485",
+    "missing_case": "MISSING_BDMAP_00001485",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001496",
+    "port_b_case": "LIVE_BDMAP_00001496",
+    "missing_case": "MISSING_BDMAP_00001496",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001529",
+    "port_b_case": "LIVE_BDMAP_00001529",
+    "missing_case": "MISSING_BDMAP_00001529",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001543",
+    "port_b_case": "LIVE_BDMAP_00001543",
+    "missing_case": "MISSING_BDMAP_00001543",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001572",
+    "port_b_case": "LIVE_BDMAP_00001572",
+    "missing_case": "MISSING_BDMAP_00001572",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  },
+  {
+    "case": "BDMAP_00001582",
+    "port_b_case": "LIVE_BDMAP_00001582",
+    "missing_case": "MISSING_BDMAP_00001582",
+    "scope": "same_grid_reference_masks",
+    "ct_overlay_validated": true
+  }
+]

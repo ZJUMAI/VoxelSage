@@ -1,0 +1,3171 @@
+[
+  {
+    "id": "cache_bench_00918",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "answer": "Yes, there is evidence of a lesion in the liver (tumor_count: 1, largest diameter **121.2 mm**, volume **348.99 cm³**).\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 15.594
+  },
+  {
+    "id": "cache_bench_05079",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "answer": "**348.99 cm³**（共 1 个病灶，tumor_1 = **348.99 cm³**）\n\n{\"value\": 348.99, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.078
+  },
+  {
+    "id": "cache_bench_00015",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "answer": "There are **6** liver lesions.\n\n{\"value\": 6, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.703
+  },
+  {
+    "id": "cache_bench_00062",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "answer": "59 liver lesions are observed.\n\n{\"value\": 59, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.453
+  },
+  {
+    "id": "cache_bench_00210",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000672"
+    ],
+    "answer": "肝脏体积为 **1383.81 cm³**。\n\n{\"value\": 1383.81, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.297
+  },
+  {
+    "id": "cache_bench_00298",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001249"
+    ],
+    "answer": "Yes; **3** liver lesions are present.\n\n```json\n{\"value\": true, \"unit\": \"bool\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.25
+  },
+  {
+    "id": "cache_bench_00301",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001215"
+    ],
+    "answer": "No, no liver lesions were found in the scans.\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.187
+  },
+  {
+    "id": "cache_bench_00421",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "Yes. The analysis identified **12** lesions in the liver.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.797
+  },
+  {
+    "id": "cache_bench_00475",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000951"
+    ],
+    "answer": "{\"value\": 2.439, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.25
+  },
+  {
+    "id": "cache_bench_00565",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000951"
+    ],
+    "answer": "The total intrahepatic lesion volume is **2.36 cm³** (one lesion, tumor_1, with maximum diameter **24.4 mm**).\n\n{\"value\": 2.36, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.625
+  },
+  {
+    "id": "cache_bench_00449",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000420"
+    ],
+    "answer": "关键技能调用失败: liver_analysis(SKILL_EXECUTION_ERROR)。无法提供完整分析，建议检查数据质量或联系技术支持。",
+    "score": {
+      "format_valid": false,
+      "answer_correct": false
+    },
+    "calls": [
+      {
+        "call_id": "call_77628811b900477db2c84b12",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000420"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 736.3,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:42:15",
+        "finished_at": "2026-09-13T19:42:16"
+      }
+    ],
+    "rounds": 1,
+    "seconds": 6.453
+  },
+  {
+    "id": "cache_bench_00584",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "answer": "Yes. The liver contains **1 lesion** (tumor_1: **50.5 mm** diameter, **37.86 cm³** volume).\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.875
+  },
+  {
+    "id": "cache_bench_00673",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "There are **12** liver lesions in this case.\n\n{\"value\": 12, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.469
+  },
+  {
+    "id": "cache_bench_00921",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "answer": "{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.047
+  },
+  {
+    "id": "cache_bench_00956",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000560"
+    ],
+    "answer": "## 肝脏病灶评估\n\n根据已有分析结果，肝脏**未发现**病灶。\n\n- 肿瘤数量：**0**\n\n结论：该肝脏不会被描述为有病灶（lesion-free）。\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.328
+  },
+  {
+    "id": "cache_bench_01233",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000877"
+    ],
+    "answer": "{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.75
+  },
+  {
+    "id": "cache_bench_01303",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001215"
+    ],
+    "answer": "## 肝脏体积\n\n肝脏体积为 **1637.23 cm³**。\n\n{\"value\": 1637.23, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.968
+  },
+  {
+    "id": "cache_bench_01308",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001123"
+    ],
+    "answer": "**1203.98 cm³**\n\n{\"value\": 1203.98, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.609
+  },
+  {
+    "id": "cache_bench_01388",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001343"
+    ],
+    "answer": "是。肝脏存在病灶，已检出 **6** 个病灶。\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.172
+  },
+  {
+    "id": "cache_bench_01530",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "answer": "The measured lesion volume is **37.86 cm³**.\n\n{\"value\": 37.86, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.563
+  },
+  {
+    "id": "cache_bench_01536",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000134"
+    ],
+    "answer": "No lesions are present.\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.86
+  },
+  {
+    "id": "cache_bench_01547",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000420"
+    ],
+    "answer": "## 肝脏病灶数量\n\n根据已完成的 tumor_diameter 分析结果，共检出 **6** 个肝脏病灶（tumor_1 至 tumor_6）。\n\n{\"value\": 6, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 9.313
+  },
+  {
+    "id": "cache_bench_00745",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "answer": "## 肝脏病灶体积\n\n- 最大病灶体积：**1.62 cm³**（tumor_1）\n- 全部 **13** 个病灶的总体积无法完整给出：现有结果仅列出 10 个病灶的体积（合计 **4.80 cm³**），其余 3 个未提供。\n\n{\"value\": 1.62, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 31.625
+  },
+  {
+    "id": "cache_bench_01624",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000346"
+    ],
+    "answer": "The liver volume is **1043.78 cm³**.\n\n{\"value\": 1043.78, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.281
+  },
+  {
+    "id": "cache_bench_01634",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000985"
+    ],
+    "answer": "Yes. The data shows **2** lesions inside the liver (tumor_1: **10.1 mm**, **0.50 cm³**; tumor_2: **6.6 mm**, **0.11 cm³**).\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.891
+  },
+  {
+    "id": "cache_bench_01698",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001168"
+    ],
+    "answer": "{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.234
+  },
+  {
+    "id": "cache_bench_01704",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000855"
+    ],
+    "answer": "The measured liver volume is **1421.66 cm³**.\n\n```json\n{\"value\": 1421.66, \"unit\": \"cm3\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.25
+  },
+  {
+    "id": "cache_bench_02119",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000405"
+    ],
+    "answer": "The liver volume is **1843.97 cm³** (slightly above the typical reference range of 1000–1800 cm³).\n\n{\"value\": 1843.97, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.563
+  },
+  {
+    "id": "cache_bench_02149",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000660"
+    ],
+    "answer": "The liver volume is estimated at **3472.12 cm³**, which exceeds the normal reference range and may require verification.\n\n{\"value\": 3472.12, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.75
+  },
+  {
+    "id": "cache_bench_02314",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001022"
+    ],
+    "answer": "No liver lesions are observed.\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.703
+  },
+  {
+    "id": "cache_bench_02318",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "answer": "The liver contains **1** lesion with a measured lesion volume of **1611.38 cm³**.\n\n{\"value\": 1611.38, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 4.5
+  },
+  {
+    "id": "cache_bench_01571",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "### 病灶总体积\n\n- 工具结果中可见 10/12 个病灶，体积合计 **263.54 cm³**（其中最大为 tumor_2 的 **114.7 mm / 65.60 cm³** 和 tumor_1 的 **111.9 mm / 79.76 cm³**）。\n- 其余 2 个病灶的体积未在结果中提供，因此无法给出精确的病灶总体积；263.54 cm³ 仅为已知部分之和（下限）。\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 24.015
+  },
+  {
+    "id": "cache_bench_02550",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "answer": "Yes. The scan analysis detected **6** hepatic lesions.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.5
+  },
+  {
+    "id": "cache_bench_02564",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "Yes; the analysis identifies 12 liver lesions.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.375
+  },
+  {
+    "id": "cache_bench_02339",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000420"
+    ],
+    "answer": "## 病灶总体积\n\n**无法给出数值（null）。**\n\n- 综合肝脏分析（liver_analysis）执行失败，Qhull 凸包精度错误（输入点集近似共面/2D 退化），未返回肿瘤体积（volume_cm3）。\n- 现有成功结果仅提供肿瘤**直径**（tumor_diameter），直径不能换算为体积（病灶形状未知），故无法据此给出体积。\n- 按要求不猜测缺失证据。\n\n```json\n{\"value\": null, \"unit\": \"cm3\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [
+      {
+        "call_id": "call_543c0280b7c0419bb23027d5",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000420"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 650.8,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:43:18",
+        "finished_at": "2026-09-13T19:43:19"
+      }
+    ],
+    "rounds": 2,
+    "seconds": 27.719
+  },
+  {
+    "id": "cache_bench_02707",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "answer": "Yes. There is evidence of 1 liver lesion.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.015
+  },
+  {
+    "id": "cache_bench_02734",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "answer": "**345.78 cm³**\n\n{\"value\": 345.78, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.297
+  },
+  {
+    "id": "cache_bench_02650",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "answer": "**5** 个肝脏病灶。\n\n{\"value\": 5, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 27.688
+  },
+  {
+    "id": "cache_bench_02913",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000981"
+    ],
+    "answer": "**936.05 cm³**\n\n{\"value\": 936.05, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.703
+  },
+  {
+    "id": "cache_bench_02940",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000065"
+    ],
+    "answer": "## 肝脏病灶分析\n\n> 是，肝脏内存在病灶证据：共 **1** 个病灶（tumor_1），最大直径 **13.1 mm**，体积 **0.70 cm³**。\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.39
+  },
+  {
+    "id": "cache_bench_03136",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000985"
+    ],
+    "answer": "Yes — the existing liver analysis for case LIVE_BDMAP_00000985 identified **2** lesions.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.0
+  },
+  {
+    "id": "cache_bench_03161",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000700"
+    ],
+    "answer": "## 肝脏病灶存在性\n\n根据已完成的 liver_analysis 结果，肿瘤数量为 **0**，肝脏不应被描述为存在病灶。\n\n```json\n{\"value\": false, \"unit\": \"bool\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.781
+  },
+  {
+    "id": "cache_bench_03226",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "answer": "肝脏病灶体积为 **1611.38 cm³**（tumor_1，共 **1** 个病灶）。\n\n{\"value\": 1611.38, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.297
+  },
+  {
+    "id": "cache_bench_03396",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000127"
+    ],
+    "answer": "The measured liver volume is **2170.17 cm³**.\n\n{\"value\": 2170.17, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.906
+  },
+  {
+    "id": "cache_bench_03427",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000925"
+    ],
+    "answer": "## 肝脏体积\n\n肝脏体积为 **1176.70 cm³**。\n\n```json\n{\"value\": 1176.70, \"unit\": \"cm3\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.25
+  },
+  {
+    "id": "cache_bench_03465",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "answer": "Yes, lesions are present in the liver.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.468
+  },
+  {
+    "id": "cache_bench_03628",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000065"
+    ],
+    "answer": "Yes. There is **1** lesion present in the liver (tumor_1, **13.1 mm**, **0.70 cm³**).\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.219
+  },
+  {
+    "id": "cache_bench_03654",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000794"
+    ],
+    "answer": "No lesions. {\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.015
+  },
+  {
+    "id": "cache_bench_03728",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000010"
+    ],
+    "answer": "## 肝脏体积\n\n**1398.60 cm³**\n\n{\"value\": 1398.60, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.125
+  },
+  {
+    "id": "cache_bench_03817",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000225"
+    ],
+    "answer": "0 liver lesion instances detected.\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.328
+  },
+  {
+    "id": "cache_bench_03908",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "answer": "Yes, the liver is affected by 1 lesion.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.922
+  },
+  {
+    "id": "cache_bench_03915",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001249"
+    ],
+    "answer": "3 lesions.\n\n{\"value\": 3, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.421
+  },
+  {
+    "id": "cache_bench_04064",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000190"
+    ],
+    "answer": "0 lesions.\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.984
+  },
+  {
+    "id": "cache_bench_04200",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "## 肝脏病灶总量\n\n- 病灶数量：**12** 个\n- 已报告体积的 10 个病灶合计：**263.54 cm³**（tumor_1 **79.76**、tumor_2 **65.60**、tumor_3 **42.23**、tumor_4 **26.97**、tumor_5 **26.43**、tumor_6 **15.41**、tumor_7 **6.39**、tumor_10 **0.36**、tumor_11 **0.25**、tumor_12 **0.14**）\n\n> 已有结果中另有 2 个病灶未返回体积值，因此 **263.54 cm³** 为已披露病灶体积之和（真实总量略高于此值）。\n\n```json\n{\"value\": 263.54, \"unit\": \"cm3\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 14.266
+  },
+  {
+    "id": "cache_bench_04418",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000826"
+    ],
+    "answer": "No, there is no evidence of lesions within the liver (tumor count = 0).\n\n```json\n{\"value\": false, \"unit\": \"bool\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.157
+  },
+  {
+    "id": "cache_bench_04597",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001496"
+    ],
+    "answer": "## 病灶存在性\n\n无。已完成的 liver_analysis 显示该病例肝脏肿瘤数量为 **0**，未见病灶证据。\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.078
+  },
+  {
+    "id": "cache_bench_04635",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "answer": "肝脏病灶总体积为 **345.78 cm³**（tumor_1: **308.12 cm³**，tumor_2: **37.66 cm³**）。\n\n{\"value\": 345.78, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.875
+  },
+  {
+    "id": "cache_bench_04650",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000581"
+    ],
+    "answer": "## 肝脏病灶评估\n\n- 肿瘤数量：**0**\n- 结论：肝脏未检测到病灶。\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.297
+  },
+  {
+    "id": "cache_bench_04764",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "answer": "## 肝脏病灶体积\n\n- tumor_1: **308.12 cm³**\n- tumor_2: **37.66 cm³**\n- 病灶总体积: **345.78 cm³**\n\n{\"value\": 345.78, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.812
+  },
+  {
+    "id": "cache_bench_03610",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "answer": "关键技能调用失败: tumor_diameter(SKILL_EXECUTION_ERROR)。无法提供完整分析，建议检查数据质量或联系技术支持。",
+    "score": {
+      "format_valid": false,
+      "answer_correct": false
+    },
+    "calls": [
+      {
+        "call_id": "call_fd746f94622f4f16b1604e91",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 28852.0,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:43:59",
+        "finished_at": "2026-09-13T19:44:28"
+      },
+      {
+        "call_id": "call_57298951b5ed4f219237c0b7",
+        "round": 2,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 11903.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:44:30",
+        "finished_at": "2026-09-13T19:44:42"
+      }
+    ],
+    "rounds": 2,
+    "seconds": 49.546
+  },
+  {
+    "id": "cache_bench_04826",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "answer": "总肝脏病灶体积为 **12.66 cm³**。\n\n{\"value\": 12.66, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.485
+  },
+  {
+    "id": "cache_bench_05003",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001529"
+    ],
+    "answer": "根据已完成的肝脏分析结果，本病例（LIVE_BDMAP_00001529）未检测到肝内病灶，病灶数量为 **0**。\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.5
+  },
+  {
+    "id": "cache_bench_04767",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "There are **12** lesion instances in the liver.\n\n{\"value\": 12, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 11.016
+  },
+  {
+    "id": "cache_bench_05211",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000346"
+    ],
+    "answer": "There are 0 instances of lesions in the liver.\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.266
+  },
+  {
+    "id": "cache_bench_05278",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "answer": "**1.11 cm**（tumor_1 的最大直径 11.1 mm）\n\n{\"value\": 1.11, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.954
+  },
+  {
+    "id": "cache_bench_05287",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "## Lesion volume\n\nThe available analysis lists only **10 of 12** lesion volumes (subtotal **263.54 cm³**); the volumes for the two unlisted lesions are not provided, so the total cannot be computed without guessing.\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 11.766
+  },
+  {
+    "id": "cache_bench_05348",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000198"
+    ],
+    "answer": "肝脏体积为 **1696.00 cm³**。\n\n{\"value\": 1696.00, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.156
+  },
+  {
+    "id": "cache_bench_05353",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001543"
+    ],
+    "answer": "No lesions are found in the liver based on the scans.\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.203
+  },
+  {
+    "id": "cache_bench_05373",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "answer": "{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [
+      {
+        "call_id": "call_41ce2544d0304525b7389061",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 27425.3,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:45:18",
+        "finished_at": "2026-09-13T19:45:46"
+      }
+    ],
+    "rounds": 2,
+    "seconds": 40.313
+  },
+  {
+    "id": "cache_bench_05378",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001061"
+    ],
+    "answer": "The liver volume is **1409.90 cm³**.\n\n{\"value\": 1409.90, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.0
+  },
+  {
+    "id": "cache_bench_05651",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000815"
+    ],
+    "answer": "Yes, lesions are found in the liver; 8 lesions are identified.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 4.125
+  },
+  {
+    "id": "cache_bench_05660",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "answer": "**10.55 cm** (tumor_1, measured maximum diameter 105.5 mm).\n\n{\"value\": 10.55, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.172
+  },
+  {
+    "id": "cache_bench_05677",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "answer": "## 肝脏病灶体积\n\n病灶共 **1** 个，实测体积为 **348.99 cm³**（最大直径 **121.2 mm**）。\n\n```json\n{\"value\": 348.99, \"unit\": \"cm3\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 4.782
+  },
+  {
+    "id": "cache_bench_05776",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "answer": "The total lesion count for the liver is **13**.\n\n{\"value\": 13, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.828
+  },
+  {
+    "id": "cache_bench_05853",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001168"
+    ],
+    "answer": "Yes. The liver contains **1** lesion.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.422
+  },
+  {
+    "id": "cache_bench_05151",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "answer": "## 病灶数量\n\n无法给出可靠的病灶数量。本病例的 `liver_analysis` 执行失败（Qhull 精度错误 QH6154：初始单纯形为平面，几何计算无法收敛），因此未返回任何 `tumor_results` / `tumor_count` 字段。\n\n> 由于唯一提供病灶计数的分析步骤失败，且不存在其他可用的计数数据，此处不能推测病灶数量。\n\n{\"value\": null, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [
+      {
+        "call_id": "call_8477e0eda7c54d99b3dd535d",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 29256.4,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:44:52",
+        "finished_at": "2026-09-13T19:45:21"
+      },
+      {
+        "call_id": "call_11f3434c6f8d4f95af8169e2",
+        "round": 2,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "convex_hull_threshold": 100000000,
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 99.48,
+              "method": "axis_aligned",
+              "voxel_count": 10843,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_10",
+              "max_diameter_mm": 38.36,
+              "method": "axis_aligned",
+              "voxel_count": 902,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_11",
+              "max_diameter_mm": 31.75,
+              "method": "axis_aligned",
+              "voxel_count": 893,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_12",
+              "max_diameter_mm": 29.75,
+              "method": "axis_aligned",
+              "voxel_count": 832,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_13",
+              "max_diameter_mm": 31.62,
+              "method": "axis_aligned",
+              "voxel_count": 708,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_14",
+              "max_diameter_mm": 26.18,
+              "method": "axis_aligned",
+              "voxel_count": 680,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_15",
+              "max_diameter_mm": 27.24,
+              "method": "axis_aligned",
+              "voxel_count": 599,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_16",
+              "max_diameter_mm": 20.36,
+              "method": "axis_aligned",
+              "voxel_count": 521,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_17",
+              "max_diameter_mm": 24.75,
+              "method": "axis_aligned",
+              "voxel_count": 435,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_18",
+              "max_diameter_mm": 25.7,
+              "method": "axis_aligned",
+              "voxel_count": 360,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_19",
+              "max_diameter_mm": 24.7,
+              "method": "axis_aligned",
+              "voxel_count": 359,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 86.24,
+              "method": "axis_aligned",
+              "voxel_count": 10165,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_20",
+              "max_diameter_mm": 17.61,
+              "method": "axis_aligned",
+              "voxel_count": 335,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_21",
+              "max_diameter_mm": 18.17,
+              "method": "axis_aligned",
+              "voxel_count": 291,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_22",
+              "max_diameter_mm": 23.98,
+              "method": "axis_aligned",
+              "voxel_count": 279,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_23",
+              "max_diameter_mm": 28.47,
+              "method": "axis_aligned",
+              "voxel_count": 265,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_24",
+              "max_diameter_mm": 14.47,
+              "method": "axis_aligned",
+              "voxel_count": 239,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_25",
+              "max_diameter_mm": 21.2,
+              "method": "axis_aligned",
+              "voxel_count": 229,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_26",
+              "max_diameter_mm": 19.7,
+              "method": "axis_aligned",
+              "voxel_count": 206,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_27",
+              "max_diameter_mm": 19.36,
+              "method": "axis_aligned",
+              "voxel_count": 204,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_28",
+              "max_diameter_mm": 25.03,
+              "method": "axis_aligned",
+              "voxel_count": 199,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_29",
+              "max_diameter_mm": 16.13,
+              "method": "axis_aligned",
+              "voxel_count": 192,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 83.41,
+              "method": "axis_aligned",
+              "voxel_count": 8263,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_30",
+              "max_diameter_mm": 16.13,
+              "method": "axis_aligned",
+              "voxel_count": 178,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_31",
+              "max_diameter_mm": 11.73,
+              "method": "axis_aligned",
+              "voxel_count": 172,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_32",
+              "max_diameter_mm": 16.74,
+              "method": "axis_aligned",
+              "voxel_count": 163,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_33",
+              "max_diameter_mm": 13.68,
+              "method": "axis_aligned",
+              "voxel_count": 146,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_34",
+              "max_diameter_mm": 11.79,
+              "method": "axis_aligned",
+              "voxel_count": 141,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_35",
+              "max_diameter_mm": 19.04,
+              "method": "axis_aligned",
+              "voxel_count": 129,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_36",
+              "max_diameter_mm": 12.97,
+              "method": "axis_aligned",
+              "voxel_count": 127,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_37",
+              "max_diameter_mm": 12.86,
+              "method": "axis_aligned",
+              "voxel_count": 125,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_38",
+              "max_diameter_mm": 17.73,
+              "method": "axis_aligned",
+              "voxel_count": 112,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_39",
+              "max_diameter_mm": 16.78,
+              "method": "axis_aligned",
+              "voxel_count": 101,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 79.64,
+              "method": "axis_aligned",
+              "voxel_count": 5698,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_40",
+              "max_diameter_mm": 15.33,
+              "method": "axis_aligned",
+              "voxel_count": 99,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_41",
+              "max_diameter_mm": 10.97,
+              "method": "axis_aligned",
+              "voxel_count": 94,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_42",
+              "max_diameter_mm": 14.92,
+              "method": "axis_aligned",
+              "voxel_count": 82,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_43",
+              "max_diameter_mm": 9.21,
+              "method": "axis_aligned",
+              "voxel_count": 82,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_44",
+              "max_diameter_mm": 11.22,
+              "method": "axis_aligned",
+              "voxel_count": 80,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_45",
+              "max_diameter_mm": 13.21,
+              "method": "axis_aligned",
+              "voxel_count": 78,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_46",
+              "max_diameter_mm": 10.35,
+              "method": "axis_aligned",
+              "voxel_count": 75,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_47",
+              "max_diameter_mm": 9.76,
+              "method": "axis_aligned",
+              "voxel_count": 75,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_48",
+              "max_diameter_mm": 11.85,
+              "method": "axis_aligned",
+              "voxel_count": 74,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_49",
+              "max_diameter_mm": 12.97,
+              "method": "axis_aligned",
+              "voxel_count": 68,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 57.37,
+              "method": "axis_aligned",
+              "voxel_count": 2201,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_50",
+              "max_diameter_mm": 9.83,
+              "method": "axis_aligned",
+              "voxel_count": 62,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_51",
+              "max_diameter_mm": 11.34,
+              "method": "axis_aligned",
+              "voxel_count": 61,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_52",
+              "max_diameter_mm": 7.69,
+              "method": "axis_aligned",
+              "voxel_count": 42,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_53",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 41,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_54",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 41,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_55",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 41,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_56",
+              "max_diameter_mm": 8.26,
+              "method": "axis_aligned",
+              "voxel_count": 37,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_57",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 37,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_58",
+              "max_diameter_mm": 8.26,
+              "method": "axis_aligned",
+              "voxel_count": 36,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_59",
+              "max_diameter_mm": 8.87,
+              "method": "axis_aligned",
+              "voxel_count": 36,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 50.66,
+              "method": "axis_aligned",
+              "voxel_count": 1563,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_60",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 34,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_61",
+              "max_diameter_mm": 6.51,
+              "method": "axis_aligned",
+              "voxel_count": 33,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_62",
+              "max_diameter_mm": 7.17,
+              "method": "axis_aligned",
+              "voxel_count": 32,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_63",
+              "max_diameter_mm": 7.17,
+              "method": "axis_aligned",
+              "voxel_count": 30,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_64",
+              "max_diameter_mm": 7.87,
+              "method": "axis_aligned",
+              "voxel_count": 30,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_65",
+              "max_diameter_mm": 6.01,
+              "method": "axis_aligned",
+              "voxel_count": 28,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_66",
+              "max_diameter_mm": 7.87,
+              "method": "axis_aligned",
+              "voxel_count": 22,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_67",
+              "max_diameter_mm": 5.34,
+              "method": "axis_aligned",
+              "voxel_count": 20,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_7",
+              "max_diameter_mm": 42.87,
+              "method": "axis_aligned",
+              "voxel_count": 1208,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_8",
+              "max_diameter_mm": 29.96,
+              "method": "axis_aligned",
+              "voxel_count": 981,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_9",
+              "max_diameter_mm": 35.98,
+              "method": "axis_aligned",
+              "voxel_count": 940,
+              "note": ""
+            }
+          ]
+        },
+        "execution_time_ms": 48774.0,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:45:39",
+        "finished_at": "2026-09-13T19:46:28"
+      }
+    ],
+    "rounds": 3,
+    "seconds": 112.172
+  },
+  {
+    "id": "cache_bench_05928",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "answer": "The count of liver lesions is **5**.\n\n{\"value\": 5, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.078
+  },
+  {
+    "id": "cache_bench_05893",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000929"
+    ],
+    "answer": "No, there are no lesions present in the liver.\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 28.187
+  },
+  {
+    "id": "cache_bench_06002",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "answer": "59\n\n{\"value\": 59, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.828
+  },
+  {
+    "id": "cache_bench_06023",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000672"
+    ],
+    "answer": "No lesions are present in the liver.\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.469
+  },
+  {
+    "id": "cache_bench_06056",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "answer": "The liver contains **59** lesions.\n\n{\"value\": 59, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.547
+  },
+  {
+    "id": "cache_bench_06120",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000776"
+    ],
+    "answer": "{\"value\": 1249.20, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.954
+  },
+  {
+    "id": "cache_bench_06125",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000847"
+    ],
+    "answer": "The liver lesion count is 0.\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.86
+  },
+  {
+    "id": "cache_bench_06331",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "answer": "The measured lesion volume in the liver is **0.83 cm³**.\n\n{\"value\": 0.83, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.203
+  },
+  {
+    "id": "cache_bench_06220",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000664"
+    ],
+    "answer": "## 肝脏体积\n\n肝脏总体积为 **1444.56 cm³**。\n\n{\"value\": 1444.56, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.36
+  },
+  {
+    "id": "cache_bench_06343",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "answer": "Yes, the scans show **1 liver lesion**.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.156
+  },
+  {
+    "id": "cache_bench_06358",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "answer": "## 肝脏体积\n\n**1381.89 cm³**\n\n{\"value\": 1381.89, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.734
+  },
+  {
+    "id": "cache_bench_06424",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "answer": "## 肝脏病灶体积\n\n肝脏内可见 **1** 个病灶，测量体积为 **1611.38 cm³**。\n\n> 注意：该病灶体积超过肝脏总体积报告的 **40%**，同时肝脏体积报告值 **3854.97 cm³** 已超出常规参考范围（500–2500 cm³），提示参考掩膜的体素/间距标定可能需复核，数值应结合原始分割结果确认。\n\n{\"value\": 1611.38, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.187
+  },
+  {
+    "id": "cache_bench_06383",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000668"
+    ],
+    "answer": "是。已检测到 **1** 个肝脏病灶，最大直径 **7.8 mm**，体积 **0.11 cm³**。\n\n```json\n{\"value\": true, \"unit\": \"bool\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.688
+  },
+  {
+    "id": "cache_bench_06426",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001070"
+    ],
+    "answer": "**15.93 cm³**\n\n{\"value\": 15.93, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.984
+  },
+  {
+    "id": "cache_bench_06441",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "answer": "There are 13 liver lesions.\n\n{\"value\": 13, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.719
+  },
+  {
+    "id": "cache_bench_06519",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "answer": "肝脏病灶体积为 **348.99 cm³**（共 **1** 个病灶）。\n\n{\"value\": 348.99, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.344
+  },
+  {
+    "id": "cache_bench_06453",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "answer": "最大肝脏病灶直径为 **121.2 mm（12.12 cm）**。\n\n{\"value\": 12.12, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.688
+  },
+  {
+    "id": "cache_bench_06632",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "answer": "## 肝脏病灶总量\n\n该病例肝内共有 **1** 个病灶，病灶总体积为 **348.99 cm³**。\n\n{\"value\": 348.99, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.078
+  },
+  {
+    "id": "cache_bench_06914",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000575"
+    ],
+    "answer": "The liver volume is **2477.48 cm³**.\n\n```json\n{\"value\": 2477.48, \"unit\": \"cm3\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.735
+  },
+  {
+    "id": "cache_bench_06797",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "answer": "## 肝脏病灶体积\n\n病灶体积为 **348.99 cm³**（单发病灶 tumor_1）。\n\n{\"value\": 348.99, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 5.766
+  },
+  {
+    "id": "cache_bench_06919",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001354"
+    ],
+    "answer": "## 肝脏体积\n\n肝脏体积为 **1587.71 cm³**。\n\n{\"value\": 1587.71, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.485
+  },
+  {
+    "id": "cache_bench_06922",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "answer": "## 病灶存在性\n\n**是**，该肝脏存在病灶：共 **1** 个病灶（**13.5 mm**，**0.83 cm³**）。\n\n```json\n{\"value\": true, \"unit\": \"bool\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.563
+  },
+  {
+    "id": "cache_bench_07043",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000303"
+    ],
+    "answer": "## 肝脏病灶分析\n\n根据已有分析结果，病例 **LIVE_BDMAP_00000303** 肝脏体积为 **1031.60 cm³**，肿瘤数量为 **0**，未检测到病灶。\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.328
+  },
+  {
+    "id": "cache_bench_07059",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "answer": "The liver volume is **1672.40 cm³**.\n\n{\"value\": 1672.40, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.734
+  },
+  {
+    "id": "cache_bench_07098",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000847"
+    ],
+    "answer": "肝脏体积约为 **1273.97 cm³**。\n\n{\"value\": 1273.97, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.36
+  },
+  {
+    "id": "cache_bench_07301",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000815"
+    ],
+    "answer": "There are **8** liver lesion instances.\n\n{\"value\": 8, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.687
+  },
+  {
+    "id": "cache_bench_07517",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000877"
+    ],
+    "answer": "**5.31 cm**\n\n{\"value\": 5.31, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.485
+  },
+  {
+    "id": "cache_bench_07384",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000985"
+    ],
+    "answer": "Yes, the liver has lesions: 2 tumors identified (tumor_1: **10.1 mm**, **0.50 cm³**; tumor_2: **6.6 mm**, **0.11 cm³**).\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.157
+  },
+  {
+    "id": "cache_bench_07595",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "answer": "**13** liver lesions are present.\n\n{\"value\": 13, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.454
+  },
+  {
+    "id": "cache_bench_07667",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000127"
+    ],
+    "answer": "The liver analysis for this case reports 0 lesions.\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.844
+  },
+  {
+    "id": "cache_bench_07727",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001123"
+    ],
+    "answer": "## 肝脏病灶存在性\n\n**Yes.** 数据在肝脏内显示 1 个病灶（tumor_1，最大径 **11.8 mm**，体积 **0.50 cm³**）。\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.235
+  },
+  {
+    "id": "cache_bench_07912",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "answer": "**59** liver lesion instances.\n\n```json\n{\"value\": 59, \"unit\": \"count\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.64
+  },
+  {
+    "id": "cache_bench_07929",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "There are 12 liver lesions present.\n\n{\"value\": 12, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.125
+  },
+  {
+    "id": "cache_bench_07969",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "answer": "Yes; there is **1** hepatic lesion.\n\n```json\n{\"value\": true, \"unit\": \"bool\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.11
+  },
+  {
+    "id": "cache_bench_07992",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "The available lesion measurements sum to **263.54 cm³** for the 10 reported lesions; volumes for the remaining 2 lesions were not provided, so this is the reported lesion-volume total from available data.\n\n{\"value\": 263.54, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 16.282
+  },
+  {
+    "id": "cache_bench_08026",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000538"
+    ],
+    "answer": "The liver shows **0** lesions based on the completed analysis.\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.985
+  },
+  {
+    "id": "cache_bench_08190",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000065"
+    ],
+    "answer": "The total lesion volume within the liver is **0.70 cm³**.\n\n{\"value\": 0.70, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.11
+  },
+  {
+    "id": "cache_bench_08255",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001485"
+    ],
+    "answer": "肝脏体积为 **1159.12 cm³**。\n\n{\"value\": 1159.12, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.547
+  },
+  {
+    "id": "cache_bench_08504",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001123"
+    ],
+    "answer": "## 肝脏病灶总体积\n\n### 数据依据\n- 病灶数量：**1**\n- tumor_1：**0.50 cm³**\n\n> 肝脏病灶总体积为 **0.50 cm³**。\n\n{\"value\": 0.5, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.562
+  },
+  {
+    "id": "cache_bench_07740",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "answer": "There are 5 liver lesions present.\n\n{\"value\": 5, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 65.219
+  },
+  {
+    "id": "cache_bench_08637",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001582"
+    ],
+    "answer": "The measured liver volume is **1191.63 cm³**.\n\n```json\n{\"value\": 1191.63, \"unit\": \"cm3\"}\n```",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.391
+  },
+  {
+    "id": "cache_bench_08661",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000879"
+    ],
+    "answer": "{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.765
+  },
+  {
+    "id": "cache_bench_08679",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000815"
+    ],
+    "answer": "The biggest liver lesion diameter is **20.6 mm** (tumor_1), which is **2.06 cm**.\n\n{\"value\": 2.06, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.453
+  },
+  {
+    "id": "cache_bench_08729",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "Total cannot be determined because two of 12 lesion volumes are missing.\n\n{\"value\": null, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 16.563
+  },
+  {
+    "id": "cache_bench_08847",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "Yes; the liver contains **12** lesions.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.531
+  },
+  {
+    "id": "cache_bench_08858",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000771"
+    ],
+    "answer": "## 肝脏病灶评估\n\n根据已完成分析，肿瘤数量为 **0**，肝脏未见病灶。\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.422
+  },
+  {
+    "id": "cache_bench_08889",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001343"
+    ],
+    "answer": "**6** 个肝脏病灶。\n\n{\"value\": 6, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.235
+  },
+  {
+    "id": "cache_bench_08953",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "answer": "Yes, there is evidence of lesions in the liver.\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.937
+  },
+  {
+    "id": "cache_bench_08961",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "answer": "## 最大肝脏病灶直径\n\n- tumor_1 最大直径 **50.53 mm** = **5.053 cm**\n\n{\"value\": 5.053, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.203
+  },
+  {
+    "id": "cache_bench_09034",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "answer": "## 肝脏病灶数量\n\n共观察到 **6** 个肝脏病灶。\n\n{\"value\": 6, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.875
+  },
+  {
+    "id": "cache_bench_09068",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "answer": "关键技能调用失败: tumor_diameter(SKILL_EXECUTION_ERROR)。无法提供完整分析，建议检查数据质量或联系技术支持。",
+    "score": {
+      "format_valid": false,
+      "answer_correct": false
+    },
+    "calls": [
+      {
+        "call_id": "call_69388c82301b4b1ea4f3cbd9",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 29605.9,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:49:04",
+        "finished_at": "2026-09-13T19:49:34"
+      },
+      {
+        "call_id": "call_97dc9050248b47948a5fc52c",
+        "round": 2,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "convex_hull_threshold": 1,
+          "min_voxels": 10,
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 13748.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:49:47",
+        "finished_at": "2026-09-13T19:50:01"
+      }
+    ],
+    "rounds": 2,
+    "seconds": 60.344
+  },
+  {
+    "id": "cache_bench_09077",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001343"
+    ],
+    "answer": "The total liver lesion volume is **134.65 cm³** (sum of the 6 lesions from the existing analysis).\n\n{\"value\": 134.65, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.75
+  },
+  {
+    "id": "cache_bench_08603",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "answer": "The largest liver lesion diameter could not be measured: the liver analysis terminated with a Qhull precision error (QH6154, input effectively non-3-dimensional), so no diameter value was returned. No value is reported rather than an estimate.\n\n{\"value\": null, \"unit\": \"cm\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": false
+    },
+    "calls": [
+      {
+        "call_id": "call_605c332a477a49ccbc2ede81",
+        "round": 1,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "error",
+        "result": {},
+        "execution_time_ms": 27642.3,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:47:54",
+        "finished_at": "2026-09-13T19:48:22"
+      },
+      {
+        "call_id": "call_bda79cf8169540a5ae3f6f9f",
+        "round": 2,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "convex_hull_threshold": 1000000,
+          "min_voxels": 10,
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 99.48,
+              "method": "axis_aligned",
+              "voxel_count": 10843,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_10",
+              "max_diameter_mm": 38.36,
+              "method": "axis_aligned",
+              "voxel_count": 902,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_11",
+              "max_diameter_mm": 31.75,
+              "method": "axis_aligned",
+              "voxel_count": 893,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_12",
+              "max_diameter_mm": 29.75,
+              "method": "axis_aligned",
+              "voxel_count": 832,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_13",
+              "max_diameter_mm": 31.62,
+              "method": "axis_aligned",
+              "voxel_count": 708,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_14",
+              "max_diameter_mm": 26.18,
+              "method": "axis_aligned",
+              "voxel_count": 680,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_15",
+              "max_diameter_mm": 27.24,
+              "method": "axis_aligned",
+              "voxel_count": 599,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_16",
+              "max_diameter_mm": 20.36,
+              "method": "axis_aligned",
+              "voxel_count": 521,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_17",
+              "max_diameter_mm": 24.75,
+              "method": "axis_aligned",
+              "voxel_count": 435,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_18",
+              "max_diameter_mm": 25.7,
+              "method": "axis_aligned",
+              "voxel_count": 360,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_19",
+              "max_diameter_mm": 24.7,
+              "method": "axis_aligned",
+              "voxel_count": 359,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 86.24,
+              "method": "axis_aligned",
+              "voxel_count": 10165,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_20",
+              "max_diameter_mm": 17.61,
+              "method": "axis_aligned",
+              "voxel_count": 335,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_21",
+              "max_diameter_mm": 18.17,
+              "method": "axis_aligned",
+              "voxel_count": 291,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_22",
+              "max_diameter_mm": 23.98,
+              "method": "axis_aligned",
+              "voxel_count": 279,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_23",
+              "max_diameter_mm": 28.47,
+              "method": "axis_aligned",
+              "voxel_count": 265,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_24",
+              "max_diameter_mm": 14.47,
+              "method": "axis_aligned",
+              "voxel_count": 239,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_25",
+              "max_diameter_mm": 21.2,
+              "method": "axis_aligned",
+              "voxel_count": 229,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_26",
+              "max_diameter_mm": 19.7,
+              "method": "axis_aligned",
+              "voxel_count": 206,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_27",
+              "max_diameter_mm": 19.36,
+              "method": "axis_aligned",
+              "voxel_count": 204,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_28",
+              "max_diameter_mm": 25.03,
+              "method": "axis_aligned",
+              "voxel_count": 199,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_29",
+              "max_diameter_mm": 16.13,
+              "method": "axis_aligned",
+              "voxel_count": 192,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 83.41,
+              "method": "axis_aligned",
+              "voxel_count": 8263,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_30",
+              "max_diameter_mm": 16.13,
+              "method": "axis_aligned",
+              "voxel_count": 178,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_31",
+              "max_diameter_mm": 11.73,
+              "method": "axis_aligned",
+              "voxel_count": 172,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_32",
+              "max_diameter_mm": 16.74,
+              "method": "axis_aligned",
+              "voxel_count": 163,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_33",
+              "max_diameter_mm": 13.68,
+              "method": "axis_aligned",
+              "voxel_count": 146,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_34",
+              "max_diameter_mm": 11.79,
+              "method": "axis_aligned",
+              "voxel_count": 141,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_35",
+              "max_diameter_mm": 19.04,
+              "method": "axis_aligned",
+              "voxel_count": 129,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_36",
+              "max_diameter_mm": 12.97,
+              "method": "axis_aligned",
+              "voxel_count": 127,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_37",
+              "max_diameter_mm": 12.86,
+              "method": "axis_aligned",
+              "voxel_count": 125,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_38",
+              "max_diameter_mm": 17.73,
+              "method": "axis_aligned",
+              "voxel_count": 112,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_39",
+              "max_diameter_mm": 16.78,
+              "method": "axis_aligned",
+              "voxel_count": 101,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 79.64,
+              "method": "axis_aligned",
+              "voxel_count": 5698,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_40",
+              "max_diameter_mm": 15.33,
+              "method": "axis_aligned",
+              "voxel_count": 99,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_41",
+              "max_diameter_mm": 10.97,
+              "method": "axis_aligned",
+              "voxel_count": 94,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_42",
+              "max_diameter_mm": 14.92,
+              "method": "axis_aligned",
+              "voxel_count": 82,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_43",
+              "max_diameter_mm": 9.21,
+              "method": "axis_aligned",
+              "voxel_count": 82,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_44",
+              "max_diameter_mm": 11.22,
+              "method": "axis_aligned",
+              "voxel_count": 80,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_45",
+              "max_diameter_mm": 13.21,
+              "method": "axis_aligned",
+              "voxel_count": 78,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_46",
+              "max_diameter_mm": 10.35,
+              "method": "axis_aligned",
+              "voxel_count": 75,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_47",
+              "max_diameter_mm": 9.76,
+              "method": "axis_aligned",
+              "voxel_count": 75,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_48",
+              "max_diameter_mm": 11.85,
+              "method": "axis_aligned",
+              "voxel_count": 74,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_49",
+              "max_diameter_mm": 12.97,
+              "method": "axis_aligned",
+              "voxel_count": 68,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 57.37,
+              "method": "axis_aligned",
+              "voxel_count": 2201,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_50",
+              "max_diameter_mm": 9.83,
+              "method": "axis_aligned",
+              "voxel_count": 62,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_51",
+              "max_diameter_mm": 11.34,
+              "method": "axis_aligned",
+              "voxel_count": 61,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_52",
+              "max_diameter_mm": 7.69,
+              "method": "axis_aligned",
+              "voxel_count": 42,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_53",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 41,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_54",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 41,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_55",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 41,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_56",
+              "max_diameter_mm": 8.26,
+              "method": "axis_aligned",
+              "voxel_count": 37,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_57",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 37,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_58",
+              "max_diameter_mm": 8.26,
+              "method": "axis_aligned",
+              "voxel_count": 36,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_59",
+              "max_diameter_mm": 8.87,
+              "method": "axis_aligned",
+              "voxel_count": 36,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 50.66,
+              "method": "axis_aligned",
+              "voxel_count": 1563,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_60",
+              "max_diameter_mm": 8.34,
+              "method": "axis_aligned",
+              "voxel_count": 34,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_61",
+              "max_diameter_mm": 6.51,
+              "method": "axis_aligned",
+              "voxel_count": 33,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_62",
+              "max_diameter_mm": 7.17,
+              "method": "axis_aligned",
+              "voxel_count": 32,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_63",
+              "max_diameter_mm": 7.17,
+              "method": "axis_aligned",
+              "voxel_count": 30,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_64",
+              "max_diameter_mm": 7.87,
+              "method": "axis_aligned",
+              "voxel_count": 30,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_65",
+              "max_diameter_mm": 6.01,
+              "method": "axis_aligned",
+              "voxel_count": 28,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_66",
+              "max_diameter_mm": 7.87,
+              "method": "axis_aligned",
+              "voxel_count": 22,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_67",
+              "max_diameter_mm": 5.34,
+              "method": "axis_aligned",
+              "voxel_count": 20,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_7",
+              "max_diameter_mm": 42.87,
+              "method": "axis_aligned",
+              "voxel_count": 1208,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_8",
+              "max_diameter_mm": 29.96,
+              "method": "axis_aligned",
+              "voxel_count": 981,
+              "note": ""
+            },
+            {
+              "tumor_id": "tumor_9",
+              "max_diameter_mm": 35.98,
+              "method": "axis_aligned",
+              "voxel_count": 940,
+              "note": ""
+            }
+          ]
+        },
+        "execution_time_ms": 54455.5,
+        "cache_hit": false,
+        "started_at": "2026-09-13T19:49:07",
+        "finished_at": "2026-09-13T19:50:02"
+      }
+    ],
+    "rounds": 3,
+    "seconds": 141.641
+  },
+  {
+    "id": "cache_bench_09148",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001016"
+    ],
+    "answer": "肝脏病灶总体积为 **42.29 cm³**。\n\n{\"value\": 42.29, \"unit\": \"cm3\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.672
+  },
+  {
+    "id": "cache_bench_09300",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000951"
+    ],
+    "answer": "## 病灶存在性\n\n是。肝脏存在 **1** 个病灶（tumor_1，最大直径 **24.4 mm**，体积 **2.36 cm³**）。\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.265
+  },
+  {
+    "id": "cache_bench_09373",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000095"
+    ],
+    "answer": "No lesions are present in the liver (tumor count: **0**).\n\n{\"value\": false, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 3.719
+  },
+  {
+    "id": "cache_bench_09143",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "{\"value\": 12, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 1.61
+  },
+  {
+    "id": "cache_bench_09381",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "answer": "## 肝脏病灶数量\n\n病例 **LIVE_BDMAP_00000396** 中共有 **5** 个肝脏病灶。\n\n{\"value\": 5, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.047
+  },
+  {
+    "id": "cache_bench_09503",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000503"
+    ],
+    "answer": "Yes. The liver shows **1** lesion (tumor_1, max diameter **11.1 mm**, volume **0.15 cm³**).\n\n{\"value\": true, \"unit\": \"bool\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 2.0
+  },
+  {
+    "id": "cache_bench_09738",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00001572"
+    ],
+    "answer": "## 肝脏病灶数量\n\n肝脏病灶数量为 **0**。\n\n{\"value\": 0, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 21.875
+  },
+  {
+    "id": "cache_bench_09937",
+    "kind": "cache",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "answer": "## 肝脏病灶数量\n\n肝脏病灶实例数量为 **12** 个。\n\n{\"value\": 12, \"unit\": \"count\"}",
+    "score": {
+      "format_valid": true,
+      "answer_correct": true
+    },
+    "calls": [],
+    "rounds": 1,
+    "seconds": 60.875
+  }
+]

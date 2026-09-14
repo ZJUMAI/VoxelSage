@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "task_original": 102,
+    "task_volume": 27,
+    "task_diameter": 25,
+    "multi": 63,
+    "missing": 137,
+    "cache": 137
+  },
+  "task_total": 154,
+  "copied_files_verified": 729,
+  "source_case_count": 63
+}

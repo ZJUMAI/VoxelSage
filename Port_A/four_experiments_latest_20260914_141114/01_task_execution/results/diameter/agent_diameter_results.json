@@ -1,0 +1,3057 @@
+[
+  {
+    "case": "BDMAP_00000065",
+    "expected_pyradiomics_mm": 13.780481572255784,
+    "actual_agent_cm": 1.378,
+    "absolute_error_mm": 0.0004815722557847124,
+    "correct_within_0_01_mm": true,
+    "answer": "{\"value\": 1.378, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_94f5051ef088421a9e8c4827",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000065"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 13.78,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 528,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 298.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:47:43",
+        "finished_at": "2026-09-13T23:47:43"
+      }
+    ],
+    "seconds": 9.219
+  },
+  {
+    "case": "BDMAP_00000396",
+    "expected_pyradiomics_mm": 30.444811309064328,
+    "actual_agent_cm": 3.044,
+    "absolute_error_mm": 0.004811309064326252,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径分析\n\n### 数据来源\n- 病例: **LIVE_BDMAP_00000396**\n- 测量技能: 肿瘤直径测量（tumor_diameter，已完成，直接复用结果，未重复调用）\n- 方法字段: `ibsi_surface_mesh`（IBSI Maximum 3D Diameter）\n\n### 病灶直径汇总\n\n| 病灶编号 | 最大三维直径 (mm) | 最大三维直径 (cm) | 体素数 |\n|---|---|---|---|\n| tumor_1 | **30.44 mm** | **3.044 cm** | 3437 |\n| tumor_2 | **26.43 mm** | **2.643 cm** | 3085 |\n| tumor_3 | **16.71 mm** | **1.671 cm** | 740 |\n| tumor_4 | **13.08 mm** | **1.308 cm** | 252 |\n| tumor_5 | **10.87 mm** | **1.087 cm** | 143 |\n\n### 结论\n\n> 最大肝脏病灶为 **tumor_1**，其最大三维直径为 **3.044 cm**（即 **30.44 mm**），测量基于参考掩膜（oracle segmentation）的 IBSI 最大三维直径方法。\n\n---\n\n{\"value\": 3.044, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_484fb0db99384b2ebdad2481",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000396"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 30.44,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 3437,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 26.43,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 3085,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 16.71,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 740,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 13.08,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 252,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 10.87,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 143,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 1312.3,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:47:41",
+        "finished_at": "2026-09-13T23:47:42"
+      }
+    ],
+    "seconds": 11.625
+  },
+  {
+    "case": "BDMAP_00000413",
+    "expected_pyradiomics_mm": 122.12288892750614,
+    "actual_agent_cm": 12.212,
+    "absolute_error_mm": 0.0028889275061345643,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n### 数据来源\n- 病例: **LIVE_BDMAP_00000413**\n- 已完成测量: tumor_diameter（参考掩膜 oracle 测量结果）\n- 测量方法: IBSI Maximum 3D Diameter（表面网格法）\n- 参与测量的掩膜体素数: **348,986** voxels\n\n### 结果\n\n| 病灶 | 最大三维直径 |\n|---|---|\n| tumor_1（本例唯一病灶，即为最大病灶） | **122.12 mm** = **12.212 cm** |\n\n> 本例仅记录 1 个病灶，因此最大病灶的 IBSI 最大三维直径为 **12.212 cm**。\n\n{\"value\": 12.212, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_fe0bb83a0c164062a5106e4d",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000413"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 122.12,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 348986,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 650.1,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:47:50",
+        "finished_at": "2026-09-13T23:47:51"
+      }
+    ],
+    "seconds": 9.218
+  },
+  {
+    "case": "BDMAP_00000420",
+    "expected_pyradiomics_mm": 97.58216808178278,
+    "actual_agent_cm": 9.758,
+    "absolute_error_mm": 0.002168081782798481,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏最大病灶三维直径分析\n\n根据已完成测量结果，该病例共 6 个肝脏病灶，其中最大直径为 **tumor_1** 的 **97.58 mm**。\n\n换算为厘米：\n\n> **97.58 mm ÷ 10 = 9.758 cm**\n\n### 各病灶三维最大直径对比\n\n| 病灶 | 最大3D直径 (mm) | 最大3D直径 (cm) |\n|------|----------------|----------------|\n| tumor_1 | 97.58 | 9.758 |\n| tumor_2 | 72.18 | 7.218 |\n| tumor_4 | 13.42 | 1.342 |\n| tumor_3 | 13.35 | 1.335 |\n| tumor_5 | 8.0 | 0.800 |\n| tumor_6 | 7.03 | 0.703 |\n\n最大病灶（tumor_1）的三维最大直径为 **9.758 cm**（测量方法：IBSI Surface Mesh，体素数 23121）。\n\n{\"value\": 9.758, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_03720fa891454a2597196e8a",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00000420"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 97.58,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 23121,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 72.18,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1715,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 13.35,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 123,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 13.42,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 82,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 8.0,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 33,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 7.03,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 18,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 1092.9,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:47:54",
+        "finished_at": "2026-09-13T23:47:55"
+      }
+    ],
+    "seconds": 10.641
+  },
+  {
+    "case": "BDMAP_00000503",
+    "expected_pyradiomics_mm": 11.702332249518683,
+    "actual_agent_cm": 1.17,
+    "absolute_error_mm": 0.0023322495186839376,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n### 测量数据来源\n- 病例: **LIVE_BDMAP_00000503**\n- 已完成测量: tumor_diameter（IBSI Maximum 3D Diameter）\n- 病灶数量: **1** 个（tumor_1），因此该病灶即为最大病灶\n\n### 结果\n\n| 病灶 | 体素数 | 最大三维直径 (mm) | 最大三维直径 (cm) |\n|---|---|---|---|\n| tumor_1 | 121 | **11.7 mm** | **1.17 cm** |\n\n> 最大肝脏病灶的最大三维直径为 **1.17 cm**（原始测量值 **11.7 mm**，按 10 mm = 1 cm 换算）。\n\n测量方法标注为 IBSI 表面网格最大三维直径，来源于参考掩膜（oracle）测量，非自动分割预测。\n\n{\"value\": 1.17, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_addd2f760de1487897ae17a6",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000503"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 11.7,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 121,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 189.4,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:48:02",
+        "finished_at": "2026-09-13T23:48:02"
+      }
+    ],
+    "seconds": 9.86
+  },
+  {
+    "case": "BDMAP_00000513",
+    "expected_pyradiomics_mm": 188.8377648177188,
+    "actual_agent_cm": 18.884,
+    "absolute_error_mm": 0.0022351822811970123,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n### 测量结果\n\n| 病灶 | 最大三维直径 | 测量体素数 | 方法 |\n|---|---|---|---|\n| tumor_1 | **188.84 mm** | **356214** | IBSI Maximum 3D Diameter (surface mesh) |\n\n### 说明\n- 本病例仅检出 **1** 个病灶，因此最大病灶即为 tumor_1。\n- 单位换算：**188.84 mm ÷ 10 = 18.884 cm**。\n- 数据来源为已完成的一次性测量技能结果（tumor_diameter），未重复调用。\n\n> 肝脏最大病灶的最大三维直径为 **18.884 cm**。\n\n{\"value\": 18.884, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_539cf970dfe745da939dcc24",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00000513"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 188.84,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 356214,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 144.5,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:48:05",
+        "finished_at": "2026-09-13T23:48:05"
+      }
+    ],
+    "seconds": 8.812
+  },
+  {
+    "case": "BDMAP_00000607",
+    "expected_pyradiomics_mm": 106.99756697949393,
+    "actual_agent_cm": 10.7,
+    "absolute_error_mm": 0.0024330205060749677,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n基于本病例 **LIVE_BDMAP_00000607** 已完成的可测量分析结果（IBSI 表面网格法，Maximum 3D Diameter）：\n\n| 病灶 | 最大三维直径 | 体积相关体素数 |\n|---|---|---|\n| tumor_1 | **107.0 mm（10.7 cm）** | 239078 |\n| tumor_2 | **52.38 mm（5.24 cm）** | 29219 |\n\n> 最大病灶为 tumor_1，其最大三维直径换算为 **10.7 cm**。\n\n{\"value\": 10.7, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_f8250292644b43f0a8c5d47b",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000607",
+          "tumor_label": "hepatic tumor"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 107.0,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 239078,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 52.38,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 29219,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 1636.1,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:48:13",
+        "finished_at": "2026-09-13T23:48:15"
+      }
+    ],
+    "seconds": 9.875
+  },
+  {
+    "case": "BDMAP_00000668",
+    "expected_pyradiomics_mm": 8.551319257001007,
+    "actual_agent_cm": 0.855,
+    "absolute_error_mm": 0.0013192570010058802,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维径线\n\n### 测量结果\n- 病例 ID: **LIVE_BDMAP_00000668**\n- 病灶数量: **1**（tumor_1，即为最大病灶）\n- 最大 3D 径线: **8.55 mm** = **0.855 cm**\n- 测量方法: ibsi_surface_mesh（IBSI Maximum 3D Diameter）\n- 参与计算体素数: **168**\n\n### 单位换算\n\n| 项目 | 原始值 | 换算值 |\n|---|---|---|\n| 最大 3D 直径 | **8.55 mm** | **0.855 cm** |\n\n### 说明\n- 该病例仅存在 1 个肝脏病灶，因此最大病灶的 3D 最大径线即为 **0.855 cm**。\n- 上述数据直接取自本病例已完成的 tumor_diameter 测量结果，未重复调用测量技能。\n\n{\"value\": 0.855, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_155c5820ee0246a999fc6103",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000668",
+          "tumor_label": "hepatic tumor"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 8.55,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 168,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 3797.9,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:48:36",
+        "finished_at": "2026-09-13T23:48:40"
+      },
+      {
+        "call_id": "call_0a86207a4e3847d0924d7a47",
+        "round": 2,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000668"
+        },
+        "status": "ok",
+        "result": {
+          "liver_volume_cm3": 1774.34,
+          "vessel_volumes": {},
+          "tumor_results": {
+            "tumor_1": {
+              "diameter": {
+                "max_diameter_mm": 8.55,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 168,
+                "hull_vertices_count": 40,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 168,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  168
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 107.73,
+              "volume_cm3": 0.11,
+              "tumor_voxels": 168
+            }
+          },
+          "report_text": "============================================================\n  肝脏肿瘤专项分析报告\n============================================================\n\n  肝脏体积: 1774.3 cm³\n\n  📊 汇总\n      肿瘤总数: 1\n      最大直径: 8.6 mm\n      最小直径: 8.6 mm\n\n\n------------------------------------------------------------\n  各肿瘤详情\n------------------------------------------------------------\n\n  ⚕️  tumor_1\n      体积: 0.11 cm³  (168 体素)\n      最大直径: 8.55 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n============================================================\n  报告结束\n============================================================"
+        },
+        "execution_time_ms": 7592.3,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:48:55",
+        "finished_at": "2026-09-13T23:49:02"
+      }
+    ],
+    "seconds": 48.969
+  },
+  {
+    "case": "BDMAP_00000815",
+    "expected_pyradiomics_mm": 22.73547108947603,
+    "actual_agent_cm": 2.274,
+    "absolute_error_mm": 0.004528910523973195,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏最大病灶三维直径\n\n根据已完成病例 **LIVE_BDMAP_00000815** 的 `tumor_diameter` 测量结果，最大肝脏病灶为 **tumor_1**。\n\n| 病灶 | IBSI 三维最大直径 |\n|---|---:|\n| tumor_1 | **22.74 mm** |\n\n换算为厘米：\n\n**22.74 mm ÷ 10 = 2.274 cm**\n\n因此，最大肝脏病灶的三维最大直径为 **2.274 cm**。\n\n{\"value\": 2.274, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_9cf6efd0f5334c5fbcbdb8c0",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000815",
+          "tumor_label": "hepatic tumor"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 22.74,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1347,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 16.81,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 700,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 14.73,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 564,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 14.58,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 476,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 13.64,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 358,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 13.64,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 332,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_7",
+              "max_diameter_mm": 10.15,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 135,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_8",
+              "max_diameter_mm": 8.13,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 90,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 10298.8,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:49:12",
+        "finished_at": "2026-09-13T23:49:22"
+      },
+      {
+        "call_id": "call_8dad3f5cd3c74210beddb7fa",
+        "round": 2,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000815"
+        },
+        "status": "ok",
+        "result": {
+          "liver_volume_cm3": 1332.33,
+          "vessel_volumes": {},
+          "tumor_results": {
+            "tumor_1": {
+              "diameter": {
+                "max_diameter_mm": 22.74,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 1347,
+                "hull_vertices_count": 79,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 1347,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  1347
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 2127.93,
+              "volume_cm3": 2.13,
+              "tumor_voxels": 1347
+            },
+            "tumor_2": {
+              "diameter": {
+                "max_diameter_mm": 16.81,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 700,
+                "hull_vertices_count": 60,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 700,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  700
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 1105.83,
+              "volume_cm3": 1.11,
+              "tumor_voxels": 700
+            },
+            "tumor_3": {
+              "diameter": {
+                "max_diameter_mm": 14.73,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 564,
+                "hull_vertices_count": 52,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 564,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  564
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 890.98,
+              "volume_cm3": 0.89,
+              "tumor_voxels": 564
+            },
+            "tumor_4": {
+              "diameter": {
+                "max_diameter_mm": 14.58,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 476,
+                "hull_vertices_count": 57,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 476,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  476
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 751.96,
+              "volume_cm3": 0.75,
+              "tumor_voxels": 476
+            },
+            "tumor_5": {
+              "diameter": {
+                "max_diameter_mm": 13.64,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 358,
+                "hull_vertices_count": 52,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 358,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  358
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 565.55,
+              "volume_cm3": 0.57,
+              "tumor_voxels": 358
+            },
+            "tumor_6": {
+              "diameter": {
+                "max_diameter_mm": 13.64,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 332,
+                "hull_vertices_count": 48,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 332,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  332
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 524.48,
+              "volume_cm3": 0.52,
+              "tumor_voxels": 332
+            },
+            "tumor_7": {
+              "diameter": {
+                "max_diameter_mm": 10.15,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 135,
+                "hull_vertices_count": 32,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 135,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  135
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 213.27,
+              "volume_cm3": 0.21,
+              "tumor_voxels": 135
+            },
+            "tumor_8": {
+              "diameter": {
+                "max_diameter_mm": 8.13,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 90,
+                "hull_vertices_count": 28,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 90,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  90
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 142.18,
+              "volume_cm3": 0.14,
+              "tumor_voxels": 90
+            }
+          },
+          "report_text": "============================================================\n  肝脏肿瘤专项分析报告\n============================================================\n\n  肝脏体积: 1332.3 cm³\n\n  📊 汇总\n      肿瘤总数: 8\n      最大直径: 22.7 mm\n      最小直径: 8.1 mm\n\n\n------------------------------------------------------------\n  各肿瘤详情\n------------------------------------------------------------\n\n  ⚕️  tumor_1\n      体积: 2.13 cm³  (1,347 体素)\n      最大直径: 22.74 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_2\n      体积: 1.11 cm³  (700 体素)\n      最大直径: 16.81 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_3\n      体积: 0.89 cm³  (564 体素)\n      最大直径: 14.73 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_4\n      体积: 0.75 cm³  (476 体素)\n      最大直径: 14.58 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_5\n      体积: 0.57 cm³  (358 体素)\n      最大直径: 13.64 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_6\n      体积: 0.52 cm³  (332 体素)\n      最大直径: 13.64 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_7\n      体积: 0.21 cm³  (135 体素)\n      最大直径: 10.15 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_8\n      体积: 0.14 cm³  (90 体素)\n      最大直径: 8.13 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n============================================================\n  报告结束\n============================================================"
+        },
+        "execution_time_ms": 16003.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:49:30",
+        "finished_at": "2026-09-13T23:49:47"
+      }
+    ],
+    "seconds": 42.188
+  },
+  {
+    "case": "BDMAP_00000524",
+    "expected_pyradiomics_mm": 84.96979556013854,
+    "actual_agent_cm": 8.497,
+    "absolute_error_mm": 0.00020443986146290172,
+    "correct_within_0_01_mm": true,
+    "answer": "The largest liver lesion (**tumor_1**) has a maximum 3D diameter of **84.97 mm**, equivalent to **8.497 cm**.\n\n{\"value\": 8.497, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_10b840ed6b7d4ef1b556b7f0",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "convex_hull_threshold": 100,
+          "min_voxels": 10,
+          "target_case_id": "LIVE_BDMAP_00000524"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 84.97,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 10843,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_10",
+              "max_diameter_mm": 33.09,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 902,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_11",
+              "max_diameter_mm": 25.58,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 893,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_12",
+              "max_diameter_mm": 25.08,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 832,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_13",
+              "max_diameter_mm": 27.01,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 708,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_14",
+              "max_diameter_mm": 20.86,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 680,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_15",
+              "max_diameter_mm": 22.82,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 599,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_16",
+              "max_diameter_mm": 15.86,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 521,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_17",
+              "max_diameter_mm": 21.2,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 435,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_18",
+              "max_diameter_mm": 22.59,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 360,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_19",
+              "max_diameter_mm": 20.36,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 359,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 66.62,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 10165,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_20",
+              "max_diameter_mm": 16.19,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 335,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_21",
+              "max_diameter_mm": 14.77,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 291,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_22",
+              "max_diameter_mm": 20.09,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 279,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_23",
+              "max_diameter_mm": 25.03,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 265,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_24",
+              "max_diameter_mm": 13.05,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 239,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_25",
+              "max_diameter_mm": 18.42,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 229,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_26",
+              "max_diameter_mm": 16.68,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 206,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_27",
+              "max_diameter_mm": 17.19,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 204,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_28",
+              "max_diameter_mm": 22.66,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 199,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_29",
+              "max_diameter_mm": 13.8,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 192,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 70.22,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 8263,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_30",
+              "max_diameter_mm": 15.03,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 178,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_31",
+              "max_diameter_mm": 11.73,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 172,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_32",
+              "max_diameter_mm": 13.95,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 163,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_33",
+              "max_diameter_mm": 13.19,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 146,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_34",
+              "max_diameter_mm": 10.74,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 141,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_35",
+              "max_diameter_mm": 14.56,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 129,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_36",
+              "max_diameter_mm": 12.65,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 127,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_37",
+              "max_diameter_mm": 10.58,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 125,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_38",
+              "max_diameter_mm": 16.02,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 112,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_39",
+              "max_diameter_mm": 15.93,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 101,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 63.49,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 5698,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_40",
+              "max_diameter_mm": 12.7,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 99,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_41",
+              "max_diameter_mm": 10.28,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 94,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_42",
+              "max_diameter_mm": 14.56,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 82,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_43",
+              "max_diameter_mm": 8.66,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 82,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_44",
+              "max_diameter_mm": 11.34,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 80,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_45",
+              "max_diameter_mm": 11.19,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 78,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_46",
+              "max_diameter_mm": 9.17,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 75,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_47",
+              "max_diameter_mm": 9.51,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 75,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_48",
+              "max_diameter_mm": 10.84,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 74,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_49",
+              "max_diameter_mm": 11.19,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 68,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 48.09,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 2201,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_50",
+              "max_diameter_mm": 8.38,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 62,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_51",
+              "max_diameter_mm": 10.32,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 61,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_52",
+              "max_diameter_mm": 7.17,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 42,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_53",
+              "max_diameter_mm": 7.91,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 41,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_54",
+              "max_diameter_mm": 7.91,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 41,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_55",
+              "max_diameter_mm": 7.55,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 41,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_56",
+              "max_diameter_mm": 7.13,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 37,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_57",
+              "max_diameter_mm": 7.55,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 37,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_58",
+              "max_diameter_mm": 7.46,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 36,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_59",
+              "max_diameter_mm": 7.55,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 36,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 41.87,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1563,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_60",
+              "max_diameter_mm": 7.69,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 34,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_61",
+              "max_diameter_mm": 7.27,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 33,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_62",
+              "max_diameter_mm": 6.72,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 32,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_63",
+              "max_diameter_mm": 7.17,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 30,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_64",
+              "max_diameter_mm": 7.55,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 30,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_65",
+              "max_diameter_mm": 6.35,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 28,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_66",
+              "max_diameter_mm": 7.91,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 22,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_67",
+              "max_diameter_mm": 6.51,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 20,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_7",
+              "max_diameter_mm": 41.48,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1208,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_8",
+              "max_diameter_mm": 23.36,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 981,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_9",
+              "max_diameter_mm": 31.86,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 940,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 78747.1,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:48:10",
+        "finished_at": "2026-09-13T23:49:29"
+      }
+    ],
+    "seconds": 116.312
+  },
+  {
+    "case": "BDMAP_00000877",
+    "expected_pyradiomics_mm": 57.88284918163231,
+    "actual_agent_cm": 5.788,
+    "absolute_error_mm": 0.002849181632306852,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n根据已完成的测量结果，病例 **LIVE_BDMAP_00000877** 中最大肝脏病灶为 **tumor_1**，其最大三维直径为 **57.88 mm**。\n\n换算为厘米：\n\n- 57.88 mm ÷ 10 = **5.788 cm**\n\n{\"value\": 5.788, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_00c52ed1e4fd4c089567b870",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000877"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 57.88,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 13223,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 100.1,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:50:14",
+        "finished_at": "2026-09-13T23:50:14"
+      }
+    ],
+    "seconds": 19.906
+  },
+  {
+    "case": "BDMAP_00000951",
+    "expected_pyradiomics_mm": 25.343157553186323,
+    "actual_agent_cm": 2.534,
+    "absolute_error_mm": 0.0031575531863268225,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n### 数据来源\n- 病例: **LIVE_BDMAP_00000951**\n- 已完成测量 Skill: **tumor_diameter**（未重复调用，直接复用结果）\n- 测量方法（工具返回值）: `ibsi_surface_mesh`（IBSI 最大三维直径）\n\n### 测量结果\n\n| 病灶 | 体素数 | 最大三维直径 (mm) | 换算 (cm) |\n|---|---|---|---|\n| tumor_1 | 1651 | **25.34 mm** | **2.534 cm** |\n\n> 本病例仅记录 **1** 个病灶，因此最大病灶即为 tumor_1，其最大三维直径为 **2.534 cm**（25.34 mm ÷ 10）。\n\n{\"value\": 2.534, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_736b2e3bc8f042d096dc37df",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000951",
+          "tumor_label": "hepatic tumor",
+          "min_voxels": 10,
+          "convex_hull_threshold": 100
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 25.34,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1651,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 1028.0,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:50:30",
+        "finished_at": "2026-09-13T23:50:31"
+      }
+    ],
+    "seconds": 14.079
+  },
+  {
+    "case": "BDMAP_00000985",
+    "expected_pyradiomics_mm": 13.234569417523048,
+    "actual_agent_cm": 1.323,
+    "absolute_error_mm": 0.004569417523047292,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大 3D 直径\n\n### 数据来源\n- 病例: **LIVE_BDMAP_00000985**\n- 已完成测量: tumor_diameter（IBSI 最大 3D 直径，surface mesh 方法），直接复用该结果，未重复调用测量技能。\n\n### 各病灶最大 3D 直径\n\n| 病灶 | 最大 3D 直径 (mm) | 最大 3D 直径 (cm) | 体素数 |\n|---|---|---|---|\n| tumor_1 | **13.23 mm** | **1.323 cm** | 166 |\n| tumor_2 | **7.00 mm** | **0.700 cm** | 37 |\n\n### 结论\n\n> 最大肝脏病灶为 tumor_1，其最大 3D 直径为 **1.323 cm**（即 **13.23 mm**）。\n\n{\"value\": 1.323, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_91370cffd43c44dd83160da9",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00000985"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 13.23,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 166,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 7.0,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 37,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 534.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:50:40",
+        "finished_at": "2026-09-13T23:50:40"
+      }
+    ],
+    "seconds": 9.375
+  },
+  {
+    "case": "BDMAP_00001016",
+    "expected_pyradiomics_mm": 91.06480028837981,
+    "actual_agent_cm": 9.106,
+    "absolute_error_mm": 0.0048002883798119456,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏最大病灶三维最大直径\n\n### 数据来源\n- 病例 ID: **LIVE_BDMAP_00001016**\n- 已完成测量技能: tumor_diameter（IBSI 表面网格法，返回 method: ibsi_surface_mesh）\n- 无需重复调用，直接复用已有测量结果\n\n### 各病灶最大三维直径\n\n| 病灶编号 | 最大 3D 直径 | 换算为 cm | 参与测量体素数 |\n|---|---|---|---|\n| tumor_1 | **91.06 mm** | **9.106 cm** | 17008 |\n| tumor_2 | **12.16 mm** | **1.216 cm** | 102 |\n\n### 结论\n\n> 最大的肝脏病灶为 tumor_1，其最大三维直径为 **9.106 cm**（即 **91.06 mm**）。\n\n---\n\n{\"value\": 9.106, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_532a56cee752465b9a948140",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00001016"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 91.06,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 17008,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 12.16,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 102,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 158.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:50:50",
+        "finished_at": "2026-09-13T23:50:50"
+      }
+    ],
+    "seconds": 10.312
+  },
+  {
+    "case": "BDMAP_00001029",
+    "expected_pyradiomics_mm": 14.849242404917497,
+    "actual_agent_cm": 1.485,
+    "absolute_error_mm": 0.000757595082504281,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n### 测量结果\n\n- 病例: **LIVE_BDMAP_00001029**\n- 病灶: **tumor_1**（本次分割中唯一的病灶实例，即最大病灶）\n- 最大三维直径: **14.85 mm** = **1.485 cm**\n- 测量方法: ibsi_surface_mesh（IBSI 最大三维直径）\n- 参与测量的体素数: **245**\n\n### 单位换算\n\n> 14.85 mm ÷ 10 = **1.485 cm**\n\n### 数据来源说明\n\n上述数值来自本病例已完成的直径测量技能结果（参考掩膜测量，非自动分割预测）。\n\n{\"value\": 1.485, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_be2f11a1422440cea1df6b8b",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00001029"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 14.85,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 245,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 72.4,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:51:02",
+        "finished_at": "2026-09-13T23:51:02"
+      }
+    ],
+    "seconds": 13.328
+  },
+  {
+    "case": "BDMAP_00000831",
+    "expected_pyradiomics_mm": 115.26817860582702,
+    "actual_agent_cm": 11.527,
+    "absolute_error_mm": 0.00182139417297833,
+    "correct_within_0_01_mm": true,
+    "answer": "{\"value\": 11.527, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_db1fbab6b9de4f46be683c91",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000831"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 112.46,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 218173,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_10",
+              "max_diameter_mm": 12.49,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 977,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_11",
+              "max_diameter_mm": 10.22,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 684,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_12",
+              "max_diameter_mm": 8.95,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 371,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 115.27,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 179463,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 73.63,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 115525,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 56.92,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 73769,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 64.86,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 72289,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 45.79,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 42166,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_7",
+              "max_diameter_mm": 43.26,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 17481,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_8",
+              "max_diameter_mm": 16.24,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 2255,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_9",
+              "max_diameter_mm": 18.79,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 2153,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 19741.4,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:49:54",
+        "finished_at": "2026-09-13T23:50:14"
+      },
+      {
+        "call_id": "call_96f74842a929456f8d1db235",
+        "round": 2,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00000831"
+        },
+        "status": "ok",
+        "result": {
+          "liver_volume_cm3": 1942.39,
+          "vessel_volumes": {},
+          "tumor_results": {
+            "tumor_1": {
+              "diameter": {
+                "max_diameter_mm": 112.46,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 218173,
+                "hull_vertices_count": 279,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 218173,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  218173
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 79755.87,
+              "volume_cm3": 79.76,
+              "tumor_voxels": 218173
+            },
+            "tumor_10": {
+              "diameter": {
+                "max_diameter_mm": 12.49,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 977,
+                "hull_vertices_count": 81,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 977,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  977
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 357.15,
+              "volume_cm3": 0.36,
+              "tumor_voxels": 977
+            },
+            "tumor_11": {
+              "diameter": {
+                "max_diameter_mm": 10.22,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 684,
+                "hull_vertices_count": 76,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 684,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  684
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 250.04,
+              "volume_cm3": 0.25,
+              "tumor_voxels": 684
+            },
+            "tumor_12": {
+              "diameter": {
+                "max_diameter_mm": 8.95,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 371,
+                "hull_vertices_count": 59,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 371,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  371
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 135.62,
+              "volume_cm3": 0.14,
+              "tumor_voxels": 371
+            },
+            "tumor_2": {
+              "diameter": {
+                "max_diameter_mm": 115.27,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 179463,
+                "hull_vertices_count": 208,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 179463,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  179463
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 65604.94,
+              "volume_cm3": 65.6,
+              "tumor_voxels": 179463
+            },
+            "tumor_3": {
+              "diameter": {
+                "max_diameter_mm": 73.63,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 115525,
+                "hull_vertices_count": 195,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 115525,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  115525
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 42231.61,
+              "volume_cm3": 42.23,
+              "tumor_voxels": 115525
+            },
+            "tumor_4": {
+              "diameter": {
+                "max_diameter_mm": 56.92,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 73769,
+                "hull_vertices_count": 198,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 73769,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  73769
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 26967.18,
+              "volume_cm3": 26.97,
+              "tumor_voxels": 73769
+            },
+            "tumor_5": {
+              "diameter": {
+                "max_diameter_mm": 64.86,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 72289,
+                "hull_vertices_count": 177,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 72289,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  72289
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 26426.15,
+              "volume_cm3": 26.43,
+              "tumor_voxels": 72289
+            },
+            "tumor_6": {
+              "diameter": {
+                "max_diameter_mm": 45.79,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 42166,
+                "hull_vertices_count": 190,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 42166,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  42166
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 15414.31,
+              "volume_cm3": 15.41,
+              "tumor_voxels": 42166
+            },
+            "tumor_7": {
+              "diameter": {
+                "max_diameter_mm": 43.26,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 17481,
+                "hull_vertices_count": 124,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 17481,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  17481
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 6390.4,
+              "volume_cm3": 6.39,
+              "tumor_voxels": 17481
+            },
+            "tumor_8": {
+              "diameter": {
+                "max_diameter_mm": 16.24,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 2255,
+                "hull_vertices_count": 90,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 2255,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  2255
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 824.34,
+              "volume_cm3": 0.82,
+              "tumor_voxels": 2255
+            },
+            "tumor_9": {
+              "diameter": {
+                "max_diameter_mm": 18.79,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 2153,
+                "hull_vertices_count": 92,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 2153,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  2153
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 787.06,
+              "volume_cm3": 0.79,
+              "tumor_voxels": 2153
+            }
+          },
+          "report_text": "============================================================\n  肝脏肿瘤专项分析报告\n============================================================\n\n  肝脏体积: 1942.4 cm³\n\n  📊 汇总\n      肿瘤总数: 12\n      最大直径: 115.3 mm\n      最小直径: 8.9 mm\n\n\n------------------------------------------------------------\n  各肿瘤详情\n------------------------------------------------------------\n\n  ⚕️  tumor_1\n      体积: 79.76 cm³  (218,173 体素)\n      最大直径: 112.46 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_10\n      体积: 0.36 cm³  (977 体素)\n      最大直径: 12.49 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_11\n      体积: 0.25 cm³  (684 体素)\n      最大直径: 10.22 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_12\n      体积: 0.14 cm³  (371 体素)\n      最大直径: 8.95 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_2\n      体积: 65.60 cm³  (179,463 体素)\n      最大直径: 115.27 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_3\n      体积: 42.23 cm³  (115,525 体素)\n      最大直径: 73.63 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_4\n      体积: 26.97 cm³  (73,769 体素)\n      最大直径: 56.92 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_5\n      体积: 26.43 cm³  (72,289 体素)\n      最大直径: 64.86 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_6\n      体积: 15.41 cm³  (42,166 体素)\n      最大直径: 45.79 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_7\n      体积: 6.39 cm³  (17,481 体素)\n      最大直径: 43.26 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_8\n      体积: 0.82 cm³  (2,255 体素)\n      最大直径: 16.24 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_9\n      体积: 0.79 cm³  (2,153 体素)\n      最大直径: 18.79 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n============================================================\n  报告结束\n============================================================"
+        },
+        "execution_time_ms": 36302.9,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:50:29",
+        "finished_at": "2026-09-13T23:51:06"
+      }
+    ],
+    "seconds": 87.843
+  },
+  {
+    "case": "BDMAP_00001070",
+    "expected_pyradiomics_mm": 44.017099569075164,
+    "actual_agent_cm": 4.402,
+    "absolute_error_mm": 0.00290043092483927,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n### 数据来源\n- 病例: **LIVE_BDMAP_00001070**\n- 测量技能: tumor_diameter（已完成，直接引用结果）\n- 测量方法: ibsi_surface_mesh（IBSI 最大三维直径）\n- 参与测量体素数: **21041**\n\n### 结果\n\n| 病灶 | 最大三维直径 |\n|---|---|\n| tumor_1 | **44.02 mm** |\n\n本病例仅检出 **1** 个病灶，因此它同时就是最大病灶。\n\n> 最大肝脏病灶的最大三维直径为 **44.02 mm**，换算为 **4.402 cm**。\n\n{\"value\": 4.402, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_bd9aa441af744abc897eec0a",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00001070"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 44.02,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 21041,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 650.1,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:51:22",
+        "finished_at": "2026-09-13T23:51:23"
+      }
+    ],
+    "seconds": 9.766
+  },
+  {
+    "case": "BDMAP_00001123",
+    "expected_pyradiomics_mm": 13.162446581088183,
+    "actual_agent_cm": 1.316,
+    "absolute_error_mm": 0.002446581088182853,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n根据已完成的肿瘤直径测量结果（IBSI Maximum 3D Diameter 方法），当前病例 **LIVE_BDMAP_00001123** 中肝脏仅见 **1** 个病灶（tumor_1），其最大三维直径为 **13.16 mm**，即 **1.316 cm**。\n\n| 病灶 | 测量值 (mm) | 测量值 (cm) | 体素数 | 方法 |\n|---|---|---|---|---|\n| tumor_1 | 13.16 | 1.316 | 149 | ibsi_surface_mesh |\n\n> 最大病灶（即唯一病灶）的最大三维直径为 **1.316 cm**。\n\n{\"value\": 1.316, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_30d9b58148d849ec85f2c4fa",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00001123"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 13.16,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 149,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 363.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:51:32",
+        "finished_at": "2026-09-13T23:51:33"
+      }
+    ],
+    "seconds": 9.0
+  },
+  {
+    "case": "BDMAP_00001149",
+    "expected_pyradiomics_mm": 54.577224050732944,
+    "actual_agent_cm": 5.458,
+    "absolute_error_mm": 0.0027759492670540453,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n### 数据来源\n- 病例: **LIVE_BDMAP_00001149**\n- 测量技能: tumor_diameter（已完成，未重复调用）\n- 测量方法: `ibsi_surface_mesh`（IBSI Maximum 3D Diameter）\n- 参与测量的体素数: **7939**\n\n### 结果\n\n| 病灶编号 | 最大三维直径 | 换算后 |\n|---|---|---|\n| tumor_1（本例唯一病灶，即最大病灶） | **54.58 mm** | **5.458 cm** |\n\n> 本例仅检出 **1** 个肝内病灶，因此最大病灶即为该病灶，其最大三维直径为 **5.458 cm**（原始测量值 **54.58 mm**，按 10 mm = 1 cm 换算）。\n\n---\n\n{\"value\": 5.458, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_8bb4703122c3425ca739e1b2",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00001149"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 54.58,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 7939,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 102.4,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:51:44",
+        "finished_at": "2026-09-13T23:51:44"
+      }
+    ],
+    "seconds": 14.969
+  },
+  {
+    "case": "BDMAP_00001168",
+    "expected_pyradiomics_mm": 95.08762815345726,
+    "actual_agent_cm": 9.509,
+    "absolute_error_mm": 0.002371846542743583,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径分析\n\n### 测量数据\n- 病例 ID: **LIVE_BDMAP_00001168**\n- 病灶数量: **1**（即最大病灶为 tumor_1）\n- 最大三维直径: **95.09 mm**\n- 测量方法: **ibsi_surface_mesh**（IBSI Maximum 3D Diameter）\n- 参与测量体素数: **379585**\n\n### 单位换算\n> 95.09 mm ÷ 10 = **9.509 cm**\n\n| 指标 | mm | cm |\n|---|---|---|\n| 最大病灶最大三维直径 | **95.09** | **9.509** |\n\n### 结论\n本病例中最大的肝脏病灶（tumor_1）的最大三维直径为 **9.509 cm**。该数据来源于已完成的 tumor_diameter 测量技能结果，未重复调用。\n\n{\"value\": 9.509, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_32aadf7c76aa46ad8277ecc7",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00001168"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 95.09,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 379585,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 674.0,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:51:58",
+        "finished_at": "2026-09-13T23:51:59"
+      }
+    ],
+    "seconds": 13.562
+  },
+  {
+    "case": "BDMAP_00001064",
+    "expected_pyradiomics_mm": 46.53364133614493,
+    "actual_agent_cm": 4.653,
+    "absolute_error_mm": 0.003641336144937668,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏最大病灶三维直径\n\n根据病例 **LIVE_BDMAP_00001064** 已完成的病灶直径测量结果，全部 59 个病灶中最大者为 **tumor_1**，其最大三维直径为 **46.53 mm**。\n\n### 测量依据\n\n| 病灶 | 最大三维直径 | 体素数 | 方法 |\n|---|---|---|---|\n| tumor_1 | **46.53 mm** | 24500 | IBSI Maximum 3D Diameter |\n\n> 单位换算：46.53 mm ÷ 10 = **4.653 cm**\n\ntumor_1 同时也是体素数最多的病灶（24500 体素），对应本病例中体积与直径均最大的病灶，其最大三维直径为 **4.653 cm**。\n\n{\"value\": 4.653, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_935a9ab6981f4f34879b6db3",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00001064"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 46.53,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 24500,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_10",
+              "max_diameter_mm": 19.33,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1125,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_11",
+              "max_diameter_mm": 13.42,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1003,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_12",
+              "max_diameter_mm": 12.03,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 856,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_13",
+              "max_diameter_mm": 12.81,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 841,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_14",
+              "max_diameter_mm": 14.21,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 758,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_15",
+              "max_diameter_mm": 13.28,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 748,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_16",
+              "max_diameter_mm": 16.05,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 721,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_17",
+              "max_diameter_mm": 14.07,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 575,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_18",
+              "max_diameter_mm": 13.4,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 561,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_19",
+              "max_diameter_mm": 13.24,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 553,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 32.67,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 10033,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_20",
+              "max_diameter_mm": 11.56,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 540,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_21",
+              "max_diameter_mm": 14.45,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 537,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_22",
+              "max_diameter_mm": 19.53,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 507,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_23",
+              "max_diameter_mm": 11.82,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 505,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_24",
+              "max_diameter_mm": 15.23,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 500,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_25",
+              "max_diameter_mm": 11.12,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 474,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_26",
+              "max_diameter_mm": 11.76,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 459,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_27",
+              "max_diameter_mm": 12.03,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 337,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_28",
+              "max_diameter_mm": 10.54,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 316,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_29",
+              "max_diameter_mm": 10.17,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 242,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 26.25,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 7570,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_30",
+              "max_diameter_mm": 11.08,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 235,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_31",
+              "max_diameter_mm": 9.62,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 213,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_32",
+              "max_diameter_mm": 7.98,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 199,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_33",
+              "max_diameter_mm": 9.14,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 169,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_34",
+              "max_diameter_mm": 9.32,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 166,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_35",
+              "max_diameter_mm": 8.46,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 149,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_36",
+              "max_diameter_mm": 7.81,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 145,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_37",
+              "max_diameter_mm": 8.82,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 139,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_38",
+              "max_diameter_mm": 7.19,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 134,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_39",
+              "max_diameter_mm": 7.14,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 128,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 34.62,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 7194,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_40",
+              "max_diameter_mm": 8.12,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 123,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_41",
+              "max_diameter_mm": 7.14,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 117,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_42",
+              "max_diameter_mm": 7.61,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 112,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_43",
+              "max_diameter_mm": 6.82,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 99,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_44",
+              "max_diameter_mm": 9.83,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 97,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_45",
+              "max_diameter_mm": 6.3,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 89,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_46",
+              "max_diameter_mm": 6.96,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 81,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_47",
+              "max_diameter_mm": 6.29,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 80,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_48",
+              "max_diameter_mm": 6.62,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 74,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_49",
+              "max_diameter_mm": 5.11,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 51,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 20.24,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 2830,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_50",
+              "max_diameter_mm": 6.86,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 48,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_51",
+              "max_diameter_mm": 5.26,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 48,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_52",
+              "max_diameter_mm": 5.36,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 46,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_53",
+              "max_diameter_mm": 5.26,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 41,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_54",
+              "max_diameter_mm": 6.54,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 38,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_55",
+              "max_diameter_mm": 5.83,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 32,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_56",
+              "max_diameter_mm": 5.26,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 32,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_57",
+              "max_diameter_mm": 4.02,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 30,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_58",
+              "max_diameter_mm": 5.11,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 20,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_59",
+              "max_diameter_mm": 3.68,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 14,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 19.2,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 2458,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_7",
+              "max_diameter_mm": 18.11,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 2333,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_8",
+              "max_diameter_mm": 20.1,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1149,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_9",
+              "max_diameter_mm": 15.45,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1134,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 48945.0,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:51:14",
+        "finished_at": "2026-09-13T23:52:03"
+      }
+    ],
+    "seconds": 64.688
+  },
+  {
+    "case": "BDMAP_00001249",
+    "expected_pyradiomics_mm": 67.41942885892078,
+    "actual_agent_cm": 6.742,
+    "absolute_error_mm": 0.0005711410792201832,
+    "correct_within_0_01_mm": true,
+    "answer": "{\"value\": 6.742, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_110612e5f658413f81564ed5",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00001249",
+          "tumor_label": "hepatic tumor"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 67.42,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 77243,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 41.06,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 17194,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 25.23,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 2216,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 1352.4,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:52:19",
+        "finished_at": "2026-09-13T23:52:20"
+      },
+      {
+        "call_id": "call_e5ced9b39ed34c8899565a3a",
+        "round": 2,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00001249"
+        },
+        "status": "ok",
+        "result": {
+          "liver_volume_cm3": 1709.67,
+          "vessel_volumes": {},
+          "tumor_results": {
+            "tumor_1": {
+              "diameter": {
+                "max_diameter_mm": 67.42,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 77243,
+                "hull_vertices_count": 284,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 77243,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  77243
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 84020.06,
+              "volume_cm3": 84.02,
+              "tumor_voxels": 77243
+            },
+            "tumor_2": {
+              "diameter": {
+                "max_diameter_mm": 41.06,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 17194,
+                "hull_vertices_count": 166,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 17194,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  17194
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 18702.55,
+              "volume_cm3": 18.7,
+              "tumor_voxels": 17194
+            },
+            "tumor_3": {
+              "diameter": {
+                "max_diameter_mm": 25.23,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 2216,
+                "hull_vertices_count": 86,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 2216,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  2216
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 2410.42,
+              "volume_cm3": 2.41,
+              "tumor_voxels": 2216
+            }
+          },
+          "report_text": "============================================================\n  肝脏肿瘤专项分析报告\n============================================================\n\n  肝脏体积: 1709.7 cm³\n\n  📊 汇总\n      肿瘤总数: 3\n      最大直径: 67.4 mm\n      最小直径: 25.2 mm\n\n\n------------------------------------------------------------\n  各肿瘤详情\n------------------------------------------------------------\n\n  ⚕️  tumor_1\n      体积: 84.02 cm³  (77,243 体素)\n      最大直径: 67.42 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_2\n      体积: 18.70 cm³  (17,194 体素)\n      最大直径: 41.06 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_3\n      体积: 2.41 cm³  (2,216 体素)\n      最大直径: 25.23 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n============================================================\n  报告结束\n============================================================"
+        },
+        "execution_time_ms": 1331.0,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:52:31",
+        "finished_at": "2026-09-13T23:52:32"
+      }
+    ],
+    "seconds": 26.422
+  },
+  {
+    "case": "BDMAP_00001297",
+    "expected_pyradiomics_mm": 11.552164300211173,
+    "actual_agent_cm": 1.155,
+    "absolute_error_mm": 0.0021643002111719767,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏最大病灶最大三维直径\n\n根据已有的 `tumor_diameter` 分析结果，所有病灶的最大三维直径（IBSI surface mesh 方法）汇总如下：\n\n| 病灶编号 | 最大三维直径 (mm) | 最大三维直径 (cm) |\n|---------|------------------|------------------|\n| tumor_1 | 11.55 | **1.155** |\n| tumor_2 | 9.27 | 0.927 |\n| tumor_3 | 9.93 | 0.993 |\n| tumor_4 | 9.86 | 0.986 |\n| tumor_5 | 6.81 | 0.681 |\n| tumor_6 | 3.37 | 0.337 |\n\n> **最大病灶为 tumor_1，其最大三维直径为 11.55 mm，换算为 1.155 cm。**\n\n{\"value\": 1.155, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_813acb69c772477ebc4f7a72",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00001297",
+          "tumor_label": "hepatic tumor"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 11.55,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 493,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 9.27,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 404,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 9.93,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 341,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 9.86,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 265,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 6.81,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 126,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 3.37,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 11,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 6593.0,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:52:45",
+        "finished_at": "2026-09-13T23:52:52"
+      }
+    ],
+    "seconds": 16.968
+  },
+  {
+    "case": "BDMAP_00001343",
+    "expected_pyradiomics_mm": 104.97094869644583,
+    "actual_agent_cm": 10.497,
+    "absolute_error_mm": 0.0009486964458318425,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏病灶最大三维直径\n\n最大病灶为 **tumor_1**，其最大三维直径为 **104.97 mm**。\n\n换算为厘米：\n\n**104.97 mm ÷ 10 = 10.497 cm**\n\n{\"value\": 10.497, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_8b6fae1335264369a1bc38dd",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00001343"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 104.97,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 267741,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 41.75,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 6488,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 14.19,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1204,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 11.08,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 320,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 7.03,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 118,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 5.95,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 37,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 12474.5,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:53:04",
+        "finished_at": "2026-09-13T23:53:16"
+      }
+    ],
+    "seconds": 44.547
+  },
+  {
+    "case": "BDMAP_00001185",
+    "expected_pyradiomics_mm": 25.666705485535804,
+    "actual_agent_cm": 2.567,
+    "absolute_error_mm": 0.0032945144641978175,
+    "correct_within_0_01_mm": true,
+    "answer": "## 肝脏最大病灶三维最大直径\n\n### 测量结果\n\n| 病灶 | IBSI 最大三维直径 | 体素数 |\n|---|---|---|\n| tumor_2（最大病灶） | **25.67 mm** | 3282 |\n| tumor_1 | **18.23 mm** | 3802 |\n\n- 最大病灶为 **tumor_2**，最大三维直径 **25.67 mm**，换算为 **2.567 cm**。\n- 测量方法：工具返回的 `ibsi_surface_mesh`（IBSI Maximum 3D Diameter，基于表面网格）。\n- 该病例共 **13** 个肝脏病灶。\n\n> 最大肝脏病灶的三维最大直径为 **2.567 cm**。\n\n{\"value\": 2.567, \"unit\": \"cm\"}",
+    "calls": [
+      {
+        "call_id": "call_1f887e0355524f6592d600e5",
+        "round": 1,
+        "skill_name": "tumor_diameter",
+        "params": {
+          "tumor_label": "hepatic tumor",
+          "target_case_id": "LIVE_BDMAP_00001185"
+        },
+        "status": "ok",
+        "result": {
+          "tumors": [
+            {
+              "tumor_id": "tumor_1",
+              "max_diameter_mm": 18.23,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 3802,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_10",
+              "max_diameter_mm": 9.98,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 291,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_11",
+              "max_diameter_mm": 9.61,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 160,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_12",
+              "max_diameter_mm": 7.33,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 114,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_13",
+              "max_diameter_mm": 5.24,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 26,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_2",
+              "max_diameter_mm": 25.67,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 3282,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_3",
+              "max_diameter_mm": 14.75,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 1663,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_4",
+              "max_diameter_mm": 13.93,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 751,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_5",
+              "max_diameter_mm": 10.42,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 683,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_6",
+              "max_diameter_mm": 9.67,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 502,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_7",
+              "max_diameter_mm": 9.54,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 340,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_8",
+              "max_diameter_mm": 8.53,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 325,
+              "note": "IBSI Maximum 3D Diameter"
+            },
+            {
+              "tumor_id": "tumor_9",
+              "max_diameter_mm": 10.18,
+              "method": "ibsi_surface_mesh",
+              "voxel_count": 314,
+              "note": "IBSI Maximum 3D Diameter"
+            }
+          ]
+        },
+        "execution_time_ms": 20688.2,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:52:10",
+        "finished_at": "2026-09-13T23:52:30"
+      },
+      {
+        "call_id": "call_d0d9f7feae834623873ae7b1",
+        "round": 2,
+        "skill_name": "liver_analysis",
+        "params": {
+          "target_case_id": "LIVE_BDMAP_00001185"
+        },
+        "status": "ok",
+        "result": {
+          "liver_volume_cm3": 1577.98,
+          "vessel_volumes": {},
+          "tumor_results": {
+            "tumor_1": {
+              "diameter": {
+                "max_diameter_mm": 18.23,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 3802,
+                "hull_vertices_count": 126,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 3802,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  3802
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 1624.35,
+              "volume_cm3": 1.62,
+              "tumor_voxels": 3802
+            },
+            "tumor_10": {
+              "diameter": {
+                "max_diameter_mm": 9.98,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 291,
+                "hull_vertices_count": 59,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 291,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  291
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 124.33,
+              "volume_cm3": 0.12,
+              "tumor_voxels": 291
+            },
+            "tumor_11": {
+              "diameter": {
+                "max_diameter_mm": 9.61,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 160,
+                "hull_vertices_count": 39,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 160,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  160
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 68.36,
+              "volume_cm3": 0.07,
+              "tumor_voxels": 160
+            },
+            "tumor_12": {
+              "diameter": {
+                "max_diameter_mm": 7.33,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 114,
+                "hull_vertices_count": 44,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 114,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  114
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 48.7,
+              "volume_cm3": 0.05,
+              "tumor_voxels": 114
+            },
+            "tumor_13": {
+              "diameter": {
+                "max_diameter_mm": 5.24,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 26,
+                "hull_vertices_count": 23,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 26,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  26
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 11.11,
+              "volume_cm3": 0.01,
+              "tumor_voxels": 26
+            },
+            "tumor_2": {
+              "diameter": {
+                "max_diameter_mm": 25.67,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 3282,
+                "hull_vertices_count": 94,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 3282,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  3282
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 1402.19,
+              "volume_cm3": 1.4,
+              "tumor_voxels": 3282
+            },
+            "tumor_3": {
+              "diameter": {
+                "max_diameter_mm": 14.75,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 1663,
+                "hull_vertices_count": 104,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 1663,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  1663
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 710.49,
+              "volume_cm3": 0.71,
+              "tumor_voxels": 1663
+            },
+            "tumor_4": {
+              "diameter": {
+                "max_diameter_mm": 13.93,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 751,
+                "hull_vertices_count": 61,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 751,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  751
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 320.85,
+              "volume_cm3": 0.32,
+              "tumor_voxels": 751
+            },
+            "tumor_5": {
+              "diameter": {
+                "max_diameter_mm": 10.42,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 683,
+                "hull_vertices_count": 60,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 683,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  683
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 291.8,
+              "volume_cm3": 0.29,
+              "tumor_voxels": 683
+            },
+            "tumor_6": {
+              "diameter": {
+                "max_diameter_mm": 9.67,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 502,
+                "hull_vertices_count": 71,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 502,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  502
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 214.47,
+              "volume_cm3": 0.21,
+              "tumor_voxels": 502
+            },
+            "tumor_7": {
+              "diameter": {
+                "max_diameter_mm": 9.54,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 340,
+                "hull_vertices_count": 55,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 340,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  340
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 145.26,
+              "volume_cm3": 0.15,
+              "tumor_voxels": 340
+            },
+            "tumor_8": {
+              "diameter": {
+                "max_diameter_mm": 8.53,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 325,
+                "hull_vertices_count": 49,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 325,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  325
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 138.85,
+              "volume_cm3": 0.14,
+              "tumor_voxels": 325
+            },
+            "tumor_9": {
+              "diameter": {
+                "max_diameter_mm": 10.18,
+                "method": "ibsi_surface_mesh",
+                "voxel_count": 314,
+                "hull_vertices_count": 51,
+                "note": "IBSI Maximum 3D Diameter"
+              },
+              "largest_cc": {
+                "total_components": 1,
+                "valid_components": 1,
+                "largest_voxels": 314,
+                "largest_ratio": 1.0,
+                "component_sizes": [
+                  314
+                ]
+              },
+              "vessel_distances": {},
+              "volume_mm3": 134.15,
+              "volume_cm3": 0.13,
+              "tumor_voxels": 314
+            }
+          },
+          "report_text": "============================================================\n  肝脏肿瘤专项分析报告\n============================================================\n\n  肝脏体积: 1578.0 cm³\n\n  📊 汇总\n      肿瘤总数: 13\n      最大直径: 25.7 mm\n      最小直径: 5.2 mm\n\n\n------------------------------------------------------------\n  各肿瘤详情\n------------------------------------------------------------\n\n  ⚕️  tumor_1\n      体积: 1.62 cm³  (3,802 体素)\n      最大直径: 18.23 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_10\n      体积: 0.12 cm³  (291 体素)\n      最大直径: 9.98 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_11\n      体积: 0.07 cm³  (160 体素)\n      最大直径: 9.61 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_12\n      体积: 0.05 cm³  (114 体素)\n      最大直径: 7.33 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_13\n      体积: 0.01 cm³  (26 体素)\n      最大直径: 5.24 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_2\n      体积: 1.40 cm³  (3,282 体素)\n      最大直径: 25.67 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_3\n      体积: 0.71 cm³  (1,663 体素)\n      最大直径: 14.75 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_4\n      体积: 0.32 cm³  (751 体素)\n      最大直径: 13.93 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_5\n      体积: 0.29 cm³  (683 体素)\n      最大直径: 10.42 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_6\n      体积: 0.21 cm³  (502 体素)\n      最大直径: 9.67 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_7\n      体积: 0.15 cm³  (340 体素)\n      最大直径: 9.54 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_8\n      体积: 0.14 cm³  (325 体素)\n      最大直径: 8.53 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n  ⚕️  tumor_9\n      体积: 0.13 cm³  (314 体素)\n      最大直径: 10.18 mm (ibsi_surface_mesh)\n      ⚠ IBSI Maximum 3D Diameter\n      连通域: 单一连通域\n\n============================================================\n  报告结束\n============================================================"
+        },
+        "execution_time_ms": 40887.3,
+        "cache_hit": false,
+        "started_at": "2026-09-13T23:53:02",
+        "finished_at": "2026-09-13T23:53:43"
+      }
+    ],
+    "seconds": 103.828
+  }
+]

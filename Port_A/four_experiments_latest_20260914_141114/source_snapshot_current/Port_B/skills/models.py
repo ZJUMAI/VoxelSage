@@ -1,0 +1,328 @@
+"""
+Skill 数据模型
+===============
+定义 SkillManifest（元数据）和 SkillContext（运行时上下文）。
+内置 Skills 和用户上传 Skills 共用同一套接口。
+"""
+
+from __future__ import annotations
+
+import os
+import logging
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Tuple
+
+import nibabel as nib
+import numpy as np
+
+from Tool_Box.mask_resolution import scan_logical_masks
+
+logger = logging.getLogger(__name__)
+
+
+# ============================================================
+# SkillManifest — 从 skill.yaml 解析的元数据
+# ============================================================
+
+@dataclass
+class SkillManifest:
+    """单个 Skill 的元数据描述。
+
+    与 skill.yaml 文件内容一一对应，供 LLM 构建 function calling schema 使用。
+    """
+    name: str
+    version: str
+    description: str
+    inputs: Dict[str, Any] = field(default_factory=dict)
+    outputs: Dict[str, Any] = field(default_factory=dict)
+    triggers: List[str] = field(default_factory=list)
+    type: str = "builtin"  # "builtin" | "user"
+
+    def _outputs_summary(self) -> str:
+        """从 outputs schema 生成一段描述返回值主要结构的文本。
+
+        追加到 tool description 末尾，让 LLM 提前知道调用结果的结构。
+        递归展开嵌套 object / additionalProperties / array items 的子字段。
+        """
+        if not self.outputs:
+            return ""
+        props = self.outputs.get("properties", {})
+        if not props:
+            return ""
+        lines = ["返回:"]
+        for name, schema in props.items():
+            lines.append(self._describe_schema(name, schema, indent=2))
+        return "\n".join(lines)
+
+    def _describe_schema(self, name: str, schema: Dict[str, Any], indent: int) -> str:
+        """递归渲染单个 schema 节点为一行（可能多行）文本。
+
+        - object → 展开 properties；无 properties 时展开 additionalProperties（键名任意）
+        - array → 展开 items 的 properties
+        返回文本可包含多行，子节点用缩进体现层级。
+        """
+        ptype = schema.get("type", "any")
+        desc = schema.get("description", "")
+        line = f"{' ' * indent}{name} ({ptype})"
+        if desc:
+            line += f": {desc}"
+        lines = [line]
+        child_indent = indent + 2
+
+        if ptype == "array":
+            items = schema.get("items", {})
+            items_desc = items.get("description", "")
+            if items_desc:
+                lines[0] += f" — {items_desc}"
+            items_props = items.get("properties", {})
+            if items_props:
+                lines[0] += f" 每项包含: {', '.join(sorted(items_props.keys()))}"
+                for cname, cschema in items_props.items():
+                    lines.append(self._describe_schema(cname, cschema, child_indent))
+            else:
+                lines.append(self._describe_additional_props(items, child_indent))
+        elif ptype == "object":
+            props = schema.get("properties", {})
+            if props:
+                for cname, cschema in props.items():
+                    lines.append(self._describe_schema(cname, cschema, child_indent))
+            else:
+                lines.append(self._describe_additional_props(schema, child_indent))
+
+        return "\n".join(lines)
+
+    def _describe_additional_props(self, schema: Dict[str, Any], indent: int) -> str:
+        """渲染 dict-like 结构（additionalProperties）的子节点。
+
+        键名任意，用其 description 作为占位名（避免与 description 重复）。
+        无 additionalProperties 时返回空字符串。
+        """
+        ap = schema.get("additionalProperties", {})
+        if not ap.get("type"):
+            return ""
+        ap_name = ap.get("description") or "item"
+        child = dict(ap)
+        child.pop("description", None)
+        return self._describe_schema(ap_name, child, indent)
+
+    def to_function_calling_schema(self) -> Dict[str, Any]:
+        """转换为 OpenAI-compatible function calling tool schema。
+
+        供 Port A 的 LLM 识别和调用此 Skill。
+        description 末尾自动追加返回值结构概要，让 LLM 提前知道返回内容。
+        """
+        # 透传给 function calling schema 的参数键（白名单）。
+        # default/enum/items 让 LLM 提前知道可选参数的默认值、取值集合和数组元素类型，
+        # 避免 LLM 传错类型或把带空格的默认值（如 "hepatic tumor"）改写成别的拼写。
+        _ALLOWED_PARAM_KEYS = ("type", "description", "default", "enum", "items")
+
+        parameters = {"type": "object", "properties": {}, "required": []}
+        for param_name, param_schema in self.inputs.items():
+            source = param_schema.get("source", "")
+            # source=context 的参数由框架自动注入，不需要 LLM 传
+            if source == "context":
+                continue
+            prop = {
+                "type": param_schema.get("type", "string"),
+                "description": param_schema.get("description", ""),
+            }
+            for key in _ALLOWED_PARAM_KEYS[2:]:
+                if key in param_schema:
+                    prop[key] = param_schema[key]
+            parameters["properties"][param_name] = prop
+            if param_schema.get("required", False):
+                parameters["required"].append(param_name)
+
+        # 在 description 末尾追加返回值结构（LLM 能直接看到）
+        suffix = self._outputs_summary()
+        enriched_description = self.description
+        if suffix:
+            enriched_description = enriched_description.rstrip("。\n") + "。\n" + suffix
+
+        return {
+            "type": "function",
+            "function": {
+                "name": self.name,
+                "description": enriched_description,
+                "parameters": parameters,
+            },
+        }
+
+    def to_list_entry(self) -> Dict[str, Any]:
+        """GET /api/skills/list 返回的单条记录。
+
+        除了元数据和输入参数 schema 外，额外返回 returns 字段，
+        包含完整的输出 JSON Schema，供 API 消费者（Port A / 前端）查阅。
+        """
+        return {
+            "name": self.name,
+            "version": self.version,
+            "description": self.description,
+            "type": self.type,
+            "triggers": self.triggers,
+            "parameters": self.to_function_calling_schema(),
+            "returns": self.outputs if self.outputs else None,
+        }
+
+
+# ============================================================
+# SkillContext — 运行时数据访问接口
+# ============================================================
+
+class SkillContext:
+    """Skill 执行时的数据上下文。
+
+    提供统一的 API 让 Skill 访问当前病例的 CT 数据、掩码文件和分析结果。
+    内置 Skills 和用户上传的 Skills 使用同一套接口。
+    """
+
+    def __init__(
+        self,
+        case_id: str,
+        ct_nifti_path: str,
+        mask_dir: str,
+        output_dir: str,
+        params: Optional[Dict[str, Any]] = None,
+    ):
+        self.case_id = case_id
+        self.ct_nifti_path = ct_nifti_path
+        self.mask_dir = mask_dir
+        self.output_dir = output_dir
+        self.params = params or {}
+
+        # 缓存（惰性加载，多次调用只加载一次）
+        self._ct_nii: Optional[nib.Nifti1Image] = None
+        self._ct_array: Optional[np.ndarray] = None
+        self._affine: Optional[np.ndarray] = None
+        self._spacing: Optional[Tuple[float, float, float]] = None
+        self._mask_paths: Optional[Dict[str, str]] = None
+        self._mask_cache: Dict[str, np.ndarray] = {}
+
+    # ── 影像数据 ──
+
+    def get_ct_array(self) -> np.ndarray:
+        """返回 CT 体素数组 (H, W, D)。"""
+        if self._ct_array is None:
+            self._load_ct()
+        return self._ct_array
+
+    def get_affine(self) -> np.ndarray:
+        """返回 NIfTI affine 矩阵 (4, 4)。"""
+        if self._affine is None:
+            self._load_ct()
+        return self._affine
+
+    def get_voxel_spacing(self) -> Tuple[float, float, float]:
+        """返回体素间距 (sx, sy, sz) mm。"""
+        if self._spacing is None:
+            if self._affine is None:
+                self._load_ct()
+            spacing = nib.affines.voxel_sizes(self._affine)
+            self._spacing = (float(spacing[0]), float(spacing[1]), float(spacing[2]))
+        return self._spacing
+
+    def _load_ct(self):
+        """惰性加载 CT NIfTI。"""
+        self._ct_nii = nib.load(self.ct_nifti_path)
+        self._ct_array = self._ct_nii.get_fdata()
+        self._affine = self._ct_nii.affine
+
+    # ── 掩码数据 ──
+
+    def list_masks(self) -> List[str]:
+        """返回掩码名称列表，如 ['liver', 'hepatic', 'tumor_1', ...]。"""
+        self._scan_mask_dir()
+        return list(self._mask_paths.keys())
+
+    def get_mask_path(self, name: str) -> str:
+        """返回指定掩码的文件路径。"""
+        self._scan_mask_dir()
+        path = self._mask_paths.get(name)
+        if path is None:
+            raise FileNotFoundError(
+                f"Mask '{name}' not found in {self.mask_dir}. "
+                f"Available: {list(self._mask_paths.keys())}"
+            )
+        return path
+
+    def get_mask(self, name: str) -> np.ndarray:
+        """返回指定掩码的 NumPy 二值矩阵。"""
+        if name in self._mask_cache:
+            return self._mask_cache[name]
+        path = self.get_mask_path(name)
+        nii = nib.load(path)
+        mask = nii.get_fdata() > 0
+        self._mask_cache[name] = mask
+        return mask
+
+    def _scan_mask_dir(self):
+        """扫描 mask_dir 建立名称→路径映射。
+
+        排除 VISTA3D 生成的多标签汇总文件（all.nii.gz / mask.nii.gz），
+        它们不是独立可编辑/可分析的二值掩码。
+        """
+        if self._mask_paths is not None:
+            return
+        self._mask_paths = {
+            name: resolved.path
+            for name, resolved in scan_logical_masks(self.mask_dir).items()
+        }
+
+    # ── 输出 ──
+
+    def get_output_dir(self) -> str:
+        """返回输出目录路径。"""
+        return self.output_dir
+
+    # ── 写入（特批 — segmentation_modification skill 专用） ──
+
+    def save_mask(self, name: str, mask_array: np.ndarray,
+                  dtype: type = np.float32) -> str:
+        """将掩码数组保存为 NIfTI 到 mask_dir。
+
+        **注意**：此方法会写文件。目前仅 segmentation_modification skill 使用，
+        其他 skill 应保持 read-only。
+
+        Args:
+            name: 掩码名称（如 'liver', 'tumor_1'）
+            mask_array: 二值掩码数组 (H, W, D) 或 (H, W)
+            dtype: NIfTI 数据类型（默认 np.float32）
+
+        Returns:
+            str: 保存的 .nii.gz 文件路径
+        """
+        import os
+        import shutil
+        import nibabel as nib
+
+        mask_path = os.path.join(self.mask_dir, f"{name}.nii.gz")
+
+        # 备份已有文件
+        if os.path.exists(mask_path):
+            backup_path = mask_path + ".bak"
+            shutil.copy2(mask_path, backup_path)
+            self.log(f"Backed up existing mask to {backup_path}")
+
+        # 确保二进制
+        mask_binary = (mask_array > 0).astype(dtype)
+
+        # 使用 CT 的 affine
+        affine = self.get_affine()
+
+        nii = nib.Nifti1Image(mask_binary, affine)
+        nib.save(nii, mask_path)
+
+        # 清空缓存，下次 get_mask 重新加载
+        if name in self._mask_cache:
+            del self._mask_cache[name]
+        if self._mask_paths is not None:
+            self._mask_paths[name] = mask_path
+
+        self.log(f"Mask '{name}' saved to {mask_path}")
+        return mask_path
+
+    # ── 工具 ──
+
+    def log(self, msg: str):
+        """记录日志（集成到 API.py 的日志系统）。"""
+        logger.info(f"[Skill:{self.case_id}] {msg}")

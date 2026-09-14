@@ -1,0 +1,16 @@
+{
+  "model": "qwen3.8-flash",
+  "port_b": "http://127.0.0.1:8875",
+  "port_b_execution": "real HTTP API, real SkillEngine computation, no monkey patch",
+  "max_rounds": 4,
+  "max_new_tokens": 700,
+  "timeout": 180,
+  "concurrency": 2,
+  "scope": "same-grid reference-mask measurements; CT-mask geometry validated before inclusion",
+  "group_5": "withdrawn",
+  "stage": "formal first batch",
+  "code_hashes": {
+    "run_live_portb_smoke.py": "1f9b2c95594e05f896b6770ac263f239b7751bc70ca87078be813cdb3a0d592c",
+    "server.py": "b4239606f0b5773e67907006889494ce253be256319f6c2b0028bbeab8efe454"
+  }
+}
