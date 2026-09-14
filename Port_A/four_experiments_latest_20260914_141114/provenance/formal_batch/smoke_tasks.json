@@ -1,0 +1,1783 @@
+[
+  {
+    "id": "bench_00015",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "query": "Report the number of liver lesion:",
+    "expected": 6.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001297",
+    "official_answer": "6"
+  },
+  {
+    "id": "bench_00062",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "query": "How many liver lesion are observed?",
+    "expected": 59.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001064",
+    "official_answer": "59"
+  },
+  {
+    "id": "bench_00210",
+    "cases": [
+      "LIVE_BDMAP_00000672"
+    ],
+    "query": "Indicate the size of the liver in cubic centimeters:",
+    "expected": 1383.7,
+    "unit": "cm3",
+    "tolerance": 27.674000000000003,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000672",
+    "official_answer": "1383.7"
+  },
+  {
+    "id": "bench_00298",
+    "cases": [
+      "LIVE_BDMAP_00001249"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001249",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_00301",
+    "cases": [
+      "LIVE_BDMAP_00001215"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001215",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_00421",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_00449",
+    "cases": [
+      "LIVE_BDMAP_00000420"
+    ],
+    "query": "What is the measured volume of the liver?",
+    "expected": 1726.4,
+    "unit": "cm3",
+    "tolerance": 34.528000000000006,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000420",
+    "official_answer": "1726.4"
+  },
+  {
+    "id": "bench_00475",
+    "cases": [
+      "LIVE_BDMAP_00000951"
+    ],
+    "query": "Identify the largest diameter (cm) for the liver lesion:",
+    "expected": 2.0,
+    "unit": "cm",
+    "tolerance": 0.1,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00000951",
+    "official_answer": "2.0"
+  },
+  {
+    "id": "bench_00565",
+    "cases": [
+      "LIVE_BDMAP_00000951"
+    ],
+    "query": "State the total volume of lesion within the liver:",
+    "expected": 2.3,
+    "unit": "cm3",
+    "tolerance": 0.11499999999999999,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000951",
+    "official_answer": "2.3"
+  },
+  {
+    "id": "bench_00584",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001149",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_00673",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "Provide the count of liver lesion:",
+    "expected": 12.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "12"
+  },
+  {
+    "id": "bench_00745",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "query": "Express the liver lesion volume (cm³):",
+    "expected": 5.2,
+    "unit": "cm3",
+    "tolerance": 0.26,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00001185",
+    "official_answer": "5.2"
+  },
+  {
+    "id": "bench_00918",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "query": "Does the liver have any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000413",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_00921",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "query": "Would the liver be described as having lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001297",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_00956",
+    "cases": [
+      "LIVE_BDMAP_00000560"
+    ],
+    "query": "Would the liver be described as having lesions?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000560",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_01233",
+    "cases": [
+      "LIVE_BDMAP_00000877"
+    ],
+    "query": "Is there evidence of lesions in the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000877",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_01303",
+    "cases": [
+      "LIVE_BDMAP_00001215"
+    ],
+    "query": "Provide the liver volume (cm³):",
+    "expected": 1650.7,
+    "unit": "cm3",
+    "tolerance": 33.014,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00001215",
+    "official_answer": "1650.7"
+  },
+  {
+    "id": "bench_01308",
+    "cases": [
+      "LIVE_BDMAP_00001123"
+    ],
+    "query": "How many cubic centimeters is the liver?",
+    "expected": 1216.3,
+    "unit": "cm3",
+    "tolerance": 24.326,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00001123",
+    "official_answer": "1216.3"
+  },
+  {
+    "id": "bench_01388",
+    "cases": [
+      "LIVE_BDMAP_00001343"
+    ],
+    "query": "Does the liver have any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001343",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_01530",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "query": "Provide the measured volume of lesion in the liver:",
+    "expected": 39.4,
+    "unit": "cm3",
+    "tolerance": 1.97,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00001149",
+    "official_answer": "39.4"
+  },
+  {
+    "id": "bench_01536",
+    "cases": [
+      "LIVE_BDMAP_00000134"
+    ],
+    "query": "Does the liver have any lesions?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000134",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_01547",
+    "cases": [
+      "LIVE_BDMAP_00000420"
+    ],
+    "query": "Indicate how many liver lesion exist:",
+    "expected": 6.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000420",
+    "official_answer": "6"
+  },
+  {
+    "id": "bench_01571",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "What is the overall volume of lesion in the liver?",
+    "expected": 264.7,
+    "unit": "cm3",
+    "tolerance": 13.235,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "264.7"
+  },
+  {
+    "id": "bench_01624",
+    "cases": [
+      "LIVE_BDMAP_00000346"
+    ],
+    "query": "State the liver volume in cm³:",
+    "expected": 1050.6,
+    "unit": "cm3",
+    "tolerance": 21.011999999999997,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000346",
+    "official_answer": "1050.6"
+  },
+  {
+    "id": "bench_01634",
+    "cases": [
+      "LIVE_BDMAP_00000985"
+    ],
+    "query": "Does the data show lesions inside the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000985",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_01698",
+    "cases": [
+      "LIVE_BDMAP_00001168"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001168",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_01704",
+    "cases": [
+      "LIVE_BDMAP_00000855"
+    ],
+    "query": "Report the measured volume of the liver:",
+    "expected": 1431.9,
+    "unit": "cm3",
+    "tolerance": 28.638,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000855",
+    "official_answer": "1431.9"
+  },
+  {
+    "id": "bench_02119",
+    "cases": [
+      "LIVE_BDMAP_00000405"
+    ],
+    "query": "State the liver volume in cm³:",
+    "expected": 1869.6,
+    "unit": "cm3",
+    "tolerance": 37.391999999999996,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000405",
+    "official_answer": "1869.6"
+  },
+  {
+    "id": "bench_02149",
+    "cases": [
+      "LIVE_BDMAP_00000660"
+    ],
+    "query": "Estimate the approximate volume of the liver:",
+    "expected": 3460.1,
+    "unit": "cm3",
+    "tolerance": 69.202,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000660",
+    "official_answer": "3460.1"
+  },
+  {
+    "id": "bench_02314",
+    "cases": [
+      "LIVE_BDMAP_00001022"
+    ],
+    "query": "How many liver lesion are observed?",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001022",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_02318",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "query": "How many cubic centimeters of lesion are found in the liver?",
+    "expected": 1634.5,
+    "unit": "cm3",
+    "tolerance": 81.72500000000001,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000513",
+    "official_answer": "1634.5"
+  },
+  {
+    "id": "bench_02339",
+    "cases": [
+      "LIVE_BDMAP_00000420"
+    ],
+    "query": "Give the total amount of lesion within the liver:",
+    "expected": 124.4,
+    "unit": "cm3",
+    "tolerance": 6.220000000000001,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000420",
+    "official_answer": "124.4"
+  },
+  {
+    "id": "bench_02550",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001297",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_02564",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "Does the liver have any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_02650",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "query": "Give the total lesion count for the liver:",
+    "expected": 5.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000396",
+    "official_answer": "5"
+  },
+  {
+    "id": "bench_02707",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "query": "Is there evidence of lesions in the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001149",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_02734",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "query": "State the total volume of lesion within the liver:",
+    "expected": 345.6,
+    "unit": "cm3",
+    "tolerance": 17.28,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000607",
+    "official_answer": "345.6"
+  },
+  {
+    "id": "bench_02913",
+    "cases": [
+      "LIVE_BDMAP_00000981"
+    ],
+    "query": "State the liver volume in cm³:",
+    "expected": 952.4,
+    "unit": "cm3",
+    "tolerance": 19.048,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000981",
+    "official_answer": "952.4"
+  },
+  {
+    "id": "bench_02940",
+    "cases": [
+      "LIVE_BDMAP_00000065"
+    ],
+    "query": "Do we have evidence of any lesions within the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000065",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_03136",
+    "cases": [
+      "LIVE_BDMAP_00000985"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000985",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_03161",
+    "cases": [
+      "LIVE_BDMAP_00000700"
+    ],
+    "query": "Would the liver be described as having lesions?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000700",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_03226",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "query": "Indicate the liver lesion volume (cm³):",
+    "expected": 1634.5,
+    "unit": "cm3",
+    "tolerance": 81.72500000000001,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000513",
+    "official_answer": "1634.5"
+  },
+  {
+    "id": "bench_03396",
+    "cases": [
+      "LIVE_BDMAP_00000127"
+    ],
+    "query": "What is the measured volume of the liver?",
+    "expected": 2195.0,
+    "unit": "cm3",
+    "tolerance": 43.9,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000127",
+    "official_answer": "2195.0"
+  },
+  {
+    "id": "bench_03427",
+    "cases": [
+      "LIVE_BDMAP_00000925"
+    ],
+    "query": "How large is the liver, expressed as a volume?",
+    "expected": 1176.1,
+    "unit": "cm3",
+    "tolerance": 23.522,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000925",
+    "official_answer": "1176.1"
+  },
+  {
+    "id": "bench_03465",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001064",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_03610",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "query": "Indicate how many liver lesion exist:",
+    "expected": 62.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000524",
+    "official_answer": "62"
+  },
+  {
+    "id": "bench_03628",
+    "cases": [
+      "LIVE_BDMAP_00000065"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000065",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_03654",
+    "cases": [
+      "LIVE_BDMAP_00000794"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000794",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_03728",
+    "cases": [
+      "LIVE_BDMAP_00000010"
+    ],
+    "query": "State the liver volume in cm³:",
+    "expected": 1400.1,
+    "unit": "cm3",
+    "tolerance": 28.002,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000010",
+    "official_answer": "1400.1"
+  },
+  {
+    "id": "bench_03817",
+    "cases": [
+      "LIVE_BDMAP_00000225"
+    ],
+    "query": "How many liver lesion instances are there?",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000225",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_03908",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000513",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_03915",
+    "cases": [
+      "LIVE_BDMAP_00001249"
+    ],
+    "query": "Give the total lesion count for the liver:",
+    "expected": 3.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001249",
+    "official_answer": "3"
+  },
+  {
+    "id": "bench_04064",
+    "cases": [
+      "LIVE_BDMAP_00000190"
+    ],
+    "query": "Indicate how many liver lesion exist:",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000190",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_04200",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "Give the total amount of lesion within the liver:",
+    "expected": 264.7,
+    "unit": "cm3",
+    "tolerance": 13.235,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "264.7"
+  },
+  {
+    "id": "bench_04418",
+    "cases": [
+      "LIVE_BDMAP_00000826"
+    ],
+    "query": "Do we have evidence of any lesions within the liver?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000826",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_04597",
+    "cases": [
+      "LIVE_BDMAP_00001496"
+    ],
+    "query": "Does the liver have any lesions?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001496",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_04635",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "query": "Indicate the liver lesion volume (cm³):",
+    "expected": 345.6,
+    "unit": "cm3",
+    "tolerance": 17.28,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000607",
+    "official_answer": "345.6"
+  },
+  {
+    "id": "bench_04650",
+    "cases": [
+      "LIVE_BDMAP_00000581"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000581",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_04764",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "query": "How many cubic centimeters of lesion are found in the liver?",
+    "expected": 345.6,
+    "unit": "cm3",
+    "tolerance": 17.28,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000607",
+    "official_answer": "345.6"
+  },
+  {
+    "id": "bench_04767",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "How many instances of lesion appear in the liver?",
+    "expected": 12.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "12"
+  },
+  {
+    "id": "bench_04826",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "query": "State the total liver lesion volume:",
+    "expected": 12.8,
+    "unit": "cm3",
+    "tolerance": 0.6400000000000001,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000396",
+    "official_answer": "12.8"
+  },
+  {
+    "id": "bench_05003",
+    "cases": [
+      "LIVE_BDMAP_00001529"
+    ],
+    "query": "Report the number of liver lesion:",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001529",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_05079",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "query": "Report the total liver lesion volume in cm³:",
+    "expected": 349.0,
+    "unit": "cm3",
+    "tolerance": 17.45,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000413",
+    "official_answer": "349.0"
+  },
+  {
+    "id": "bench_05151",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "query": "How many instances of lesion appear in the liver?",
+    "expected": 62.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000524",
+    "official_answer": "62"
+  },
+  {
+    "id": "bench_05211",
+    "cases": [
+      "LIVE_BDMAP_00000346"
+    ],
+    "query": "How many instances of lesion appear in the liver?",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000346",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_05278",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "query": "Which number represents the biggest liver lesion diameter?",
+    "expected": 1.0,
+    "unit": "cm",
+    "tolerance": 0.1,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00001297",
+    "official_answer": "1.0"
+  },
+  {
+    "id": "bench_05287",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "State the total volume of lesion within the liver:",
+    "expected": 264.7,
+    "unit": "cm3",
+    "tolerance": 13.235,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "264.7"
+  },
+  {
+    "id": "bench_05348",
+    "cases": [
+      "LIVE_BDMAP_00000198"
+    ],
+    "query": "Provide the liver volume (cm³):",
+    "expected": 1690.8,
+    "unit": "cm3",
+    "tolerance": 33.816,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000198",
+    "official_answer": "1690.8"
+  },
+  {
+    "id": "bench_05353",
+    "cases": [
+      "LIVE_BDMAP_00001543"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001543",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_05373",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "query": "Provide the liver volume (cm³):",
+    "expected": 2061.4,
+    "unit": "cm3",
+    "tolerance": 41.228,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000524",
+    "official_answer": "2061.4"
+  },
+  {
+    "id": "bench_05378",
+    "cases": [
+      "LIVE_BDMAP_00001061"
+    ],
+    "query": "Provide the liver volume (cm³):",
+    "expected": 1407.9,
+    "unit": "cm3",
+    "tolerance": 28.158,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00001061",
+    "official_answer": "1407.9"
+  },
+  {
+    "id": "bench_05651",
+    "cases": [
+      "LIVE_BDMAP_00000815"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000815",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_05660",
+    "cases": [
+      "LIVE_BDMAP_00000607"
+    ],
+    "query": "What's the measured diameter of the largest liver lesion?",
+    "expected": 10.2,
+    "unit": "cm",
+    "tolerance": 0.51,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00000607",
+    "official_answer": "10.2"
+  },
+  {
+    "id": "bench_05677",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "query": "Provide the measured volume of lesion in the liver:",
+    "expected": 349.0,
+    "unit": "cm3",
+    "tolerance": 17.45,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000413",
+    "official_answer": "349.0"
+  },
+  {
+    "id": "bench_05776",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "query": "Give the total lesion count for the liver:",
+    "expected": 13.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001185",
+    "official_answer": "13"
+  },
+  {
+    "id": "bench_05853",
+    "cases": [
+      "LIVE_BDMAP_00001168"
+    ],
+    "query": "Do we have evidence of any lesions within the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001168",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_05893",
+    "cases": [
+      "LIVE_BDMAP_00000929"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000929",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_05928",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "query": "State the count of liver lesion:",
+    "expected": 5.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000396",
+    "official_answer": "5"
+  },
+  {
+    "id": "bench_06002",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "query": "Report the number of liver lesion:",
+    "expected": 59.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001064",
+    "official_answer": "59"
+  },
+  {
+    "id": "bench_06023",
+    "cases": [
+      "LIVE_BDMAP_00000672"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000672",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_06056",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "query": "Provide the count of liver lesion:",
+    "expected": 59.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001064",
+    "official_answer": "59"
+  },
+  {
+    "id": "bench_06120",
+    "cases": [
+      "LIVE_BDMAP_00000776"
+    ],
+    "query": "What is the volume of the liver?",
+    "expected": 1249.2,
+    "unit": "cm3",
+    "tolerance": 24.984,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000776",
+    "official_answer": "1249.2"
+  },
+  {
+    "id": "bench_06125",
+    "cases": [
+      "LIVE_BDMAP_00000847"
+    ],
+    "query": "State the count of liver lesion:",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000847",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_06220",
+    "cases": [
+      "LIVE_BDMAP_00000664"
+    ],
+    "query": "How large is the liver, expressed as a volume?",
+    "expected": 1457.3,
+    "unit": "cm3",
+    "tolerance": 29.146,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000664",
+    "official_answer": "1457.3"
+  },
+  {
+    "id": "bench_06331",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "query": "Provide the measured volume of lesion in the liver:",
+    "expected": 0.8,
+    "unit": "cm3",
+    "tolerance": 0.1,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00001029",
+    "official_answer": "0.8"
+  },
+  {
+    "id": "bench_06343",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001029",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_06358",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "query": "How large is the liver, expressed as a volume?",
+    "expected": 1381.7,
+    "unit": "cm3",
+    "tolerance": 27.634,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00001029",
+    "official_answer": "1381.7"
+  },
+  {
+    "id": "bench_06383",
+    "cases": [
+      "LIVE_BDMAP_00000668"
+    ],
+    "query": "Is there evidence of lesions in the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000668",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_06424",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "query": "Provide the measured volume of lesion in the liver:",
+    "expected": 1634.5,
+    "unit": "cm3",
+    "tolerance": 81.72500000000001,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000513",
+    "official_answer": "1634.5"
+  },
+  {
+    "id": "bench_06426",
+    "cases": [
+      "LIVE_BDMAP_00001070"
+    ],
+    "query": "What is the overall volume of lesion in the liver?",
+    "expected": 15.9,
+    "unit": "cm3",
+    "tolerance": 0.795,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00001070",
+    "official_answer": "15.9"
+  },
+  {
+    "id": "bench_06441",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "query": "State the count of liver lesion:",
+    "expected": 13.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001185",
+    "official_answer": "13"
+  },
+  {
+    "id": "bench_06453",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "query": "Evaluate the correct diameter for the largest liver lesion:",
+    "expected": 11.7,
+    "unit": "cm",
+    "tolerance": 0.585,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00000413",
+    "official_answer": "11.7"
+  },
+  {
+    "id": "bench_06519",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "query": "Indicate the liver lesion volume (cm³):",
+    "expected": 349.0,
+    "unit": "cm3",
+    "tolerance": 17.45,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000413",
+    "official_answer": "349.0"
+  },
+  {
+    "id": "bench_06632",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "query": "Give the total amount of lesion within the liver:",
+    "expected": 349.0,
+    "unit": "cm3",
+    "tolerance": 17.45,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000413",
+    "official_answer": "349.0"
+  },
+  {
+    "id": "bench_06797",
+    "cases": [
+      "LIVE_BDMAP_00000413"
+    ],
+    "query": "Express the liver lesion volume (cm³):",
+    "expected": 349.0,
+    "unit": "cm3",
+    "tolerance": 17.45,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000413",
+    "official_answer": "349.0"
+  },
+  {
+    "id": "bench_06914",
+    "cases": [
+      "LIVE_BDMAP_00000575"
+    ],
+    "query": "How many cubic centimeters is the liver?",
+    "expected": 2481.5,
+    "unit": "cm3",
+    "tolerance": 49.63,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000575",
+    "official_answer": "2481.5"
+  },
+  {
+    "id": "bench_06919",
+    "cases": [
+      "LIVE_BDMAP_00001354"
+    ],
+    "query": "Indicate the size of the liver in cubic centimeters:",
+    "expected": 1601.4,
+    "unit": "cm3",
+    "tolerance": 32.028000000000006,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00001354",
+    "official_answer": "1601.4"
+  },
+  {
+    "id": "bench_06922",
+    "cases": [
+      "LIVE_BDMAP_00001029"
+    ],
+    "query": "Would the liver be described as having lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001029",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_07043",
+    "cases": [
+      "LIVE_BDMAP_00000303"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000303",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_07059",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "query": "Indicate the size of the liver in cubic centimeters:",
+    "expected": 1681.4,
+    "unit": "cm3",
+    "tolerance": 33.628,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000396",
+    "official_answer": "1681.4"
+  },
+  {
+    "id": "bench_07098",
+    "cases": [
+      "LIVE_BDMAP_00000847"
+    ],
+    "query": "Estimate the approximate volume of the liver:",
+    "expected": 1271.9,
+    "unit": "cm3",
+    "tolerance": 25.438000000000002,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00000847",
+    "official_answer": "1271.9"
+  },
+  {
+    "id": "bench_07301",
+    "cases": [
+      "LIVE_BDMAP_00000815"
+    ],
+    "query": "How many liver lesion instances are there?",
+    "expected": 8.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000815",
+    "official_answer": "8"
+  },
+  {
+    "id": "bench_07384",
+    "cases": [
+      "LIVE_BDMAP_00000985"
+    ],
+    "query": "Would the liver be described as having lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000985",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_07517",
+    "cases": [
+      "LIVE_BDMAP_00000877"
+    ],
+    "query": "How big (in cm) is the largest liver lesion?",
+    "expected": 5.1,
+    "unit": "cm",
+    "tolerance": 0.255,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00000877",
+    "official_answer": "5.1"
+  },
+  {
+    "id": "bench_07595",
+    "cases": [
+      "LIVE_BDMAP_00001185"
+    ],
+    "query": "Indicate how many liver lesion exist:",
+    "expected": 13.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001185",
+    "official_answer": "13"
+  },
+  {
+    "id": "bench_07667",
+    "cases": [
+      "LIVE_BDMAP_00000127"
+    ],
+    "query": "Give the total lesion count for the liver:",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000127",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_07727",
+    "cases": [
+      "LIVE_BDMAP_00001123"
+    ],
+    "query": "Does the data show lesions inside the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001123",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_07740",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "query": "What is the total number of liver lesion present?",
+    "expected": 5.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000396",
+    "official_answer": "5"
+  },
+  {
+    "id": "bench_07912",
+    "cases": [
+      "LIVE_BDMAP_00001064"
+    ],
+    "query": "How many liver lesion instances are there?",
+    "expected": 59.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001064",
+    "official_answer": "59"
+  },
+  {
+    "id": "bench_07929",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "What is the total number of liver lesion present?",
+    "expected": 12.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "12"
+  },
+  {
+    "id": "bench_07969",
+    "cases": [
+      "LIVE_BDMAP_00000513"
+    ],
+    "query": "Do we have evidence of any lesions within the liver?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000513",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_07992",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "How many cubic centimeters of lesion are found in the liver?",
+    "expected": 264.7,
+    "unit": "cm3",
+    "tolerance": 13.235,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "264.7"
+  },
+  {
+    "id": "bench_08026",
+    "cases": [
+      "LIVE_BDMAP_00000538"
+    ],
+    "query": "State the count of liver lesion:",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000538",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_08190",
+    "cases": [
+      "LIVE_BDMAP_00000065"
+    ],
+    "query": "State the total volume of lesion within the liver:",
+    "expected": 0.7,
+    "unit": "cm3",
+    "tolerance": 0.1,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000065",
+    "official_answer": "0.7"
+  },
+  {
+    "id": "bench_08255",
+    "cases": [
+      "LIVE_BDMAP_00001485"
+    ],
+    "query": "Indicate the size of the liver in cubic centimeters:",
+    "expected": 1153.8,
+    "unit": "cm3",
+    "tolerance": 23.076,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00001485",
+    "official_answer": "1153.8"
+  },
+  {
+    "id": "bench_08504",
+    "cases": [
+      "LIVE_BDMAP_00001123"
+    ],
+    "query": "Report the total liver lesion volume in cm³:",
+    "expected": 0.5,
+    "unit": "cm3",
+    "tolerance": 0.1,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00001123",
+    "official_answer": "0.5"
+  },
+  {
+    "id": "bench_08603",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "query": "Which number represents the biggest liver lesion diameter?",
+    "expected": 5.5,
+    "unit": "cm",
+    "tolerance": 0.275,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00000524",
+    "official_answer": "5.5"
+  },
+  {
+    "id": "bench_08637",
+    "cases": [
+      "LIVE_BDMAP_00001582"
+    ],
+    "query": "What is the measured volume of the liver?",
+    "expected": 1201.0,
+    "unit": "cm3",
+    "tolerance": 24.02,
+    "subtype": "organ volume measurement",
+    "source_case": "BDMAP_00001582",
+    "official_answer": "1201.0"
+  },
+  {
+    "id": "bench_08661",
+    "cases": [
+      "LIVE_BDMAP_00000879"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000879",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_08679",
+    "cases": [
+      "LIVE_BDMAP_00000815"
+    ],
+    "query": "Which number represents the biggest liver lesion diameter?",
+    "expected": 1.7,
+    "unit": "cm",
+    "tolerance": 0.1,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00000815",
+    "official_answer": "1.7"
+  },
+  {
+    "id": "bench_08729",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "Report the total liver lesion volume in cm³:",
+    "expected": 264.7,
+    "unit": "cm3",
+    "tolerance": 13.235,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "264.7"
+  },
+  {
+    "id": "bench_08847",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_08858",
+    "cases": [
+      "LIVE_BDMAP_00000771"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000771",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_08889",
+    "cases": [
+      "LIVE_BDMAP_00001343"
+    ],
+    "query": "State the count of liver lesion:",
+    "expected": 6.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001343",
+    "official_answer": "6"
+  },
+  {
+    "id": "bench_08953",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "query": "Are lesions found in the liver based on the scans?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00001149",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_08961",
+    "cases": [
+      "LIVE_BDMAP_00001149"
+    ],
+    "query": "What's the largest liver lesion diameter (cm)?",
+    "expected": 4.6,
+    "unit": "cm",
+    "tolerance": 0.22999999999999998,
+    "subtype": "largest lesion diameter",
+    "source_case": "BDMAP_00001149",
+    "official_answer": "4.6"
+  },
+  {
+    "id": "bench_09034",
+    "cases": [
+      "LIVE_BDMAP_00001297"
+    ],
+    "query": "How many liver lesion are observed?",
+    "expected": 6.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001297",
+    "official_answer": "6"
+  },
+  {
+    "id": "bench_09068",
+    "cases": [
+      "LIVE_BDMAP_00000524"
+    ],
+    "query": "What is the number of liver lesion instances?",
+    "expected": 62.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000524",
+    "official_answer": "62"
+  },
+  {
+    "id": "bench_09077",
+    "cases": [
+      "LIVE_BDMAP_00001343"
+    ],
+    "query": "State the total liver lesion volume:",
+    "expected": 134.5,
+    "unit": "cm3",
+    "tolerance": 6.7250000000000005,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00001343",
+    "official_answer": "134.5"
+  },
+  {
+    "id": "bench_09143",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "Report the number of liver lesion:",
+    "expected": 12.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "12"
+  },
+  {
+    "id": "bench_09148",
+    "cases": [
+      "LIVE_BDMAP_00001016"
+    ],
+    "query": "State the total volume of lesion within the liver:",
+    "expected": 43.3,
+    "unit": "cm3",
+    "tolerance": 2.165,
+    "subtype": "lesion volume measurement",
+    "source_case": "BDMAP_00001016",
+    "official_answer": "43.3"
+  },
+  {
+    "id": "bench_09300",
+    "cases": [
+      "LIVE_BDMAP_00000951"
+    ],
+    "query": "Is the liver affected by any lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000951",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_09373",
+    "cases": [
+      "LIVE_BDMAP_00000095"
+    ],
+    "query": "Are there any lesions present in the liver?",
+    "expected": false,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000095",
+    "official_answer": "No"
+  },
+  {
+    "id": "bench_09381",
+    "cases": [
+      "LIVE_BDMAP_00000396"
+    ],
+    "query": "Report the number of liver lesion:",
+    "expected": 5.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000396",
+    "official_answer": "5"
+  },
+  {
+    "id": "bench_09503",
+    "cases": [
+      "LIVE_BDMAP_00000503"
+    ],
+    "query": "Would the liver be described as having lesions?",
+    "expected": true,
+    "unit": "bool",
+    "tolerance": 0,
+    "subtype": "liver lesion existence",
+    "source_case": "BDMAP_00000503",
+    "official_answer": "Yes"
+  },
+  {
+    "id": "bench_09738",
+    "cases": [
+      "LIVE_BDMAP_00001572"
+    ],
+    "query": "State the count of liver lesion:",
+    "expected": 0.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00001572",
+    "official_answer": "0"
+  },
+  {
+    "id": "bench_09937",
+    "cases": [
+      "LIVE_BDMAP_00000831"
+    ],
+    "query": "What is the number of liver lesion instances?",
+    "expected": 12.0,
+    "unit": "count",
+    "tolerance": 0,
+    "subtype": "lesion counting",
+    "source_case": "BDMAP_00000831",
+    "official_answer": "12"
+  }
+]

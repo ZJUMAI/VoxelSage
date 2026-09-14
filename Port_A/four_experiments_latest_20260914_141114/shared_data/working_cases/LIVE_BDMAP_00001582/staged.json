@@ -1,0 +1,1 @@
+{"ct_source": "/mnt/e/DeepTumour_agent_eval/live_portb_formal_v1/source_cases/BDMAP_00001582/ct.nii.gz", "mask_source": "/mnt/e/DeepTumour_agent_eval/live_portb_formal_v1/source_cases/BDMAP_00001582", "components": [], "min_voxels": 10, "scope": "same-grid reference-mask measurements"}

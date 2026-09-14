@@ -1,0 +1,152 @@
+[
+  {
+    "case": "LIVE_BDMAP_00000065",
+    "pyradiomics_mm": 13.780481572255784,
+    "port_b_mm": 13.78,
+    "abs_error_mm": 0.0004815722557847124
+  },
+  {
+    "case": "LIVE_BDMAP_00000396",
+    "pyradiomics_mm": 30.444811309064328,
+    "port_b_mm": 30.44,
+    "abs_error_mm": 0.004811309064326252
+  },
+  {
+    "case": "LIVE_BDMAP_00000413",
+    "pyradiomics_mm": 122.12288892750614,
+    "port_b_mm": 122.12,
+    "abs_error_mm": 0.0028889275061345643
+  },
+  {
+    "case": "LIVE_BDMAP_00000420",
+    "pyradiomics_mm": 97.58216808178278,
+    "port_b_mm": 97.58,
+    "abs_error_mm": 0.0021680817827842702
+  },
+  {
+    "case": "LIVE_BDMAP_00000503",
+    "pyradiomics_mm": 11.702332249518683,
+    "port_b_mm": 11.7,
+    "abs_error_mm": 0.0023322495186839376
+  },
+  {
+    "case": "LIVE_BDMAP_00000513",
+    "pyradiomics_mm": 188.8377648177188,
+    "port_b_mm": 188.84,
+    "abs_error_mm": 0.0022351822811970123
+  },
+  {
+    "case": "LIVE_BDMAP_00000524",
+    "pyradiomics_mm": 84.96979556013854,
+    "port_b_mm": 84.97,
+    "abs_error_mm": 0.00020443986146290172
+  },
+  {
+    "case": "LIVE_BDMAP_00000607",
+    "pyradiomics_mm": 106.99756697949393,
+    "port_b_mm": 107.0,
+    "abs_error_mm": 0.0024330205060749677
+  },
+  {
+    "case": "LIVE_BDMAP_00000668",
+    "pyradiomics_mm": 8.551319257001007,
+    "port_b_mm": 8.55,
+    "abs_error_mm": 0.0013192570010058802
+  },
+  {
+    "case": "LIVE_BDMAP_00000815",
+    "pyradiomics_mm": 22.73547108947603,
+    "port_b_mm": 22.74,
+    "abs_error_mm": 0.0045289105239696426
+  },
+  {
+    "case": "LIVE_BDMAP_00000831",
+    "pyradiomics_mm": 112.46072788080994,
+    "port_b_mm": 112.46,
+    "abs_error_mm": 0.0007278808099471235
+  },
+  {
+    "case": "LIVE_BDMAP_00000877",
+    "pyradiomics_mm": 57.88284918163231,
+    "port_b_mm": 57.88,
+    "abs_error_mm": 0.002849181632306852
+  },
+  {
+    "case": "LIVE_BDMAP_00000951",
+    "pyradiomics_mm": 25.343157553186323,
+    "port_b_mm": 25.34,
+    "abs_error_mm": 0.0031575531863232698
+  },
+  {
+    "case": "LIVE_BDMAP_00000985",
+    "pyradiomics_mm": 13.234569417523048,
+    "port_b_mm": 13.23,
+    "abs_error_mm": 0.004569417523047292
+  },
+  {
+    "case": "LIVE_BDMAP_00001016",
+    "pyradiomics_mm": 91.06480028837981,
+    "port_b_mm": 91.06,
+    "abs_error_mm": 0.0048002883798119456
+  },
+  {
+    "case": "LIVE_BDMAP_00001029",
+    "pyradiomics_mm": 14.849242404917497,
+    "port_b_mm": 14.85,
+    "abs_error_mm": 0.0007575950825025046
+  },
+  {
+    "case": "LIVE_BDMAP_00001064",
+    "pyradiomics_mm": 46.53364133614493,
+    "port_b_mm": 46.53,
+    "abs_error_mm": 0.0036413361449305626
+  },
+  {
+    "case": "LIVE_BDMAP_00001070",
+    "pyradiomics_mm": 44.017099569075164,
+    "port_b_mm": 44.02,
+    "abs_error_mm": 0.00290043092483927
+  },
+  {
+    "case": "LIVE_BDMAP_00001123",
+    "pyradiomics_mm": 13.162446581088183,
+    "port_b_mm": 13.16,
+    "abs_error_mm": 0.002446581088182853
+  },
+  {
+    "case": "LIVE_BDMAP_00001149",
+    "pyradiomics_mm": 54.577224050732944,
+    "port_b_mm": 54.58,
+    "abs_error_mm": 0.0027759492670540453
+  },
+  {
+    "case": "LIVE_BDMAP_00001168",
+    "pyradiomics_mm": 95.08762815345726,
+    "port_b_mm": 95.09,
+    "abs_error_mm": 0.002371846542743583
+  },
+  {
+    "case": "LIVE_BDMAP_00001185",
+    "pyradiomics_mm": 18.225260111337025,
+    "port_b_mm": 18.23,
+    "abs_error_mm": 0.004739888662975034
+  },
+  {
+    "case": "LIVE_BDMAP_00001249",
+    "pyradiomics_mm": 67.41942885892078,
+    "port_b_mm": 67.42,
+    "abs_error_mm": 0.0005711410792201832
+  },
+  {
+    "case": "LIVE_BDMAP_00001297",
+    "pyradiomics_mm": 11.552164300211173,
+    "port_b_mm": 11.55,
+    "abs_error_mm": 0.0021643002111719767
+  },
+  {
+    "case": "LIVE_BDMAP_00001343",
+    "pyradiomics_mm": 104.97094869644583,
+    "port_b_mm": 104.97,
+    "abs_error_mm": 0.0009486964458318425
+  }
+]

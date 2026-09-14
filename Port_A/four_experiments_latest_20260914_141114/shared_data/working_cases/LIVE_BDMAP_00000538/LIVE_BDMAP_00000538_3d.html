@@ -1,0 +1,4855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三维医学影像可视化 — LIVE_BDMAP_00000538</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f5f5f8; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif;
+          transition: background 0.3s; }
+
+  /* ===== Info bar ===== */
+  #info {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    color: rgba(0,0,0,0.35); font-size: 13px; z-index: 20;
+    pointer-events: none; user-select: none;
+    background: rgba(255,255,255,0.7); padding: 4px 16px; border-radius: 4px;
+    white-space: nowrap; transition: color 0.3s, background 0.3s;
+  }
+
+  /* ===== Toolbar (top center, below info) ===== */
+  #toolbar {
+    position: absolute; top: 44px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 20; align-items: center;
+    background: rgba(255,255,255,0.88); padding: 4px 10px; border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.1); transition: background 0.3s, border-color 0.3s;
+  }
+  #toolbar .sep { width: 1px; height: 24px; background: rgba(0,0,0,0.12); margin: 0 4px; }
+  .tb-btn {
+    width: 34px; height: 34px; border-radius: 6px; border: 1px solid transparent;
+    background: transparent; cursor: pointer; font-size: 18px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; color: #444; position: relative;
+  }
+  .tb-btn:hover { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.15); }
+  .tb-btn:active { background: rgba(0,0,0,0.10); }
+  .tb-btn.active { background: rgba(66,133,244,0.15); border-color: #4285f4; color: #4285f4; }
+  .tb-btn.measuring { background: rgba(234,67,53,0.15); border-color: #ea4335; color: #ea4335; }
+  .tb-btn .tooltip {
+    display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.8); color: #fff; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; white-space: nowrap; margin-top: 4px; pointer-events: none; z-index: 30;
+  }
+  .tb-btn:hover .tooltip { display: block; }
+
+  /* ===== Organ Tree Panel (left) ===== */
+  #organ-tree {
+    position: absolute; top: 60px; left: 12px; width: 236px;
+    min-width: min(190px, calc(100vw - 36px));
+    max-width: min(480px, calc(100vw - 36px));
+    max-height: calc(100vh - 80px); z-index: 15;
+    background: rgba(255,255,255,0.92); border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.1); padding: 6px 0;
+    overflow-y: auto; user-select: none;
+    font-size: 13px; color: #2a3f5f; transition: background 0.3s, border-color 0.3s, color 0.3s;
+  }
+  #organ-tree::-webkit-scrollbar { width: 4px; }
+  #organ-tree::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
+  #organ-tree-resize-handle {
+    position: absolute; top: 0; right: 0; width: 8px; height: 100%;
+    z-index: 2; cursor: ew-resize; touch-action: none;
+  }
+  #organ-tree-resize-handle::after {
+    content: ''; position: absolute; top: 10px; bottom: 10px; left: 3px;
+    width: 2px; border-radius: 2px; background: transparent;
+    transition: background 0.15s;
+  }
+  #organ-tree:hover #organ-tree-resize-handle::after,
+  #organ-tree.resizing #organ-tree-resize-handle::after {
+    background: rgba(66,133,244,0.45);
+  }
+  #organ-tree.resizing { cursor: ew-resize; }
+  .tree-group { margin: 2px 0; }
+  .tree-group-header {
+    display: flex; align-items: center; gap: 4px; padding: 4px 10px;
+    font-weight: 600; font-size: 12px; color: #888; cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+  .tree-group-header:hover { color: #555; }
+  .tree-group-header .arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+  .tree-group-header .arrow.open { transform: rotate(90deg); }
+  .tree-group-body { }
+  .tree-group-body.collapsed { display: none; }
+
+  .tree-item {
+    display: flex; align-items: center; gap: 6px; padding: 3px 10px 3px 18px;
+    cursor: pointer; border-radius: 3px; transition: background 0.15s;
+  }
+  .tree-item:hover { background: rgba(0,0,0,0.04); }
+  .tree-item .swatch {
+    width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.15); transition: opacity 0.2s;
+  }
+  .tree-item .eye {
+    font-size: 14px; flex-shrink: 0; width: 18px; text-align: center;
+    opacity: 0.5; transition: opacity 0.15s; cursor: pointer;
+  }
+  .tree-item .eye:hover { opacity: 1; }
+  .tree-item .eye.hidden { opacity: 0.2; }
+  .tree-item .label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tree-item .volume {
+    font-size: 11px; color: #999; flex-shrink: 0; margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+  .tree-item .opacity-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.2); transition: all 0.2s;
+  }
+  .tree-item .opacity-dot.full { background: #444; }
+  .tree-item .opacity-dot.half { background: #aaa; }
+  .tree-item .opacity-dot.transp { background: transparent; }
+  .tree-item.mesh-hidden .swatch { opacity: 0.25; }
+  .tree-item.mesh-hidden .label { opacity: 0.4; text-decoration: line-through; }
+
+  .tree-total {
+    border-top: 1px solid rgba(0,0,0,0.08); margin-top: 4px; padding: 6px 10px 2px;
+    display: flex; justify-content: space-between; font-size: 12px; color: #666; font-weight: 500;
+  }
+
+  /* ===== Measurement UI ===== */
+  #measure-status {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: #fff; font-size: 13px; padding: 6px 18px;
+    border-radius: 20px; z-index: 20; display: none; pointer-events: none;
+    white-space: nowrap;
+  }
+  #measure-clear-btn {
+    position: absolute; bottom: 24px; right: 24px; z-index: 20;
+    background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer;
+    display: none; color: #444;
+  }
+  #measure-clear-btn:hover { background: #fff; }
+
+  /* ===== Annotation UI ===== */
+  #annotation-input-wrap {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 30; background: rgba(255,255,255,0.95); border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.15); padding: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    width: 280px;
+  }
+  #annotation-input-box { display: flex; flex-direction: column; gap: 8px; }
+  #annotation-text {
+    width: 100%; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px;
+    padding: 8px 10px; font-size: 13px; font-family: inherit; resize: none;
+    outline: none; background: #fff; color: #333;
+  }
+  #annotation-text:focus { border-color: #4285f4; }
+  #annotation-input-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  #annotation-input-actions button {
+    padding: 5px 16px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.15);
+    font-size: 12px; cursor: pointer; background: #f5f5f5; color: #333;
+  }
+  #annotation-input-actions button:hover { background: #e8e8e8; }
+  #annotation-input-actions #annotation-confirm { background: #4285f4; color: #fff; border-color: #4285f4; }
+  #annotation-input-actions #annotation-confirm:hover { background: #3367d6; }
+  #annotation-status {
+    position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: #fff; font-size: 13px; padding: 6px 18px;
+    border-radius: 20px; z-index: 20; display: none; pointer-events: none;
+    white-space: nowrap;
+  }
+  #annotation-clear-btn {
+    position: absolute; bottom: 24px; right: 100px; z-index: 20;
+    background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer;
+    display: none; color: #444;
+  }
+  #annotation-clear-btn:hover { background: #fff; }
+
+  /* ===== Dark mode overrides for annotation ===== */
+  body.dark-mode #annotation-input-wrap { background: rgba(35,35,55,0.95); border-color: rgba(255,255,255,0.12); }
+  body.dark-mode #annotation-text { background: #2a2a45; color: #e0e0e0; border-color: rgba(255,255,255,0.15); }
+  body.dark-mode #annotation-input-actions button { background: #3a3a55; color: #ccc; border-color: rgba(255,255,255,0.1); }
+  body.dark-mode #annotation-clear-btn { background: rgba(40,40,60,0.9); border-color: rgba(255,255,255,0.15); color: #ccc; }
+  body.dark-mode #annotation-clear-btn:hover { background: rgba(60,60,80,0.95); }
+  body.dark-mode { background: #1a1a2e; }
+  body.dark-mode #info { color: rgba(255,255,255,0.4); background: rgba(0,0,0,0.5); }
+  body.dark-mode #toolbar { background: rgba(30,30,50,0.88); border-color: rgba(255,255,255,0.1); }
+  body.dark-mode .tb-btn { color: #ccc; }
+  body.dark-mode .tb-btn:hover { background: rgba(255,255,255,0.08); }
+  body.dark-mode .tb-btn.active { background: rgba(66,133,244,0.25); }
+  body.dark-mode .tb-btn.measuring { background: rgba(234,67,53,0.25); }
+  body.dark-mode #organ-tree { background: rgba(25,25,45,0.94); border-color: rgba(255,255,255,0.08); color: #d0d0e0; }
+  body.dark-mode .tree-group-header { color: #888; }
+  body.dark-mode .tree-group-header:hover { color: #bbb; }
+  body.dark-mode .tree-item:hover { background: rgba(255,255,255,0.05); }
+  body.dark-mode .tree-item .volume { color: #777; }
+  body.dark-mode .tree-total { border-top-color: rgba(255,255,255,0.08); color: #999; }
+  body.dark-mode #measure-clear-btn { background: rgba(40,40,60,0.9); border-color: rgba(255,255,255,0.15); color: #ccc; }
+  body.dark-mode #measure-clear-btn:hover { background: rgba(60,60,80,0.95); }
+  body.dark-mode #color-legend { background: rgba(35,35,55,0.92); border-color: rgba(255,255,255,0.12); color: #d0d0e0; }
+  body.dark-mode #plane-selector { background: rgba(30,30,50,0.88); border-color: rgba(255,255,255,0.1); color: #d0d0e0; }
+
+  /* ===== Resection plane toggle (top-right) ===== */
+  #resection-toggle {
+    position: absolute; top: 12px; right: 12px; z-index: 25;
+    background: rgba(255,255,255,0.9); border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.12); padding: 6px 14px;
+    font-size: 13px; color: #333; display: none;
+    cursor: pointer; user-select: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+    align-items: center; gap: 6px;
+  }
+  #resection-toggle input[type="checkbox"] {
+    width: 16px; height: 16px; cursor: pointer; vertical-align: middle;
+    accent-color: #4285f4;
+  }
+  #resection-toggle label { cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  body.dark-mode #resection-toggle {
+    background: rgba(30,30,50,0.88); border-color: rgba(255,255,255,0.1); color: #d0d0e0;
+  }
+  /* ===== Loading overlay ===== */
+  #resection-loading {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 100; background: rgba(0,0,0,0.55);
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; color: #fff; font-size: 18px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  #resection-loading .spinner {
+    width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3);
+    border-top-color: #4285f4; border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin-bottom: 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #resection-loading .loading-text { margin-bottom: 8px; font-weight: 500; }
+  #resection-loading .loading-sub { font-size: 14px; opacity: 0.7; }
+  #cancel-resection-computation {
+    margin-top: 18px; padding: 8px 20px; border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 6px; background: rgba(255,255,255,0.16); color: #fff;
+    cursor: pointer; font-size: 14px;
+  }
+  #cancel-resection-computation:hover { background: rgba(255,255,255,0.28); }
+
+  /* ===== Layout containers ===== */
+  #view-3d, #view-slice, #view-combined { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
+  #view-3d.active, #view-slice.active, #view-combined.active { display: block; }
+  #view-slice { display: none; flex-direction: column; align-items: center; justify-content: center; }
+  #view-slice.active { display: flex; }
+  #slice-viewer { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px; }
+
+  /* ===== Compact layout for 1/3 screen (narrow viewport) ===== */
+  @media (max-width: 800px) {
+    #info { font-size: 11px; padding: 2px 10px; top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70vw; }
+    #toolbar { top: 32px; padding: 2px 5px; gap: 2px; }
+    #toolbar .sep { height: 16px; margin: 0 2px; }
+    .tb-btn { width: 24px; height: 24px; font-size: 12px; }
+    .tb-btn .tooltip { display: none !important; }
+
+    #organ-tree { top: 48px; left: 6px; width: 130px; font-size: 11px; }
+    #organ-tree .tree-group-header { padding: 3px 6px; font-size: 11px; }
+    #organ-tree .tree-item { padding: 2px 6px 2px 10px; gap: 4px; }
+    #organ-tree .tree-item .swatch { width: 10px; height: 10px; }
+    #organ-tree .tree-item .eye { font-size: 12px; width: 14px; }
+    #organ-tree .tree-item .volume { font-size: 10px; }
+
+    #plane-selector { font-size: 12px; padding: 3px 8px; bottom: 8px; }
+    #plane-selector button { font-size: 13px !important; padding: 1px 5px !important; }
+
+    #color-legend { padding: 5px 8px; font-size: 11px; bottom: 50px; right: 8px; }
+    #color-legend div { margin: 2px 0 !important; }
+
+    #measure-status, #annotation-status { font-size: 11px; padding: 3px 10px; bottom: 14px; }
+    #measure-clear-btn, #annotation-clear-btn { padding: 3px 8px; font-size: 11px; bottom: 14px; right: 10px; }
+    #annotation-clear-btn { right: 80px; }
+  }
+
+  /* ===== Extra compact for very narrow (e.g. ~500px) ===== */
+  @media (max-width: 550px) {
+    #organ-tree { width: 110px; font-size: 10px; left: 4px; top: 42px; }
+    #organ-tree .tree-item { padding: 1px 4px 1px 8px; }
+    #organ-tree .tree-item .swatch { width: 8px; height: 8px; }
+    #organ-tree .tree-item .eye { display: none; }
+    #color-legend { display: none; }
+    #plane-selector { font-size: 11px; padding: 2px 6px; }
+    .tb-btn { width: 22px; height: 22px; font-size: 11px; }
+  }
+  #slice-viewer img { max-width: 90vw; max-height: 70vh; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15); }
+  #slice-controls { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #555; }
+  #slice-controls button { width: 36px; height: 36px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.9); cursor: pointer; font-size: 16px; }
+  #slice-controls button:hover { background: #fff; }
+  #view-combined { display: none; }
+  #view-combined.active { display: flex; flex-direction: row; }
+  #combined-3d { flex: 1; position: relative; }
+  #combined-slice { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  #combined-slice img { max-width: 100%; max-height: 90vh; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15); }
+
+  #path-planning-panel {
+    position: absolute; left: 16px; bottom: 72px; z-index: 25;
+    display: none; flex-direction: column; align-items: stretch; gap: 8px;
+    width: min(276px, calc(100vw - 32px)); max-height: min(40vh, 330px);
+    overflow-y: auto; box-sizing: border-box;
+    padding: 12px; color: #243247; font-size: 12px;
+    background: rgba(248, 251, 255, 0.96); border: 1px solid #d8e2ef;
+    border-radius: 12px; box-shadow: 0 8px 28px rgba(30, 52, 80, 0.18);
+    backdrop-filter: blur(10px);
+  }
+  #path-planning-panel .path-panel-title { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; color: #163a63; cursor: grab; user-select: none; touch-action: none; }
+  #path-planning-panel.dragging .path-panel-title { cursor: grabbing; }
+  #path-planning-panel .path-panel-collapse { min-height: 22px; width: 24px; padding: 0; border: none; background: transparent; color: #52657b; font-size: 16px; line-height: 20px; }
+  #path-planning-panel .path-panel-body { display: flex; flex-direction: column; gap: 8px; }
+  #path-planning-panel.collapsed .path-panel-body { display: none; }
+  #path-advanced { border-top: 1px solid #e0e8f1; padding-top: 6px; }
+  #path-advanced summary { color: #52657b; cursor: pointer; font-weight: 600; user-select: none; }
+  #path-advanced .path-panel-section { margin-top: 7px; }
+  #path-planning-panel .path-panel-section { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  #path-planning-panel label { display: flex; align-items: center; justify-content: space-between; gap: 6px; color: #52657b; }
+  #path-planning-panel button, #path-planning-panel select, #path-planning-panel input { min-height: 28px; box-sizing: border-box; border: 1px solid #c9d6e5; border-radius: 6px; background: #fff; color: #243247; font-size: 12px; }
+  #path-planning-panel #path-vascular-distance, #path-planning-panel #path-step-time { width: 44px; flex: 0 0 44px; padding: 3px 4px; }
+  #path-planning-panel #path-liver-samples { width: 42px; flex: 0 0 42px; padding: 3px 4px; }
+  #path-planning-panel button { padding: 4px 8px; cursor: pointer; font-weight: 600; }
+  #path-planning-panel button:hover:not(:disabled) { background: #edf5ff; border-color: #6ea8df; }
+  #path-planning-panel button:disabled { cursor: not-allowed; opacity: .48; }
+  #path-pick-start, #path-replan { width: 100%; }
+  #path-replan { background: #2166a5 !important; border-color: #2166a5 !important; color: #fff !important; }
+  #path-replan:hover:not(:disabled) { background: #174c7d !important; }
+  #path-planning-panel .path-playback { display: grid; grid-template-columns: auto auto auto 1fr; align-items: center; gap: 5px; }
+  #path-planning-panel #path-slider { width: 100%; accent-color: #2166a5; }
+  #path-status { min-height: 16px; color: #52657b; line-height: 1.35; }
+  #path-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; padding-top: 2px; border-top: 1px solid #e0e8f1; color: #52657b; }
+  #path-legend .legend-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  #path-legend .legend-swatch { width: 11px; height: 11px; border-radius: 3px; border: 1px solid rgba(0,0,0,.12); flex: 0 0 auto; }
+  @media (max-width: 550px) {
+    #path-planning-panel { left: 8px; bottom: 48px; width: min(250px, calc(100vw - 16px)); padding: 9px; gap: 6px; max-height: min(38vh, 290px); }
+  }
+:root {
+  --ui-font-family: Arial, Helvetica, sans-serif;
+  --ui-card-content-size: 12px;
+  --ui-card-meta-size: 11px;
+  --ui-primary: #0f6f78;
+  --ui-primary-hover: #0b5961;
+  --ui-primary-soft: #e6f2f3;
+  --ui-danger: #b42318;
+  --ui-warning: #b54708;
+  --ui-text: #132238;
+  --ui-muted: #5f6f82;
+  --ui-border: #d6dee8;
+  --ui-border-strong: #bcc8d6;
+  --ui-surface: #ffffff;
+  --ui-surface-muted: #f4f7fa;
+  --ui-header: #f8fafc;
+  --ui-focus: rgba(15, 111, 120, 0.22);
+  --header-height: 56px;
+  --left-panel-width: 232px;
+  --right-panel-width: 276px;
+  --model-safe-left: 256px;
+  --model-safe-right: 300px;
+}
+
+body:not(.has-resection-workspace) {
+  --model-safe-right: 24px;
+}
+
+body {
+  color: var(--ui-text);
+  font-family: var(--ui-font-family);
+  background: #e8edf2;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 14;
+  height: var(--header-height);
+  border-bottom: 1px solid rgba(188, 200, 214, 0.72);
+  background: rgba(248, 250, 252, 0.9);
+  box-shadow: 0 2px 12px rgba(19, 34, 56, 0.04);
+  backdrop-filter: blur(14px);
+  pointer-events: none;
+}
+
+body.has-resection-workspace::after {
+  display: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  font-family: var(--ui-font-family);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--ui-focus);
+  outline-offset: 1px;
+}
+
+/* Text-only product identity: intentionally avoids decorative branding. */
+#info {
+  top: 9px;
+  bottom: auto;
+  left: 18px;
+  width: 230px;
+  height: 38px;
+  max-width: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 21px 0 0;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  color: var(--ui-muted);
+  background: transparent;
+  box-shadow: none;
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: 0.03em;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  backdrop-filter: none;
+}
+
+#info::before {
+  content: "三维医学影像查看器";
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--ui-text);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  line-height: 18px;
+}
+
+#info::after {
+  display: none;
+}
+
+#compact-mode-hint {
+  position: absolute;
+  top: calc(var(--header-height) + 10px);
+  left: 50%;
+  z-index: 18;
+  display: none;
+  max-width: min(92vw, 360px);
+  padding: 5px 12px;
+  border: 1px solid rgba(188, 200, 214, 0.9);
+  border-radius: 4px;
+  color: var(--ui-muted);
+  background: rgba(248, 250, 252, 0.92);
+  box-shadow: 0 3px 12px rgba(19, 34, 56, 0.08);
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+body.structures-collapsed #compact-mode-hint {
+  display: block;
+}
+
+/* One restrained application toolbar with consistent icon geometry. */
+#toolbar {
+  top: auto;
+  bottom: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 2px;
+  box-sizing: border-box;
+  height: 40px;
+  padding: 3px;
+  border: 1px solid var(--ui-border);
+  border-radius: 6px;
+  background: #eef2f6;
+  box-shadow: none;
+}
+
+#toolbar .sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 3px;
+  background: var(--ui-border-strong);
+}
+
+.tb-btn {
+  width: auto;
+  min-width: 34px;
+  height: 32px;
+  gap: 6px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  color: #42546a;
+  background: transparent;
+}
+
+.tb-btn svg {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  pointer-events: none;
+}
+
+.tb-btn .button-label {
+  color: inherit;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tb-btn:hover {
+  color: var(--ui-text);
+  border-color: transparent;
+  background: var(--ui-surface);
+  box-shadow: inset 0 0 0 1px var(--ui-border);
+}
+
+.tb-btn:active {
+  transform: none;
+  background: #e1e7ee;
+}
+
+.tb-btn.active,
+.tb-btn.measuring {
+  color: var(--ui-primary);
+  border-color: transparent;
+  background: var(--ui-primary-soft);
+  box-shadow: inset 0 0 0 1px rgba(15, 111, 120, 0.24);
+}
+
+.tb-btn .tooltip {
+  top: calc(100% + 8px);
+  margin: 0;
+  padding: 5px 8px;
+  border-radius: 4px;
+  color: #fff;
+  background: #132238;
+  box-shadow: 0 3px 10px rgba(19, 34, 56, 0.18);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* The 3D canvas owns the center column and is never underneath a panel. */
+#view-3d,
+#view-slice,
+#view-combined {
+  position: absolute;
+  top: var(--header-height);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#view-3d canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Floating structure workspace: visually related to the canvas, not a wall. */
+#organ-tree {
+  top: calc(var(--header-height) + 18px);
+  bottom: auto;
+  left: 14px;
+  width: var(--left-panel-width);
+  min-width: var(--left-panel-width);
+  max-width: var(--left-panel-width);
+  max-height: calc(100vh - var(--header-height) - 90px);
+  box-sizing: border-box;
+  padding: 0 0 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid rgba(188, 200, 214, 0.9);
+  border-radius: 7px;
+  color: var(--ui-text);
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 8px 24px rgba(19, 34, 56, 0.1);
+  backdrop-filter: blur(12px);
+  transform: none;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.panel-heading {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ui-border);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+#organ-tree > .panel-heading,
+#color-legend > .panel-heading,
+#plane-selector > .panel-heading,
+#path-planning-panel > .path-panel-title {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+#organ-tree.panel-dragging,
+#color-legend.panel-dragging,
+#plane-selector.panel-dragging,
+#path-planning-panel.panel-dragging {
+  z-index: 60;
+}
+
+#organ-tree.panel-dragging > .panel-heading,
+#color-legend.panel-dragging > .panel-heading,
+#plane-selector.panel-dragging > .panel-heading,
+#path-planning-panel.panel-dragging > .path-panel-title {
+  cursor: grabbing;
+}
+
+.panel-title {
+  color: var(--ui-text);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.panel-subtitle {
+  margin-top: 3px;
+  color: var(--ui-muted);
+  font-size: 10px;
+}
+
+.panel-badge {
+  min-width: 24px;
+  box-sizing: border-box;
+  padding: 3px 6px;
+  border: 1px solid #bdd7da;
+  border-radius: 4px;
+  color: var(--ui-primary);
+  background: #f1f8f8;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.panel-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#structure-panel-toggle,
+#distance-panel-toggle,
+#plane-panel-toggle {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--ui-border);
+  border-radius: 3px;
+  color: var(--ui-muted);
+  background: var(--ui-surface-muted);
+  cursor: pointer;
+}
+
+#structure-panel-toggle {
+  display: grid;
+}
+
+body.structures-collapsed #organ-tree {
+  width: var(--left-panel-width);
+  min-width: var(--left-panel-width);
+  max-width: var(--left-panel-width);
+  max-height: 58px;
+  padding: 0;
+  overflow: hidden;
+}
+
+body.structures-collapsed #organ-tree .tree-group,
+body.structures-collapsed #organ-tree .tree-total,
+body.structures-collapsed #organ-tree-resize-handle {
+  display: none;
+}
+
+body.structures-collapsed #organ-tree .panel-heading {
+  min-height: 56px;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 0;
+}
+
+#structure-panel-toggle:hover,
+#distance-panel-toggle:hover,
+#plane-panel-toggle:hover {
+  color: var(--ui-text);
+  border-color: var(--ui-border-strong);
+}
+
+#structure-panel-toggle svg,
+#distance-panel-toggle svg,
+#plane-panel-toggle svg {
+  transition: transform 0.16s ease;
+}
+
+body.structures-collapsed #structure-panel-toggle svg,
+#color-legend.collapsed #distance-panel-toggle svg,
+#plane-selector.collapsed #plane-panel-toggle svg {
+  transform: rotate(180deg);
+}
+
+#organ-tree-resize-handle {
+  display: none;
+}
+
+#organ-tree::-webkit-scrollbar,
+#path-planning-panel::-webkit-scrollbar {
+  width: 7px;
+}
+
+#organ-tree::-webkit-scrollbar-thumb,
+#path-planning-panel::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: #aab6c4;
+  background-clip: padding-box;
+}
+
+#interaction-help {
+  position: absolute;
+  top: auto;
+  bottom: 100px;
+  left: 50%;
+  z-index: 30;
+  display: none;
+  grid-template-columns: 1fr;
+  gap: 5px;
+  width: 232px;
+  box-sizing: border-box;
+  padding: 10px 11px;
+  border: 1px solid rgba(188, 200, 214, 0.9);
+  border-radius: 7px;
+  color: var(--ui-muted);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 18px rgba(19, 34, 56, 0.08);
+  font-size: 9px;
+  backdrop-filter: blur(12px);
+  transform: translateX(-50%);
+}
+
+#interaction-help.open {
+  display: grid;
+}
+
+#interaction-help::before {
+  content: "";
+  position: absolute;
+  top: auto;
+  bottom: -5px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-right: 1px solid rgba(188, 200, 214, 0.9);
+  border-bottom: 1px solid rgba(188, 200, 214, 0.9);
+  background: inherit;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.interaction-help-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+  color: var(--ui-text);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.interaction-help-title svg {
+  color: var(--ui-primary);
+}
+
+.interaction-help-row {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.interaction-help-row kbd {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  box-sizing: border-box;
+  padding: 2px 6px;
+  border: 1px solid var(--ui-border);
+  border-radius: 3px;
+  color: #42546a;
+  background: var(--ui-surface-muted);
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.interaction-help-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-group {
+  margin: 8px 8px 0;
+}
+
+.tree-group-header {
+  min-height: 30px;
+  padding: 6px 7px;
+  border-radius: 3px;
+  color: var(--ui-muted);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tree-group-header:hover {
+  color: var(--ui-text);
+  background: var(--ui-surface-muted);
+}
+
+.tree-group-header .arrow {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 5px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+
+.tree-group-header .arrow.open {
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.tree-item {
+  min-height: 34px;
+  gap: 7px;
+  margin: 1px 0;
+  padding: 5px 7px 5px 10px;
+  border-radius: 3px;
+}
+
+.tree-item:hover {
+  background: var(--ui-surface-muted);
+}
+
+.tree-item .eye {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  color: #607287;
+  opacity: 0.72;
+  font-size: 0;
+}
+
+.tree-item .eye::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.tree-item .eye:hover {
+  color: var(--ui-primary);
+  opacity: 1;
+  background: var(--ui-primary-soft);
+}
+
+.tree-item .swatch {
+  width: 11px;
+  height: 11px;
+  border: 1px solid rgba(19, 34, 56, 0.14);
+  border-radius: 2px;
+}
+
+.tree-item .label {
+  color: #2f4055;
+  font-size: 11px;
+  font-weight: 560;
+}
+
+.tree-item .volume {
+  color: #7b899a;
+  font-size: 9px;
+}
+
+.tree-item .opacity-dot {
+  width: 10px;
+  height: 10px;
+  border-color: var(--ui-border-strong);
+}
+
+.tree-total {
+  margin: 8px 12px 0;
+  padding: 9px 1px 2px;
+  color: var(--ui-muted);
+  border-color: var(--ui-border);
+  font-size: 10px;
+}
+
+/* Header state controls. Keep planning modes together and visually equal. */
+#planning-toggles {
+  position: absolute;
+  top: 9px;
+  right: auto;
+  left: 50%;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transform: translateX(-50%);
+}
+
+#path-planning-toggle,
+#resection-toggle {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  min-height: 38px;
+  box-sizing: border-box;
+  padding: 5px 9px;
+  border: 1px solid var(--ui-border);
+  border-radius: 5px;
+  color: #35475d;
+  background: var(--ui-surface);
+  box-shadow: none;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+#path-planning-toggle:hover,
+#resection-toggle:hover {
+  border-color: #91a3b7;
+}
+
+#path-planning-toggle label,
+#resection-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+#path-planning-toggle input[type="checkbox"],
+#resection-toggle input[type="checkbox"] {
+  width: 28px;
+  height: 16px;
+  appearance: none;
+  border-radius: 8px;
+  background: #c7d0db;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#path-planning-toggle input[type="checkbox"]::after,
+#resection-toggle input[type="checkbox"]::after {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(19, 34, 56, 0.25);
+  transition: transform 0.15s;
+}
+
+#path-planning-toggle input[type="checkbox"]:checked,
+#resection-toggle input[type="checkbox"]:checked {
+  background: var(--ui-primary);
+}
+
+#path-planning-toggle input[type="checkbox"]:checked::after,
+#resection-toggle input[type="checkbox"]:checked::after {
+  transform: translateX(12px);
+}
+
+/* Planning tools form one compact, evenly spaced task stack. */
+#right-workspace {
+  position: absolute;
+  top: calc(var(--header-height) + 18px);
+  right: 14px;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: var(--right-panel-width);
+  max-height: calc(100vh - var(--header-height) - 28px);
+  pointer-events: none;
+  transform: none;
+}
+
+#right-workspace > * {
+  flex: 0 0 auto;
+  pointer-events: auto;
+}
+
+#color-legend {
+  order: 1;
+}
+
+#plane-selector {
+  order: 2;
+}
+
+#path-planning-panel {
+  order: 3;
+  position: relative;
+  inset: auto;
+  z-index: 25;
+  width: 100%;
+  max-height: min(330px, calc(100vh - var(--header-height) - 190px));
+  box-sizing: border-box;
+  gap: 9px;
+  padding: 13px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid rgba(188, 200, 214, 0.9);
+  border-radius: 7px;
+  color: var(--ui-text);
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 8px 24px rgba(19, 34, 56, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+#path-planning-panel .path-panel-title {
+  min-height: 27px;
+  color: var(--ui-text);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  cursor: grab;
+}
+
+#path-planning-panel .path-panel-collapse {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  color: var(--ui-muted);
+  background: transparent;
+}
+
+#path-planning-panel .path-panel-collapse:hover {
+  color: var(--ui-text);
+  background: var(--ui-surface-muted);
+}
+
+#path-planning-panel button,
+#path-planning-panel select,
+#path-planning-panel input {
+  min-height: 32px;
+  box-sizing: border-box;
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 4px;
+  color: #2f4055;
+  background: var(--ui-surface);
+  font-size: 10px;
+}
+
+#path-planning-panel button {
+  font-weight: 650;
+}
+
+#path-planning-panel button:hover:not(:disabled) {
+  border-color: #7890a8;
+  background: var(--ui-surface-muted);
+}
+
+#path-replan {
+  border-color: var(--ui-primary) !important;
+  color: #fff !important;
+  background: var(--ui-primary) !important;
+}
+
+#path-replan:hover:not(:disabled) {
+  background: var(--ui-primary-hover) !important;
+}
+
+#path-pick-start {
+  color: var(--ui-primary) !important;
+  border-color: #9bc4c8 !important;
+  background: #f1f8f8 !important;
+}
+
+#path-planning-panel .path-playback {
+  grid-template-columns: 30px 54px 30px 1fr;
+}
+
+#path-planning-panel .path-playback button {
+  min-height: 30px;
+  padding: 3px 6px;
+}
+
+#path-planning-panel .path-playback svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: auto;
+}
+
+#path-planning-panel #path-slider {
+  accent-color: var(--ui-primary);
+}
+
+#path-status,
+#path-planning-panel label,
+#path-advanced summary,
+#path-legend {
+  color: var(--ui-muted);
+  font-size: 10px;
+}
+
+#path-advanced {
+  border-color: var(--ui-border);
+}
+
+#path-legend {
+  gap: 6px 8px;
+  border-color: var(--ui-border);
+}
+
+#path-legend .legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* Plane controls and the distance key occupy the lower right rail. */
+#plane-selector {
+  position: relative !important;
+  inset: auto !important;
+  width: 100%;
+  min-height: 102px;
+  box-sizing: border-box;
+  display: block;
+  padding: 0 !important;
+  transform: none !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 6px !important;
+  color: var(--ui-text) !important;
+  background: rgba(255, 255, 255, 0.93) !important;
+  box-shadow: 0 6px 18px rgba(19, 34, 56, 0.09) !important;
+  font-size: 10px !important;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+#plane-selector .panel-heading,
+#color-legend .panel-heading {
+  position: relative;
+  min-height: 54px;
+  padding: 10px 13px;
+  border-bottom: 1px solid var(--ui-border);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.plane-selector-controls {
+  display: grid;
+  grid-template-columns: 26px minmax(52px, 1fr) 26px auto auto auto;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 9px;
+}
+
+.plane-selector-controls > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+#plane-selector button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  max-width: 100%;
+  padding: 3px 7px !important;
+  border: 1px solid var(--ui-border-strong) !important;
+  border-radius: 3px !important;
+  color: #35475d !important;
+  background: var(--ui-surface) !important;
+}
+
+#plane-selector button:hover {
+  border-color: #7890a8 !important;
+  background: #edf2f6 !important;
+}
+
+#plane-label {
+  min-width: 0 !important;
+  overflow: hidden;
+  line-height: 1.18;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+#color-legend {
+  position: relative !important;
+  inset: auto !important;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 6px !important;
+  color: var(--ui-text) !important;
+  background: rgba(255, 255, 255, 0.93) !important;
+  box-shadow: 0 6px 18px rgba(19, 34, 56, 0.09) !important;
+  font-size: 10px !important;
+  backdrop-filter: blur(12px);
+}
+
+#color-legend .distance-legend-body {
+  display: grid;
+  gap: 1px;
+  padding: 8px 12px 10px;
+}
+
+#color-legend .distance-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+#color-legend .distance-legend-swatch {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(19, 34, 56, 0.18);
+  border-radius: 2px;
+}
+
+#color-legend.collapsed .distance-legend-body,
+#plane-selector.collapsed .plane-selector-controls {
+  display: none;
+}
+
+#color-legend.collapsed .panel-heading,
+#plane-selector.collapsed .panel-heading {
+  border-bottom: 0;
+}
+
+#plane-selector.collapsed {
+  min-height: 0 !important;
+}
+
+#measure-status,
+#annotation-status {
+  bottom: 100px;
+  left: calc(
+    var(--model-safe-left) +
+    (100vw - var(--model-safe-left) - var(--model-safe-right)) / 2
+  );
+  padding: 7px 11px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  background: rgba(19, 34, 56, 0.94);
+  box-shadow: 0 2px 8px rgba(19, 34, 56, 0.16);
+  font-size: 10px;
+}
+
+#measure-clear-btn,
+#annotation-clear-btn {
+  right: calc(var(--model-safe-right) + 8px);
+  bottom: 14px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--ui-border);
+  border-radius: 4px;
+  color: var(--ui-danger);
+  background: var(--ui-surface);
+  box-shadow: 0 2px 8px rgba(19, 34, 56, 0.1);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+#annotation-input-wrap {
+  width: min(360px, calc(100vw - 32px));
+  padding: 17px;
+  border-color: var(--ui-border);
+  border-radius: 6px;
+  background: var(--ui-surface);
+  box-shadow: 0 18px 44px rgba(19, 34, 56, 0.2);
+}
+
+#annotation-text {
+  min-height: 82px;
+  padding: 9px 10px;
+  border-color: var(--ui-border-strong);
+  border-radius: 4px;
+}
+
+#annotation-input-actions button {
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 4px;
+}
+
+#annotation-input-actions #annotation-confirm {
+  border-color: var(--ui-primary);
+  background: var(--ui-primary);
+}
+
+#annotation-input-actions #annotation-confirm:hover {
+  background: var(--ui-primary-hover);
+}
+
+body.dark-mode {
+  --ui-primary: #5bbbc2;
+  --ui-primary-hover: #76c9cf;
+  --ui-primary-soft: rgba(91, 187, 194, 0.14);
+  --ui-text: #eef3f7;
+  --ui-muted: #a4b1c0;
+  --ui-border: #334255;
+  --ui-border-strong: #4a5c72;
+  --ui-surface: #182536;
+  --ui-surface-muted: #223145;
+  --ui-header: #132033;
+}
+
+body.dark-mode #toolbar {
+  background: #1f2d40;
+}
+
+body.dark-mode .tb-btn {
+  color: #bdc8d5;
+}
+
+body.dark-mode .tb-btn:hover {
+  color: #fff;
+  background: #2a3b51;
+}
+
+body.dark-mode #info,
+body.dark-mode #organ-tree,
+body.dark-mode #interaction-help,
+body.dark-mode #path-planning-panel,
+body.dark-mode #resection-toggle,
+body.dark-mode #path-planning-toggle,
+body.dark-mode #plane-selector,
+body.dark-mode #color-legend {
+  color: var(--ui-text);
+  background: var(--ui-surface) !important;
+}
+
+body.dark-mode .panel-heading {
+  background: var(--ui-surface);
+}
+
+body.dark-mode .tree-item .label,
+body.dark-mode .interaction-help-row kbd,
+body.dark-mode #path-planning-panel button,
+body.dark-mode #path-planning-panel select,
+body.dark-mode #path-planning-panel input {
+  color: #d8e1ea;
+}
+
+body.dark-mode #path-planning-panel button,
+body.dark-mode #path-planning-panel select,
+body.dark-mode #path-planning-panel input,
+body.dark-mode .interaction-help-row kbd,
+body.dark-mode #plane-selector button {
+  background: #223145 !important;
+}
+
+@media (max-width: 1080px) {
+  :root {
+    --left-panel-width: 220px;
+    --right-panel-width: 252px;
+    --model-safe-left: 244px;
+    --model-safe-right: 276px;
+  }
+
+  .tb-btn {
+    width: 34px;
+    min-width: 34px;
+    padding: 0;
+  }
+
+  .tb-btn .button-label {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --header-height: 52px;
+    --left-panel-width: 176px;
+    --right-panel-width: 210px;
+    --model-safe-left: 194px;
+    --model-safe-right: 228px;
+  }
+
+  #info {
+    top: 8px;
+    left: 8px;
+    width: 150px;
+    padding-top: 17px;
+  }
+
+  #info::before {
+    font-size: 10px;
+  }
+
+  #toolbar {
+    top: auto;
+    bottom: 40px;
+    left: 50%;
+    height: 38px;
+  }
+
+  #toolbar .sep {
+    display: none;
+  }
+
+  .tb-btn {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+  }
+
+  #planning-toggles {
+    top: 8px;
+    right: auto;
+    left: 50%;
+    gap: 4px;
+  }
+
+  #path-planning-toggle,
+  #resection-toggle {
+    min-height: 34px;
+    padding: 4px 7px;
+    font-size: 10px;
+  }
+
+  .panel-heading {
+    min-height: 52px;
+    padding: 8px 10px;
+  }
+
+  #organ-tree {
+    top: calc(var(--header-height) + 12px);
+    left: 8px;
+    width: var(--left-panel-width);
+    min-width: var(--left-panel-width);
+    max-width: var(--left-panel-width);
+  }
+
+  #interaction-help {
+    top: auto;
+    bottom: 94px;
+    left: 50%;
+    width: 210px;
+    padding: 8px 9px;
+    transform: translateX(-50%);
+  }
+
+  #right-workspace {
+    top: calc(var(--header-height) + 12px);
+    right: 8px;
+    width: var(--right-panel-width);
+    gap: 8px;
+  }
+
+  #path-planning-panel {
+    max-height: calc(100vh - var(--header-height) - 250px);
+    padding: 10px;
+  }
+
+  #path-planning-panel .path-panel-section,
+  #path-legend {
+    grid-template-columns: 1fr;
+  }
+
+  #plane-selector {
+    width: var(--right-panel-width);
+    padding: 0 !important;
+    overflow: hidden;
+  }
+
+  .plane-selector-controls {
+    grid-template-columns: 26px minmax(58px, 1fr) 26px 26px 26px 26px;
+    gap: 3px !important;
+    padding: 8px;
+  }
+
+  #plane-selector button {
+    min-width: 26px;
+    padding: 2px 4px !important;
+  }
+
+  #plane-selector button span {
+    display: none;
+  }
+
+  #color-legend {
+    width: var(--right-panel-width);
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --model-safe-left: 10px;
+    --model-safe-right: 10px;
+  }
+
+  body.has-resection-workspace::after {
+    display: none;
+  }
+
+  #view-3d,
+  #view-slice,
+  #view-combined {
+    left: 0;
+    right: 0;
+  }
+
+  #organ-tree {
+    top: calc(var(--header-height) + 6px);
+    bottom: auto;
+    left: 6px;
+    width: 178px;
+    min-width: 178px;
+    max-width: 178px;
+    max-height: 44vh;
+    border: 1px solid var(--ui-border);
+    border-radius: 4px;
+    box-shadow: 0 5px 18px rgba(19, 34, 56, 0.14);
+    transform: none;
+  }
+
+  #interaction-help {
+    left: 50%;
+    width: min(210px, calc(100vw - 12px));
+  }
+
+  #right-workspace {
+    top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
+    right: 6px;
+    bottom: auto;
+    width: min(210px, calc(100vw - 12px));
+    transform: translateY(-50%);
+  }
+
+  #path-planning-panel {
+    max-height: 34vh;
+    border: 1px solid var(--ui-border);
+    border-radius: 4px;
+    box-shadow: 0 5px 18px rgba(19, 34, 56, 0.14);
+  }
+
+  #measure-status,
+  #annotation-status {
+    left: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  #planning-toggles {
+    top: 8px;
+    right: auto;
+    left: 50%;
+  }
+
+  #path-planning-toggle,
+  #resection-toggle {
+    flex: 0 0 auto;
+    justify-content: center;
+    min-width: 0;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  #path-planning-toggle span,
+  #resection-toggle span {
+    display: inline;
+    white-space: nowrap;
+  }
+}
+
+/* Embedded viewer mode: optimized for the right half of a medical workspace. */
+@media (max-width: 820px) {
+  :root {
+    --ui-card-content-size: 11px;
+    --ui-card-meta-size: 10px;
+    --left-panel-width: 158px;
+    --right-panel-width: 190px;
+    --model-safe-left: 174px;
+    --model-safe-right: 206px;
+  }
+
+  #structure-panel-toggle {
+    display: grid;
+  }
+
+  #organ-tree {
+    top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
+    width: var(--left-panel-width);
+    min-width: var(--left-panel-width);
+    max-width: var(--left-panel-width);
+    transform: translateY(-50%);
+  }
+
+  .tree-item {
+    display: grid;
+    grid-template-columns: 20px 11px minmax(0, 1fr) 10px;
+    grid-template-rows: auto auto;
+    column-gap: 6px;
+    row-gap: 1px;
+    min-height: 43px;
+    padding: 5px 6px 5px 8px;
+  }
+
+  .tree-item .eye {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .tree-item .swatch {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .tree-item .label {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .tree-item .volume {
+    grid-column: 3;
+    grid-row: 2;
+    margin: 0;
+    font-size: 8px;
+  }
+
+  .tree-item .opacity-dot {
+    grid-column: 4;
+    grid-row: 1 / 3;
+    align-self: center;
+  }
+
+  #right-workspace,
+  #plane-selector,
+  #color-legend {
+    width: var(--right-panel-width);
+  }
+
+  #color-legend {
+    display: block;
+  }
+
+  #right-workspace {
+    top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
+    transform: translateY(-50%);
+  }
+
+  .plane-selector-controls {
+    grid-template-columns: 25px minmax(52px, 1fr) 25px 25px 25px 25px;
+    gap: 2px;
+    padding: 8px 7px;
+  }
+
+  #plane-selector button {
+    min-width: 25px;
+    padding: 2px 3px !important;
+  }
+
+  #plane-selector button span {
+    display: none;
+  }
+
+  #color-legend .distance-legend-body {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}
+
+/* Shared card typography: one cross-platform sans-serif family and a
+   consistent primary/secondary content hierarchy across every panel. */
+#organ-tree,
+#color-legend,
+#plane-selector,
+#path-planning-panel,
+#organ-tree button,
+#color-legend button,
+#plane-selector button,
+#path-planning-panel button,
+#path-planning-panel input,
+#path-planning-panel select {
+  font-family: var(--ui-font-family) !important;
+}
+
+#organ-tree .tree-item .label,
+#color-legend .distance-legend-row,
+#plane-selector button,
+#plane-label,
+#path-planning-panel button,
+#path-planning-panel input,
+#path-planning-panel select,
+#path-planning-panel label {
+  font-size: var(--ui-card-content-size) !important;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+#organ-tree .tree-item .volume,
+#organ-tree .tree-total,
+#color-legend .panel-subtitle,
+#plane-selector .panel-subtitle,
+#path-status,
+#path-advanced summary,
+#path-legend {
+  font-size: var(--ui-card-meta-size) !important;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+#organ-tree .tree-group-header {
+  font-family: var(--ui-font-family) !important;
+  font-size: var(--ui-card-meta-size) !important;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* At heavy browser zoom, keep an accessible Structures tab without shrinking
+   the model into an unusably narrow center column. */
+@media (max-width: 620px) {
+  :root {
+    --right-panel-width: 164px;
+    --model-safe-right: 178px;
+  }
+
+  body.structures-collapsed {
+    --model-safe-left: 16px;
+  }
+
+  #right-workspace,
+  #plane-selector,
+  #color-legend {
+    width: var(--right-panel-width);
+  }
+
+  #right-workspace {
+    top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
+    gap: 7px;
+    transform: translateY(-50%);
+  }
+
+  #distance-panel-toggle {
+    display: grid;
+  }
+
+  #organ-tree > .panel-heading,
+  #color-legend > .panel-heading,
+  #plane-selector > .panel-heading {
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  #organ-tree.panel-dragging,
+  #color-legend.panel-dragging,
+  #plane-selector.panel-dragging {
+    z-index: 60;
+  }
+
+  #organ-tree.panel-dragging > .panel-heading,
+  #color-legend.panel-dragging > .panel-heading,
+  #plane-selector.panel-dragging > .panel-heading {
+    cursor: grabbing;
+  }
+
+  #color-legend.collapsed .distance-legend-body {
+    display: none;
+  }
+
+  #color-legend.collapsed .panel-heading {
+    border-bottom: 0;
+  }
+
+  #plane-selector {
+    min-height: 88px;
+  }
+
+  #plane-selector .panel-heading,
+  #color-legend .panel-heading {
+    min-height: 44px;
+    padding: 7px 9px;
+  }
+
+  #plane-selector .panel-title,
+  #color-legend .panel-title {
+    font-size: 12px;
+  }
+
+  #plane-selector .panel-subtitle,
+  #color-legend .panel-subtitle {
+    margin-top: 2px;
+    font-size: 8px;
+  }
+
+  .plane-selector-controls {
+    grid-template-columns: 23px minmax(42px, 1fr) 23px 23px 23px 23px;
+    gap: 2px !important;
+    padding: 6px;
+  }
+
+  #plane-selector button {
+    min-width: 23px;
+    min-height: 24px;
+    padding: 1px 2px !important;
+  }
+
+  #plane-label {
+    font-size: 9px;
+  }
+
+  #color-legend .distance-legend-body {
+    padding: 6px 8px 7px;
+  }
+
+  #color-legend .distance-legend-row {
+    gap: 6px;
+    min-height: 25px;
+    font-size: 9px;
+  }
+
+  #color-legend .distance-legend-swatch {
+    width: 10px;
+    height: 10px;
+  }
+
+  body.structures-collapsed #organ-tree {
+    top: calc(var(--header-height) + 8px);
+    left: 8px;
+    width: var(--left-panel-width);
+    min-width: var(--left-panel-width);
+    max-width: var(--left-panel-width);
+    max-height: 54px;
+    padding: 0;
+    overflow: hidden;
+    transform: none;
+  }
+
+  body.structures-collapsed #organ-tree .panel-heading {
+    min-height: 52px;
+    border-bottom: 0;
+  }
+
+  body:not(.structures-collapsed) #organ-tree {
+    top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
+    left: 8px;
+    width: var(--left-panel-width);
+    min-width: var(--left-panel-width);
+    max-width: var(--left-panel-width);
+    max-height: calc(100vh - var(--header-height) - 32px);
+    transform: translateY(-50%);
+  }
+}
+
+/* 视口接近竖屏时，隐藏两侧工作区，把有限宽度完整留给三维模型。 */
+@media (max-aspect-ratio: 6/5) {
+  :root {
+    --model-safe-left: 16px;
+    --model-safe-right: 16px;
+  }
+
+  #organ-tree,
+  #right-workspace {
+    display: none !important;
+  }
+
+  #compact-mode-hint {
+    display: block;
+  }
+}
+
+</style>
+</head>
+<body>
+<div id="info">解剖结构与切除规划</div>
+<div id="compact-mode-hint" role="status">进入全屏模式以使用完整功能</div>
+
+<!-- Toolbar -->
+<div id="toolbar">
+  <button class="tb-btn" id="btn-zoom-in" type="button" title="放大" aria-label="放大"><span class="tooltip">放大</span></button>
+  <button class="tb-btn" id="btn-zoom-out" type="button" title="缩小" aria-label="缩小"><span class="tooltip">缩小</span></button>
+  <div class="sep"></div>
+  <button class="tb-btn" id="btn-reset" title="重置视图"><span class="tooltip">重置视图</span></button>
+  <div class="sep"></div>
+  <button class="tb-btn" id="btn-rotate" title="自动旋转"><span class="tooltip">自动旋转</span></button>
+  <button class="tb-btn" id="btn-bg" title="切换背景"><span class="tooltip">切换背景</span></button>
+  <button class="tb-btn" id="btn-screenshot" title="截图导出"><svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M677.888 494.592q0 28.672-10.752 53.76t-29.184 43.52-43.008 29.184-53.248 10.752-53.248-10.752-43.008-29.184-29.184-43.52-10.752-53.76q0-27.648 10.752-52.736t29.184-43.52 43.008-29.184 53.248-10.752 53.248 10.752 43.008 29.184 29.184 43.52 10.752 52.736zM171.008 766.976q-28.672 0-51.2-5.12t-37.888-17.408-23.552-33.28-8.192-52.736l0-346.112q0-57.344 27.136-79.872t85.504-22.528l172.032 0q16.384 0 27.136-6.144t17.408-16.384 11.776-24.064 11.264-28.16q10.24-26.624 35.84-46.08t58.368-19.456l95.232 0q37.888 0 61.952 20.992t32.256 44.544q11.264 30.72 29.696 52.736t38.912 22.016l130.048 0q45.056-1.024 71.68 24.576t26.624 74.752l0 351.232q0 52.224-27.648 79.36t-73.728 27.136l-710.656 0zM539.648 280.576q-45.056 0-83.968 16.896t-67.584 46.08-45.568 68.096-16.896 82.944q0 45.056 16.896 83.968t45.568 67.584 67.584 45.568 83.968 16.896q44.032 0 82.944-16.896t67.584-45.568 45.568-67.584 16.896-83.968q0-44.032-16.896-82.944t-45.568-68.096-67.584-46.08-82.944-16.896zM611.328 169.984q0-16.384-1.536-25.6t-20.992-9.216l-84.992 0q-19.456-1.024-20.992 8.192t-1.536 26.624q-1.024 19.456 2.048 27.648t20.48 8.192l84.992 0q19.456 0 20.992-9.216t1.536-26.624z"/></svg><span class="tooltip">截图导出</span></button>
+  <div class="sep"></div>
+  <button class="tb-btn" id="btn-measure" title="测量距离"><svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M921.1 62.6H101.6c-10.1 0-18.3 8.2-18.3 18.3v263.8c0 10.1 8.2 18.3 18.3 18.3h819.5c10.1 0 18.3-8.2 18.3-18.3V80.9c0-10.1-8.2-18.3-18.3-18.3z m-18.3 263.8h-72.4v-59.1c0-10.1-8.2-18.3-18.3-18.3-10.1 0-18.3 8.2-18.3 18.3v59.1H682.6v-94.3c0-10.1-8.2-18.3-18.3-18.3-10.1 0-18.3 8.2-18.3 18.3v94.3H534.9v-59.1c0-10.1-8.2-18.3-18.3-18.3-10.1 0-18.3 8.2-18.3 18.3v59.1H387.2v-87.2c0-10.1-8.2-18.3-18.3-18.3s-18.3 8.2-18.3 18.3v87.2H239.5v-59.1c0-10.1-8.2-18.3-18.3-18.3s-18.3 8.2-18.3 18.3v59.1h-83V99.1h782.9v227.3zM919.3 730.8c-10.1 0-18.3 8.2-18.3 18.3v95.1H136.3v-95.1c0-10.1-8.2-18.3-18.3-18.3s-18.3 8.2-18.3 18.3v190.3c0 10.1 8.2 18.3 18.3 18.3s18.3-8.2 18.3-18.3v-58.5H901v58.5c0 10.1 8.2 18.3 18.3 18.3 10.1 0 18.3-8.2 18.3-18.3V749.1c0-10.1-8.2-18.3-18.3-18.3z"/></svg><span class="tooltip">测量距离</span></button>
+  <button class="tb-btn" id="btn-annotate" title="标注"><svg viewBox="0 0 1024 1024" width="18" height="18" fill="currentColor"><path d="M832 64 192 64C121.6 64 64 121.6 64 192l0 512c0 70.4 57.6 128 128 128l128 0 132.096 120.448C459.072 957.632 466.88 960 474.432 960 493.824 960 512 944.704 512 922.496L512 832l320 0c70.4 0 128-57.6 128-128L960 192C960 121.6 902.4 64 832 64zM896 704c0 35.328-28.672 64-64 64L512 768c-16.96 0-33.28 6.72-45.248 18.752S448 815.04 448 832l0 30.08-84.864-77.376C351.296 773.952 335.936 768 320 768L192 768c-35.328 0-64-28.672-64-64L128 192c0-35.328 28.672-64 64-64l640 0c35.328 0 64 28.672 64 64L896 704zM736 320l-448 0C270.336 320 256 334.336 256 352S270.336 384 288 384l448 0C753.664 384 768 369.664 768 352S753.664 320 736 320zM736 512l-448 0C270.336 512 256 526.336 256 544S270.336 576 288 576l448 0C753.664 576 768 561.664 768 544S753.664 512 736 512z"/></svg><span class="tooltip">标注</span></button>
+  <div class="sep"></div>
+  <button class="tb-btn" id="btn-help" type="button" title="操作帮助" aria-controls="interaction-help" aria-expanded="false"><span class="tooltip">操作帮助</span></button>
+</div>
+
+<!-- Organ Tree Panel -->
+<div id="organ-tree">
+  <div class="panel-heading" data-drag-handle="true">
+    <div>
+      <div class="panel-title">解剖结构</div>
+      <div class="panel-subtitle">显示与透明度</div>
+    </div>
+    <div class="panel-heading-actions">
+      <span class="panel-badge" id="structure-count">0</span>
+      <button id="structure-panel-toggle" type="button" aria-label="收起结构面板" aria-expanded="true">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>
+      </button>
+    </div>
+  </div>
+  <div id="organ-tree-resize-handle" role="separator" aria-orientation="vertical" aria-label="调整结构面板宽度"></div>
+</div>
+
+<div id="interaction-help" role="dialog" aria-label="三维导航说明" aria-hidden="true">
+  <div class="interaction-help-title">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
+    <span>三维导航</span>
+  </div>
+  <div class="interaction-help-row"><kbd>拖动</kbd><span>旋转模型</span></div>
+  <div class="interaction-help-row"><kbd>滚轮</kbd><span>缩放视图</span></div>
+  <div class="interaction-help-row"><kbd>右键拖动</kbd><span>平移视图</span></div>
+</div>
+
+<!-- Case metadata for on-demand resection computation -->
+<div id="case-data" data-case-name="LIVE_BDMAP_00000538" data-mask-dir="/mnt/e/DeepTumour_agent_eval/live_portb_formal_v1/working_cases/LIVE_BDMAP_00000538/masks" data-output-dir="/mnt/e/DeepTumour_agent_eval/live_portb_formal_v1/working_cases/LIVE_BDMAP_00000538" data-json-file="LIVE_BDMAP_00000538_3d.json" style="display:none"></div>
+
+<!-- Planning toggles (top-right) -->
+<div id="planning-toggles" aria-label="手术规划图层">
+  <div id="path-planning-toggle" class="planning-toggle" title="最佳手术路径规划">
+    <label>
+      <input type="checkbox" id="toggle-path-planning" aria-label="最优路径" aria-controls="path-planning-panel">
+      <span>最优路径</span>
+    </label>
+  </div>
+  <div id="resection-toggle" class="planning-toggle">
+    <label>
+      <input type="checkbox" id="toggle-resection-plane" aria-label="切除面">
+      <span>切除面</span>
+    </label>
+  </div>
+</div>
+
+<!-- Saved sequence path playback -->
+<aside id="right-workspace" aria-label="切除规划工具">
+<div id="path-planning-panel">
+  <div class="path-panel-title" data-drag-handle="true"><span>切除序列</span><button class="path-panel-collapse" id="path-panel-collapse" type="button" aria-label="收起面板"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
+  <div class="path-panel-body">
+    <button id="path-pick-start" type="button">选择起始网格</button>
+    <button id="path-replan" type="button">重新规划</button>
+    <div class="path-playback"><button id="path-prev" type="button" aria-label="上一步"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg></button><button id="path-play" type="button">播放</button><button id="path-next" type="button" aria-label="下一步"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg></button><input id="path-slider" type="range" min="0" value="0"></div>
+    <span id="path-status">正在加载…</span>
+    <details id="path-advanced">
+      <summary>高级设置</summary>
+      <div class="path-panel-section">
+        <label title="规划算法">算法 <select id="path-algorithm"><option value="nearest">最近邻</option><option value="dfs">深度优先</option><option value="spanning_tree">生成树</option><option value="learned_shielded">冻结学习排序 + 模拟盾（实验）</option></select></label>
+        <label title="血管排除距离">血管距离 <input id="path-vascular-distance" type="number" min="0" step="0.5" value="5"> <span>mm</span></label>
+        <label title="最小肝脏相交采样数">肝脏采样 <input id="path-liver-samples" type="number" min="1" max="5" step="1" value="1"></label>
+        <label title="每步预计时间">单步时间 <input id="path-step-time" type="number" min="0.01" step="0.1" value="1"> <span>秒</span></label>
+      </div>
+    </details>
+    <div id="path-legend" aria-label="网格状态图例">
+    <span class="legend-item"><i class="legend-swatch" style="background:#808892"></i>已访问</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#ff1744"></i>当前</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#1976d2"></i>起点</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#4e342e"></i>肝脏外</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#ff8f00"></i>血管风险</span>
+    <span class="legend-item"><i class="legend-swatch" style="background:#8e24aa"></i>不可达</span>
+    </div>
+  </div>
+</div>
+</aside>
+
+<!-- Loading overlay for on-demand resection computation -->
+<div id="resection-loading">
+  <div class="spinner"></div>
+  <div class="loading-text">正在计算最优切除面…</div>
+  <div class="loading-sub">Bézier 曲面优化 · 约需 30 秒</div>
+  <button id="cancel-resection-computation" type="button">取消计算</button>
+</div>
+
+<!-- View layout containers -->
+<div id="view-3d" class="view-container active"></div>
+<div id="view-slice" class="view-container">
+  <div id="slice-viewer">
+    <img id="slice-img" src="" alt="CT 切片" />
+    <div id="slice-controls">
+      <button id="slice-prev">◀</button>
+      <span id="slice-label">暂无切片</span>
+      <button id="slice-next">▶</button>
+    </div>
+  </div>
+</div>
+<div id="view-combined" class="view-container">
+  <div id="combined-3d"></div>
+  <div id="combined-slice">
+    <img id="combined-slice-img" src="" alt="CT 切片" />
+  </div>
+</div>
+
+<!-- Measurement status bar -->
+<div id="measure-status">测量 · 请选择第一个点</div>
+<button id="measure-clear-btn">清除测量</button>
+
+<!-- Annotation UI -->
+<div id="annotation-input-wrap" style="display:none;">
+  <div id="annotation-input-box">
+    <textarea id="annotation-text" rows="2" placeholder="请输入标注…" maxlength="200"></textarea>
+    <div id="annotation-input-actions">
+      <button id="annotation-confirm">确认</button>
+      <button id="annotation-cancel">取消</button>
+    </div>
+  </div>
+</div>
+<div id="annotation-status">标注 · 请选择器官表面</div>
+<button id="annotation-clear-btn">清除标注</button>
+
+<script>
+  // Normalize toolbar icons while preserving the existing button actions.
+  const toolbarIcons = {
+    'btn-zoom-in': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+    'btn-zoom-out': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/></svg>',
+    'btn-reset': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a8 8 0 1 1 2.34 5.66"/><path d="M4 5v6h6"/></svg>',
+    'btn-rotate': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 5v7h-7"/></svg>',
+    'btn-bg': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"/></svg>',
+    'btn-screenshot': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l1.4-2h7.2L17 7h3v12H4V7Z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+    'btn-measure': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 16 11-11 3 3L8 19H5v-3Z"/><path d="m12 9 3 3M9 12l3 3"/></svg>',
+    'btn-annotate': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M8 4h8l-1 6 3 3H6l3-3-1-6Z"/></svg>',
+    'btn-help': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.5 2c-.8.5-1.3 1-1.3 2"/><path d="M12 17h.01"/></svg>'
+  };
+  const toolbarLabels = {
+    'btn-zoom-in': '放大',
+    'btn-zoom-out': '缩小',
+    'btn-reset': '重置视图',
+    'btn-rotate': '自动旋转',
+    'btn-bg': '切换背景',
+    'btn-screenshot': '截图',
+    'btn-measure': '测量距离',
+    'btn-annotate': '标注',
+    'btn-help': '操作帮助'
+  };
+  Object.entries(toolbarIcons).forEach(([id, icon]) => {
+    const button = document.getElementById(id);
+    if (!button) return;
+    const label = toolbarLabels[id];
+    button.innerHTML = icon
+      + `<span class="button-label">${label}</span>`
+      + `<span class="tooltip">${label}</span>`;
+    button.title = label;
+    button.setAttribute('aria-label', label);
+    if (['btn-rotate', 'btn-bg', 'btn-measure', 'btn-annotate'].includes(id)) {
+      button.setAttribute('aria-pressed', 'false');
+    }
+  });
+
+  // 保持旧版工具栏按钮与中文界面一致。
+  const chineseToolbarLabels = {
+    'btn-screenshot': ['截图', '截图'],
+    'btn-measure': ['测量距离', '测量距离'],
+    'btn-annotate': ['标注', '标注']
+  };
+  Object.entries(chineseToolbarLabels).forEach(([id, labels]) => {
+    const button = document.getElementById(id);
+    if (button) {
+      button.title = labels[0];
+      const tooltip = button.querySelector('.tooltip');
+      if (tooltip) tooltip.textContent = labels[1];
+    }
+  });
+
+  const helpButton = document.getElementById('btn-help');
+  const interactionHelp = document.getElementById('interaction-help');
+  const setHelpOpen = open => {
+    if (!helpButton || !interactionHelp) return;
+    interactionHelp.classList.toggle('open', open);
+    interactionHelp.setAttribute('aria-hidden', String(!open));
+    helpButton.setAttribute('aria-expanded', String(open));
+    helpButton.classList.toggle('active', open);
+  };
+  helpButton?.addEventListener('click', event => {
+    event.stopPropagation();
+    setHelpOpen(!interactionHelp.classList.contains('open'));
+  });
+  document.addEventListener('pointerdown', event => {
+    if (interactionHelp?.classList.contains('open')
+        && !interactionHelp.contains(event.target)
+        && !helpButton.contains(event.target)) {
+      setHelpOpen(false);
+    }
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') setHelpOpen(false);
+  });
+
+  const structurePanelToggle = document.getElementById('structure-panel-toggle');
+  const setStructuresCollapsed = collapsed => {
+    const structurePanel = document.getElementById('organ-tree');
+    const before = structurePanel?.getBoundingClientRect();
+    document.body.classList.toggle('structures-collapsed', collapsed);
+    structurePanelToggle?.setAttribute('aria-expanded', String(!collapsed));
+    structurePanelToggle?.setAttribute(
+      'aria-label', collapsed ? '展开结构面板' : '收起结构面板');
+    // Collapsing changes the panel dimensions and responsive transforms. Offset
+    // that layout delta so the user-selected top-left anchor stays unchanged.
+    if (structurePanel && before) {
+      const after = structurePanel.getBoundingClientRect();
+      const dragX = Number(structurePanel.dataset.dragX || 0) + before.left - after.left;
+      const dragY = Number(structurePanel.dataset.dragY || 0) + before.top - after.top;
+      structurePanel.dataset.dragX = String(dragX);
+      structurePanel.dataset.dragY = String(dragY);
+      structurePanel.style.translate = `${dragX}px ${dragY}px`;
+    }
+  };
+  if (window.matchMedia('(max-width: 620px)').matches) {
+    setStructuresCollapsed(true);
+  }
+  structurePanelToggle?.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    setStructuresCollapsed(!document.body.classList.contains('structures-collapsed'));
+  });
+
+  const pathPlanningToggle = document.getElementById('toggle-path-planning');
+  const setPathPlanningRequested = open => {
+    if (!pathPlanningToggle) return;
+    if (open && !document.body.classList.contains('has-resection-workspace')) {
+      pathPlanningToggle.checked = false;
+      const planeToggle = document.getElementById('toggle-resection-plane');
+      if (planeToggle && !planeToggle.checked && !planeToggle.disabled) {
+        planeToggle.checked = true;
+        planeToggle.dispatchEvent(new Event('change', {bubbles: true}));
+      }
+      return;
+    }
+    pathPlanningToggle.checked = open;
+    const planeToggle = document.getElementById('toggle-resection-plane');
+    if (open && planeToggle && !planeToggle.checked) {
+      planeToggle.checked = true;
+      planeToggle.dispatchEvent(new Event('change', {bubbles: true}));
+    }
+    if (open) {
+      // Let the sequence panel occupy the right rail without covering the
+      // bottom toolbar. Users can still reopen either supporting card.
+      requestAnimationFrame(() => {
+        setDistanceCollapsed(true);
+        setPlaneCollapsed(true);
+      });
+    }
+    document.dispatchEvent(new CustomEvent('path-planning-open-request', {detail: {open}}));
+  };
+  pathPlanningToggle?.addEventListener('change', event => {
+    event.stopPropagation();
+    setPathPlanningRequested(pathPlanningToggle.checked);
+  });
+  document.getElementById('path-algorithm')?.addEventListener('change', () => {
+    // Deterministic and learned modes may use different surface grids. A start
+    // selected on the previous grid must never be silently reused.
+    selectedStartCell = null;
+    startCellPreviewCache.clear();
+    clearDisplayedSequence('算法已更改，请重新选择起始网格。');
+  });
+
+  const widePanelMedia = window.matchMedia('(min-width: 821px)');
+  const draggablePanelIds = [
+    'organ-tree', 'color-legend', 'plane-selector', 'path-planning-panel'
+  ];
+  const resetCompactPanelPositions = () => {
+    draggablePanelIds.forEach(id => {
+      const panel = document.getElementById(id);
+      if (!panel) return;
+      panel.style.translate = '';
+      delete panel.dataset.dragX;
+      delete panel.dataset.dragY;
+    });
+  };
+
+  const setDistanceCollapsed = collapsed => {
+    const legend = document.getElementById('color-legend');
+    const toggle = document.getElementById('distance-panel-toggle');
+    if (!legend || !toggle) return;
+    const wasDragged = legend.dataset.dragX !== undefined
+      || legend.dataset.dragY !== undefined;
+    const before = legend.getBoundingClientRect();
+    legend.classList.toggle('collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute(
+      'aria-label', collapsed ? '展开距离面板' : '收起距离面板');
+    // Preserve the dragged top-left anchor while the legend body changes size.
+    if (wasDragged) {
+      const after = legend.getBoundingClientRect();
+      const dragX = Number(legend.dataset.dragX || 0) + before.left - after.left;
+      const dragY = Number(legend.dataset.dragY || 0) + before.top - after.top;
+      legend.dataset.dragX = String(dragX);
+      legend.dataset.dragY = String(dragY);
+      legend.style.translate = `${dragX}px ${dragY}px`;
+    }
+  };
+
+  const setPlaneCollapsed = collapsed => {
+    const selector = document.getElementById('plane-selector');
+    const toggle = document.getElementById('plane-panel-toggle');
+    if (!selector || !toggle) return;
+    const wasDragged = selector.dataset.dragX !== undefined
+      || selector.dataset.dragY !== undefined;
+    const before = selector.getBoundingClientRect();
+    selector.classList.toggle('collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute(
+      'aria-label', collapsed
+        ? '展开切除面面板'
+        : '收起切除面面板');
+    // Preserve the dragged top-left anchor while the controls change height.
+    if (wasDragged) {
+      const after = selector.getBoundingClientRect();
+      const dragX = Number(selector.dataset.dragX || 0) + before.left - after.left;
+      const dragY = Number(selector.dataset.dragY || 0) + before.top - after.top;
+      selector.dataset.dragX = String(dragX);
+      selector.dataset.dragY = String(dragY);
+      selector.style.translate = `${dragX}px ${dragY}px`;
+    }
+  };
+
+  document.addEventListener('resection-workspace-open-request', event => {
+    if (event.detail && event.detail.open === false) return;
+    requestAnimationFrame(() => {
+      setDistanceCollapsed(false);
+      setPlaneCollapsed(false);
+    });
+  });
+
+  const initializeCompactPanel = panel => {
+    if (!panel || panel.dataset.compactDragReady === 'true') return;
+    const handle = panel.querySelector('[data-drag-handle="true"]');
+    if (!handle) return;
+    panel.dataset.compactDragReady = 'true';
+
+    if (panel.id === 'color-legend') {
+      const distanceToggle = panel.querySelector('#distance-panel-toggle');
+      distanceToggle?.addEventListener('click', event => {
+        event.stopPropagation();
+        setDistanceCollapsed(!panel.classList.contains('collapsed'));
+      });
+    }
+    if (panel.id === 'plane-selector') {
+      const planePanelToggle = panel.querySelector('#plane-panel-toggle');
+      planePanelToggle?.addEventListener('click', event => {
+        event.stopPropagation();
+        setPlaneCollapsed(!panel.classList.contains('collapsed'));
+      });
+    }
+
+    handle.addEventListener('pointerdown', event => {
+      if (event.button !== 0
+          || event.target.closest('button, input, select, textarea, a')) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      const startRect = panel.getBoundingClientRect();
+      const startX = event.clientX;
+      const startY = event.clientY;
+      const startDragX = Number(panel.dataset.dragX || 0);
+      const startDragY = Number(panel.dataset.dragY || 0);
+      const viewportPadding = 6;
+      const headerHeight = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
+
+      panel.classList.add('panel-dragging');
+
+      const movePanel = moveEvent => {
+        const requestedLeft = startRect.left + moveEvent.clientX - startX;
+        const requestedTop = startRect.top + moveEvent.clientY - startY;
+        const minTop = headerHeight + viewportPadding;
+        const maxLeft = Math.max(viewportPadding, window.innerWidth - startRect.width - viewportPadding);
+        const maxTop = Math.max(minTop, window.innerHeight - startRect.height - viewportPadding);
+        const clampedLeft = Math.min(maxLeft, Math.max(viewportPadding, requestedLeft));
+        const clampedTop = Math.min(maxTop, Math.max(minTop, requestedTop));
+        const nextX = startDragX + clampedLeft - startRect.left;
+        const nextY = startDragY + clampedTop - startRect.top;
+        panel.dataset.dragX = String(nextX);
+        panel.dataset.dragY = String(nextY);
+        panel.style.translate = `${nextX}px ${nextY}px`;
+      };
+
+      const finishPanelDrag = () => {
+        panel.classList.remove('panel-dragging');
+        document.removeEventListener('pointermove', movePanel);
+        document.removeEventListener('pointerup', finishPanelDrag);
+        document.removeEventListener('pointercancel', finishPanelDrag);
+      };
+
+      document.addEventListener('pointermove', movePanel);
+      document.addEventListener('pointerup', finishPanelDrag);
+      document.addEventListener('pointercancel', finishPanelDrag);
+    });
+  };
+
+  const initializeCompactPanels = () => {
+    draggablePanelIds.forEach(id => initializeCompactPanel(document.getElementById(id)));
+  };
+  initializeCompactPanels();
+  const compactPanelObserver = new MutationObserver(initializeCompactPanels);
+  compactPanelObserver.observe(document.body, {childList: true, subtree: true});
+  // Returning from full screen restores the centered preview layout; entering
+  // it restores the clean top-aligned layout before any new user drag.
+  widePanelMedia.addEventListener('change', resetCompactPanelPositions);
+
+  const pathPanel = document.getElementById('path-planning-panel');
+  const collapseButton = document.getElementById('path-panel-collapse');
+  if (collapseButton && pathPanel) {
+    collapseButton.addEventListener('click', event => {
+      event.stopPropagation();
+      pathPanel.classList.toggle('collapsed');
+      const collapsed = pathPanel.classList.contains('collapsed');
+      collapseButton.innerHTML = collapsed
+        ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+      collapseButton.setAttribute('aria-label', collapsed ? '展开面板' : '收起面板');
+    });
+  }
+</script>
+
+<script type="text/plain" id="bs-source">
+/**
+ * BezierSurface.js — 浏览器端 Bézier 曲面渲染模块
+ *
+ * 根据 GeoSurge 的 bicubic_bezier 切面定义（4×4 控制点 + 参考平面），
+ * 在 Three.js 中生成带有距离颜色映射的半透明曲面。
+ *
+ * 使用方式:
+ *   import { buildBezierSurface } from './BezierSurface.js';
+ *   const { mesh, line, label } = buildBezierSurface(planeData);
+ *   scene.add(mesh);
+ *   scene.add(line);
+ *   scene.add(label);
+ */
+
+import * as THREE from 'three';
+
+// ----------------------------------------------------------------
+//  Bernstein 基函数 (degree 3)
+// ----------------------------------------------------------------
+function bernstein3(t) {
+  const u = 1.0 - t;
+  return [
+    u * u * u,
+    3.0 * u * u * t,
+    3.0 * u * t * t,
+    t * t * t,
+  ];
+}
+
+// ----------------------------------------------------------------
+//  距离 → 颜色映射
+//    ≥ 5.0 mm  → 蓝色 (安全, 醒目不刺眼)
+//    2.0~5.0   → 黄到橙色渐变 (警戒)
+//    < 2.0 mm  → 红色 (违规)
+// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+//  距离 → 颜色映射 (临床切缘着色)
+//    < MARGIN (5mm)   → 红→橙 (切缘不足)
+//    MARGIN ~ 2×MARGIN → 橙→黄 (切缘临界)
+//    2×MARGIN ~ 4×MARGIN → 黄绿→蓝绿 (切缘充足)
+//    ≥ 4×MARGIN        → 深蓝 (安全)
+// ----------------------------------------------------------------
+const MARGIN_MM = 5.0;
+function distanceToColor(d) {
+  if (d < MARGIN_MM) {
+    // 0 → MARGIN: 深红 → 橙色
+    const t = d / MARGIN_MM;
+    return [1.0, t * 0.65, t * 0.15];
+  }
+  if (d < MARGIN_MM * 2) {
+    // MARGIN → 2×MARGIN: 橙色 → 黄色
+    const t = (d - MARGIN_MM) / MARGIN_MM;
+    return [1.0 - t * 0.2, 0.65 + t * 0.35, 0.15 + t * 0.55];
+  }
+  if (d < MARGIN_MM * 4) {
+    // 2×MARGIN → 4×MARGIN: 黄绿 → 蓝绿
+    const t = (d - MARGIN_MM * 2) / (MARGIN_MM * 2);
+    return [0.8 - t * 0.7, 1.0 - t * 0.3, t * 0.9];
+  }
+  // ≥ 4×MARGIN: 深蓝（远处）
+  const t = Math.min((d - MARGIN_MM * 4) / (MARGIN_MM * 4), 1.0);
+  return [0.1 + t * 0.05, 0.3 + t * 0.25, 0.9 + t * 0.05];
+}
+
+// ----------------------------------------------------------------
+//  构建 Bézier 曲面网格
+// ----------------------------------------------------------------
+function buildBezierGeometry(planeData) {
+  const ref = planeData.reference_plane;
+  const origin = new THREE.Vector3().fromArray(ref.origin_mm);
+  const normal = new THREE.Vector3().fromArray(ref.normal_world);
+  const uAxis  = new THREE.Vector3().fromArray(ref.u_axis_world);
+  const vAxis  = new THREE.Vector3().fromArray(ref.v_axis_world);
+  const uRange = ref.u_range_mm;  // [u_min, u_max]
+  const vRange = ref.v_range_mm;  // [v_min, v_max]
+  const grid = planeData.height_control_4x4_mm;  // 4x4
+  const distGrid = planeData.vertex_distances_mm; // 可选
+  const centerOffset = planeData.center_offset;
+  if (centerOffset) {
+    origin.sub(new THREE.Vector3().fromArray(centerOffset));
+  }
+  const res = planeData.surface_resolution || [20, 20];
+  const nU = res[0];
+  const nV = res[1];
+
+  const positions = [];
+  const colors = [];
+  const indices = [];
+  const hasDist = distGrid && distGrid.length === nU && distGrid[0] && distGrid[0].length === nV;
+  if (hasDist) {
+    let dMin = Infinity, dMax = -Infinity;
+    for (let i = 0; i < nU; i++) {
+      for (let j = 0; j < nV; j++) {
+        const d = distGrid[i][j];
+        if (d < dMin) dMin = d;
+        if (d > dMax) dMax = d;
+      }
+    }
+    console.log('[buildBezierGeometry] hasDist=true, nU=' + nU + ' nV=' + nV,
+      'distMin=' + dMin.toFixed(2), 'distMax=' + dMax.toFixed(2),
+      'planeData.candidate_name=' + (planeData.candidate_name || 'N/A').substring(0, 50));
+  } else {
+    console.warn('[buildBezierGeometry] hasDist=false, distGrid type=' + typeof distGrid,
+      'nU=' + nU + ' nV=' + nV,
+      distGrid ? ('len=' + distGrid.length + ' row0=' + (distGrid[0] ? distGrid[0].length : 'null')) : 'null');
+  }
+
+  for (let i = 0; i < nU; i++) {
+    const uNorm = i / (nU - 1);  // [0, 1]
+    const u = uRange[0] + uNorm * (uRange[1] - uRange[0]);
+    const bu = bernstein3(uNorm);
+
+    for (let j = 0; j < nV; j++) {
+      const vNorm = j / (nV - 1);  // [0, 1]
+      const v = vRange[0] + vNorm * (vRange[1] - vRange[0]);
+      const bv = bernstein3(vNorm);
+
+      // 计算 Bézier 高度
+      let height = 0.0;
+      for (let ci = 0; ci < 4; ci++) {
+        for (let cj = 0; cj < 4; cj++) {
+          height += bu[ci] * bv[cj] * grid[ci][cj];
+        }
+      }
+
+      // 参考平面上的点 + 沿法线偏移
+      const point = new THREE.Vector3()
+        .copy(origin)
+        .addScaledVector(uAxis, u)
+        .addScaledVector(vAxis, v)
+        .addScaledVector(normal, height);
+
+      positions.push(point.x, point.y, point.z);
+
+      // 颜色
+      if (hasDist) {
+        const d = distGrid[i][j];
+        const c = distanceToColor(d);
+        colors.push(c[0], c[1], c[2]);
+      } else {
+        // 无距离数据 → 默认蓝色
+        colors.push(0.3, 0.5, 1.0);
+      }
+    }
+  }
+
+  // 索引 (四边形拆分为两个三角形)
+  for (let i = 0; i < nU - 1; i++) {
+    for (let j = 0; j < nV - 1; j++) {
+      const a = i * nV + j;
+      const b = i * nV + (j + 1);
+      const c = (i + 1) * nV + j;
+      const d = (i + 1) * nV + (j + 1);
+      indices.push(a, b, c);
+      indices.push(b, d, c);
+    }
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+
+  return geometry;
+}
+
+// ----------------------------------------------------------------
+//  构建曲面边界线
+// ----------------------------------------------------------------
+function buildBoundaryLine(planeData) {
+  const ref = planeData.reference_plane;
+  const origin = new THREE.Vector3().fromArray(ref.origin_mm);
+  const normal = new THREE.Vector3().fromArray(ref.normal_world);
+  const uAxis  = new THREE.Vector3().fromArray(ref.u_axis_world);
+  const vAxis  = new THREE.Vector3().fromArray(ref.v_axis_world);
+  const uRange = ref.u_range_mm;
+  const vRange = ref.v_range_mm;
+  const grid = planeData.height_control_4x4_mm;
+  const res = planeData.surface_resolution || [20, 20];
+
+  // 沿四个边采样 (共 4 × (res-1) 段)
+  const nU = res[0];
+  const nV = res[1];
+  const points = [];
+
+  const centerOffset = planeData.center_offset;
+  function sample(uNorm, vNorm) {
+    const u = uRange[0] + uNorm * (uRange[1] - uRange[0]);
+    const v = vRange[0] + vNorm * (vRange[1] - vRange[0]);
+    const bu = bernstein3(uNorm);
+    const bv = bernstein3(vNorm);
+    let height = 0.0;
+    for (let ci = 0; ci < 4; ci++) {
+      for (let cj = 0; cj < 4; cj++) {
+        height += bu[ci] * bv[cj] * grid[ci][cj];
+      }
+    }
+    const pt = new THREE.Vector3()
+      .copy(origin)
+      .addScaledVector(uAxis, u)
+      .addScaledVector(vAxis, v)
+      .addScaledVector(normal, height);
+    if (centerOffset) {
+      pt.sub(new THREE.Vector3().fromArray(centerOffset));
+    }
+    return pt;
+  }
+
+  // 下边 (u=0..1, v=0)
+  for (let i = 0; i < nU; i++) points.push(sample(i / (nU - 1), 0.0));
+  // 右边 (u=1, v=0..1)
+  for (let j = 1; j < nV; j++) points.push(sample(1.0, j / (nV - 1)));
+  // 上边 (u=1..0, v=1)
+  for (let i = nU - 2; i >= 0; i--) points.push(sample(i / (nU - 1), 1.0));
+  // 左边 (u=0, v=1..0)
+  for (let j = nV - 2; j >= 1; j--) points.push(sample(0.0, j / (nV - 1)));
+
+  const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+  return new THREE.Line(
+    lineGeo,
+    new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 })
+  );
+}
+
+// ----------------------------------------------------------------
+//  构建距离标注精灵 (Canvas Sprite)
+// ----------------------------------------------------------------
+function buildSurfaceGrid(planeData) {
+  const ref = planeData.reference_plane;
+  const origin = new THREE.Vector3().fromArray(ref.origin_mm);
+  const normal = new THREE.Vector3().fromArray(ref.normal_world);
+  const uAxis  = new THREE.Vector3().fromArray(ref.u_axis_world);
+  const vAxis  = new THREE.Vector3().fromArray(ref.v_axis_world);
+  const uRange = ref.u_range_mm;
+  const vRange = ref.v_range_mm;
+  const grid = planeData.height_control_4x4_mm;
+  const centerOffset = planeData.center_offset;
+  function sample(uNorm, vNorm) {
+    const u = uRange[0] + uNorm * (uRange[1] - uRange[0]);
+    const v = vRange[0] + vNorm * (vRange[1] - vRange[0]);
+    const bu = bernstein3(uNorm);
+    const bv = bernstein3(vNorm);
+    let height = 0.0;
+    for (let ci = 0; ci < 4; ci++) {
+      for (let cj = 0; cj < 4; cj++) {
+        height += bu[ci] * bv[cj] * grid[ci][cj];
+      }
+    }
+    const pt = new THREE.Vector3()
+      .copy(origin)
+      .addScaledVector(uAxis, u)
+      .addScaledVector(vAxis, v)
+      .addScaledVector(normal, height);
+    if (centerOffset) {
+      pt.sub(new THREE.Vector3().fromArray(centerOffset));
+    }
+    return pt;
+  }
+  const div = 10;
+  const positions = [];
+  const stride = div + 1;
+  for (let i = 0; i <= div; i++) {
+    for (let j = 0; j < div; j++) {
+      const a = sample(j / div, i / div);
+      const b = sample((j + 1) / div, i / div);
+      positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    }
+  }
+  for (let j = 0; j <= div; j++) {
+    for (let i = 0; i < div; i++) {
+      const a = sample(j / div, i / div);
+      const b = sample(j / div, (i + 1) / div);
+      positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  return new THREE.LineSegments(
+    geo,
+    new THREE.LineBasicMaterial({ color: 0x222222, transparent: true, opacity: 0.7 })
+  );
+}
+
+export function buildMarginLabel(planeData, maxDim) {
+  const margin = planeData.margin_min_mm;
+  const p05 = planeData.margin_p05_mm;
+  if (margin == null) return null;
+
+  const labelText = `${isFinite(margin) ? margin.toFixed(1) : '—'} mm` +
+    (p05 != null ? `  ·  P5 ${p05.toFixed(1)}` : '');
+
+  // 选择曲面上一个合适位置放标签: 取 u=0.5, v=0.5 处
+  const ref = planeData.reference_plane;
+  const origin = new THREE.Vector3().fromArray(ref.origin_mm);
+  const normal = new THREE.Vector3().fromArray(ref.normal_world);
+  const uAxis  = new THREE.Vector3().fromArray(ref.u_axis_world);
+  const vAxis  = new THREE.Vector3().fromArray(ref.v_axis_world);
+  const uRange = ref.u_range_mm;
+  const vRange = ref.v_range_mm;
+  const grid = planeData.height_control_4x4_mm;
+  const centerOffset = planeData.center_offset;
+  const bu = bernstein3(0.5);
+  const bv = bernstein3(0.5);
+  let height = 0.0;
+  for (let ci = 0; ci < 4; ci++) {
+    for (let cj = 0; cj < 4; cj++) {
+      height += bu[ci] * bv[cj] * grid[ci][cj];
+    }
+  }
+  const centerPos = new THREE.Vector3()
+    .copy(origin)
+    .addScaledVector(uAxis, (uRange[0] + uRange[1]) / 2)
+    .addScaledVector(vAxis, (vRange[0] + vRange[1]) / 2)
+    .addScaledVector(normal, height)
+    .addScaledVector(normal, maxDim * 0.03);  // 沿法线方向偏移一点，避免遮挡
+  if (centerOffset) {
+    centerPos.sub(new THREE.Vector3().fromArray(centerOffset));
+  }
+
+  // Canvas 绘制文本
+  const canvas = document.createElement('canvas');
+  canvas.width = 600;
+  canvas.height = 100;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 600, 100);
+
+  // 背景 (more opaque).  Threshold reads the same configurable target the
+  // server uses (margin_target_mm), so the label colour stays consistent
+  // with the rest of the UI when tumor_margin_mm is overridden.
+  const marginTarget = (planeData.margin_target_mm != null)
+    ? planeData.margin_target_mm
+    : 5.0;
+  const isSafe = margin >= marginTarget;
+  ctx.fillStyle = isSafe ? 'rgba(0,130,50,0.95)' : 'rgba(200,50,50,0.95)';
+  ctx.beginPath();
+  ctx.roundRect(10, 6, 580, 62, 12);
+  ctx.fill();
+
+  // Plain clinical status text keeps the label consistent across platforms.
+  ctx.font = 'Bold 18px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.86)';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(isSafe ? 'SAFE' : 'RISK', 24, 27);
+
+  ctx.font = 'Bold 22px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#fff';
+  ctx.fillText(labelText, 24, 51);
+
+  ctx.font = '13px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.78)';
+  ctx.fillText(isSafe ? 'Margin target met' : 'Below margin target', 220, 27);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  const spriteMat = new THREE.SpriteMaterial({
+    map: texture,
+    depthTest: false,
+    sizeAttenuation: true,
+  });
+  const sprite = new THREE.Sprite(spriteMat);
+  sprite.scale.set(maxDim * 0.22, maxDim * 0.038, 1);
+  sprite.position.copy(centerPos);
+
+  return sprite;
+}
+
+// ----------------------------------------------------------------
+//  buildBezierSurface — 主入口
+// ----------------------------------------------------------------
+export function buildBezierSurface(planeData, maxDim) {
+  const geometry = buildBezierGeometry(planeData);
+  const res = planeData.surface_resolution || [20, 20];
+  const nU = res[0];
+  const nV = res[1];
+  const cps3d = planeData.control_points_3d;
+  const hasControlPoints = Array.isArray(cps3d) && cps3d.length === 4
+    && cps3d.every(row => Array.isArray(row) && row.length === 4
+      && row.every(point => Array.isArray(point) && point.length === 3));
+
+  // control_points_3d is the authoritative geometry after browser editing.
+  // Keep the existing color attribute, but replace all rendered positions so
+  // the surface, planning grid and sequence path share exactly one geometry.
+  if (hasControlPoints) {
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(
+      computeSurfacePositions(cps3d, nU, nV), 3));
+    geometry.computeVertexNormals();
+  }
+  const material = new THREE.MeshPhysicalMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.55,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    metalness: 0.02,
+    roughness: 0.4,
+    envMapIntensity: 0.2,
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  // Increase render order to ensure plane renders on top of organs
+  mesh.renderOrder = 5;
+  mesh.userData = {
+    name: 'plan_resection_plane',
+    type: 'resection_plane',
+  };
+
+  // Draw visible grid lines on the surface (paper-style visualization)
+  const gridHelper = hasControlPoints
+    ? buildSurfaceGridFromCP(cps3d, nU, nV)
+    : buildSurfaceGrid(planeData);
+  gridHelper.renderOrder = 6;
+
+  const line = hasControlPoints
+    ? buildBoundaryLineFromCP(cps3d, nU, nV)
+    : buildBoundaryLine(planeData);
+  line.renderOrder = 6;
+
+  const label = buildMarginLabel(planeData, maxDim || 300);
+
+  return { mesh, line, gridHelper, label };
+}
+
+// ================================================================
+//  Phase 2: Interactive Editing Functions
+// ================================================================
+
+// ----------------------------------------------------------------
+//  computeSurfacePositions — 从 4x4 3D 控制点计算曲面顶点位置
+//  使用通用 Bézier 公式: S(u,v) = ΣΣ C[i][j] * B_i(u) * B_j(v)
+// ----------------------------------------------------------------
+export function computeSurfacePositions(cps3d, nU, nV) {
+  const positions = new Float32Array(nU * nV * 3);
+  let idx = 0;
+  for (let i = 0; i < nU; i++) {
+    const uNorm = i / (nU - 1);
+    const bu = bernstein3(uNorm);
+    for (let j = 0; j < nV; j++) {
+      const vNorm = j / (nV - 1);
+      const bv = bernstein3(vNorm);
+      let x = 0, y = 0, z = 0;
+      for (let ci = 0; ci < 4; ci++) {
+        for (let cj = 0; cj < 4; cj++) {
+          const w = bu[ci] * bv[cj];
+          const cp = cps3d[ci][cj];
+          x += w * cp[0];
+          y += w * cp[1];
+          z += w * cp[2];
+        }
+      }
+      positions[idx++] = x;
+      positions[idx++] = y;
+      positions[idx++] = z;
+    }
+  }
+  return positions;
+}
+
+// ----------------------------------------------------------------
+//  computeVertexDistances — 计算每个曲面顶点到最近肿瘤点的距离
+// ----------------------------------------------------------------
+export function computeVertexDistances(surfacePositions, tumorCloud) {
+  const nVerts = surfacePositions.length / 3;
+  const nTumor = tumorCloud.length / 3;
+  const distances = new Float32Array(nVerts);
+
+  if (nTumor === 0) {
+    distances.fill(99.9);
+    return distances;
+  }
+
+  for (let vi = 0; vi < nVerts; vi++) {
+    const i3 = vi * 3;
+    const vx = surfacePositions[i3];
+    const vy = surfacePositions[i3 + 1];
+    const vz = surfacePositions[i3 + 2];
+    let minDistSq = Infinity;
+    for (let ti = 0; ti < nTumor; ti++) {
+      const t3 = ti * 3;
+      const dx = vx - tumorCloud[t3];
+      const dy = vy - tumorCloud[t3 + 1];
+      const dz = vz - tumorCloud[t3 + 2];
+      const dSq = dx * dx + dy * dy + dz * dz;
+      if (dSq < minDistSq) minDistSq = dSq;
+    }
+    distances[vi] = Math.sqrt(minDistSq);
+  }
+  return distances;
+}
+
+// ----------------------------------------------------------------
+//  distancesToColors — 将距离数组转换为顶点颜色数组
+// ----------------------------------------------------------------
+export function distancesToColors(distances) {
+  const n = distances.length;
+  const colors = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const c = distanceToColor(distances[i]);
+    colors[i * 3] = c[0];
+    colors[i * 3 + 1] = c[1];
+    colors[i * 3 + 2] = c[2];
+  }
+  return colors;
+}
+
+// ----------------------------------------------------------------
+//  buildControlPoints — 构建 16 个控制点球体
+//  内 4 个 (i=1,2 × j=1,2) 青色，外 12 个白色
+// ----------------------------------------------------------------
+export function buildControlPoints(planeData, maxDim) {
+  const cps3d = planeData.control_points_3d;
+  if (!cps3d) return new THREE.Group();
+
+  const group = new THREE.Group();
+  group.userData.name = 'control_points';
+
+  const radius = maxDim * 0.008;
+  const sphereGeo = new THREE.SphereGeometry(radius, 12, 12);
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      const isInner = (i >= 1 && i <= 2 && j >= 1 && j <= 2);
+      const mat = new THREE.MeshPhysicalMaterial({
+        color: isInner ? 0x00ffff : 0xffffff,
+        emissive: isInner ? 0x00ffff : 0x222222,
+        emissiveIntensity: isInner ? 0.4 : 0.0,
+        transparent: true,
+        opacity: 0.9,
+        depthWrite: false,
+      });
+      const sphere = new THREE.Mesh(sphereGeo.clone(), mat);
+      const pos = cps3d[i][j];
+      sphere.position.set(pos[0], pos[1], pos[2]);
+      sphere.userData = { type: 'control_point', gridI: i, gridJ: j };
+      group.add(sphere);
+    }
+  }
+  return group;
+}
+
+// ----------------------------------------------------------------
+//  updateSurfaceGeometry — 原地更新曲面几何体的顶点和颜色
+// ----------------------------------------------------------------
+export function updateSurfaceGeometry(geometry, positions, colors) {
+  const posAttr = geometry.attributes.position;
+  const colAttr = geometry.attributes.color;
+
+  posAttr.array.set(positions);
+  posAttr.needsUpdate = true;
+
+  if (colors) {
+    colAttr.array.set(colors);
+    colAttr.needsUpdate = true;
+  }
+
+  geometry.computeVertexNormals();
+}
+
+// ----------------------------------------------------------------
+//  buildBoundaryLineFromCP — 从 4x4 3D 控制点构建曲面边界线
+// ----------------------------------------------------------------
+export function buildBoundaryLineFromCP(cps3d, nU, nV) {
+  function sample(uNorm, vNorm) {
+    const bu = bernstein3(uNorm);
+    const bv = bernstein3(vNorm);
+    let x = 0, y = 0, z = 0;
+    for (let ci = 0; ci < 4; ci++) {
+      for (let cj = 0; cj < 4; cj++) {
+        const w = bu[ci] * bv[cj];
+        const cp = cps3d[ci][cj];
+        x += w * cp[0];
+        y += w * cp[1];
+        z += w * cp[2];
+      }
+    }
+    return new THREE.Vector3(x, y, z);
+  }
+
+  const points = [];
+  // Bottom edge (vNorm=0)
+  for (let i = 0; i < nU; i++) points.push(sample(i / (nU - 1), 0));
+  // Right edge (uNorm=1)
+  for (let j = 1; j < nV; j++) points.push(sample(1, j / (nV - 1)));
+  // Top edge (vNorm=1, reversed)
+  for (let i = nU - 2; i >= 0; i--) points.push(sample(i / (nU - 1), 1));
+  // Left edge (uNorm=0, reversed)
+  for (let j = nV - 2; j >= 1; j--) points.push(sample(0, j / (nV - 1)));
+
+  const geo = new THREE.BufferGeometry().setFromPoints(points);
+  return new THREE.Line(
+    geo,
+    new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 })
+  );
+}
+
+// Build a reference grid from the exact control points and resolution used by
+// a sequence planner. This keeps the black reference grid aligned with the
+// planner's cell partition, including user-edited surfaces.
+export function buildSurfaceGridFromCP(cps3d, nU, nV) {
+  const positions = computeSurfacePositions(cps3d, nU, nV);
+  const linePositions = [];
+  const index = (u, v) => (u * nV + v) * 3;
+  const pushSegment = (a, b) => {
+    linePositions.push(positions[a], positions[a + 1], positions[a + 2]);
+    linePositions.push(positions[b], positions[b + 1], positions[b + 2]);
+  };
+  for (let i = 0; i < nU; i++) {
+    for (let j = 0; j < nV - 1; j++) pushSegment(index(i, j), index(i, j + 1));
+  }
+  for (let j = 0; j < nV; j++) {
+    for (let i = 0; i < nU - 1; i++) pushSegment(index(i, j), index(i + 1, j));
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+  return new THREE.LineSegments(
+    geometry,
+    new THREE.LineBasicMaterial({ color: 0x222222, transparent: true, opacity: 0.7 })
+  );
+}
+
+</script>
+<script>
+(function(){
+  var sB = document.getElementById("bs-source").textContent;
+  var uB = URL.createObjectURL(new Blob([sB], {type:"application/javascript"}));
+  var im = document.createElement("script");
+  im.type = "importmap";
+  im.textContent = JSON.stringify({imports:{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/","BezierSurface":uB}});
+  document.currentScript.after(im);
+})();
+</script>
+
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+
+// ================================================================
+//  0. Mesh data
+// ================================================================
+const DATA_URL = "LIVE_BDMAP_00000538_3d.json";
+const meshes = [];
+let planeObjects = [];
+let currentPlanes = [];
+let activePlane = 0;
+let resectionSequence = null;
+let resectionPathObjects = null;
+let resectionCellObjects = [];
+let resectionCellPlaneIndex = -1;
+let resectionPathStep = 0;
+let resectionPathTimer = null;
+let sequenceControlsWired = false;
+let selectedStartCell = null;
+let pickStartMode = false;
+let cellPickingWired = false;
+let pathPlanningBusy = false;
+const startCellPreviewCache = new Map();
+let resectionPlanAbortController = null;
+
+// ================================================================
+//  1. Scene setup
+// ================================================================
+const scene = new THREE.Scene();
+scene.background = new THREE.Color("#f5f5f8");
+
+const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10000);
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.sortObjects = true;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+// Append to 3D container instead of body
+const view3d = document.getElementById('view-3d');
+view3d.appendChild(renderer.domElement);
+
+function resizeRendererToView() {
+  const rect = view3d.getBoundingClientRect();
+  const width = Math.max(1, Math.round(rect.width));
+  const height = Math.max(1, Math.round(rect.height));
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(width, height, false);
+}
+
+function getModelSafeAspect() {
+  const rect = view3d.getBoundingClientRect();
+  const rootStyle = getComputedStyle(document.documentElement);
+  const safeLeft = parseFloat(rootStyle.getPropertyValue('--model-safe-left')) || 0;
+  const safeRight = parseFloat(rootStyle.getPropertyValue('--model-safe-right')) || 0;
+  const safeWidth = Math.max(rect.width * 0.28, rect.width - safeLeft - safeRight);
+  return safeWidth / Math.max(1, rect.height);
+}
+
+function fitCameraToScene() {
+  const safeAspect = getModelSafeAspect();
+  const aspectFit = safeAspect < 1 ? 1 / safeAspect : 1;
+  const compactCollapsed = document.body.classList.contains('structures-collapsed')
+    && window.matchMedia('(max-width: 620px)').matches;
+  const safePadding = compactCollapsed ? 0.68 : (safeAspect < 1 ? 1.14 : 1.04);
+  const dist = maxDim * 1.36 * aspectFit * safePadding;
+  INITIAL_CAM_POS = new THREE.Vector3(dist * 0.35, dist * 0.50, dist * 0.78);
+  camera.position.copy(INITIAL_CAM_POS);
+  camera.lookAt(0, 0, 0);
+  controls.update();
+}
+resizeRendererToView();
+
+// ================================================================
+//  2. Controls
+// ================================================================
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.rotateSpeed = 1.0;
+controls.zoomSpeed = 1.2;
+controls.target.set(0, 0, 0);
+controls.update();
+
+// ================================================================
+//  3. Lighting
+// ================================================================
+scene.add(new THREE.AmbientLight(0x8888aa, 0.8));
+scene.add(new THREE.HemisphereLight(0xaaaaff, 0xffeedd, 0.8));
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+dirLight.position.set(300, 400, 500);
+scene.add(dirLight);
+
+const fillLight = new THREE.DirectionalLight(0xccddff, 0.5);
+fillLight.position.set(-200, -100, -200);
+scene.add(fillLight);
+
+const backLight = new THREE.DirectionalLight(0xffffff, 0.6);
+backLight.position.set(-300, -400, -500);
+scene.add(backLight);
+
+scene.add(new THREE.DirectionalLight(0xffffff, 0.3));
+scene.children[scene.children.length - 1].position.set(-50, 150, -100);
+
+// Fallback colors — used by mesh building
+const FALLBACK_COLORS = [
+  '#E74C3C','#9B59B6','#E67E22','#2980B9','#2ECC71','#27AE60',
+  '#1ABC9C','#D35400','#F39C12','#F1C40F','#8E44AD','#16A085',
+  '#7F8C8D','#C0392B','#E91E63','#FF5722',
+];
+
+// ================================================================
+//  4. Load data from JSON — fetch then build scene + organ tree
+// ================================================================
+let MESH_DATA = [];
+let maxDim = 300;
+let INITIAL_CAM_POS = null;
+
+fetch(DATA_URL)
+  .then(r => {
+    if (!r.ok) throw new Error('无法加载三维数据：' + DATA_URL);
+    return r.json();
+  })
+  .then(jsonData => {
+    MESH_DATA = jsonData.meshes || [];
+    const resectionPlanes = jsonData.resection_planes || [];
+    currentPlanes = resectionPlanes;
+    document.body.classList.toggle('has-resection-workspace', resectionPlanes.length > 0);
+    requestAnimationFrame(resizeRendererToView);
+    const centerOffset = jsonData.center_offset || null;
+
+    // Show/hide resection toggle based on whether planes data exists
+    const toggleContainer = document.getElementById('resection-toggle');
+    if (toggleContainer) {
+      toggleContainer.style.display = 'flex';
+      document.getElementById('toggle-resection-plane').checked = currentPlanes.length > 0;
+    }
+
+    // 4a. Build organ meshes
+    MESH_DATA.forEach((data, idx) => {
+      const verts = new Float32Array(data.verts);
+      const faces = new Uint32Array(data.faces);
+      const color = data.color || FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
+      const opacity = data.opacity != null ? data.opacity : 0.85;
+      const name = data.name || `结构 ${idx + 1}`;
+
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+      geometry.setIndex(new THREE.BufferAttribute(faces, 1));
+      geometry.computeVertexNormals();
+
+      const isOpaque = opacity >= 1.0;
+      const material = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(color),
+        transparent: !isOpaque,
+        opacity: opacity,
+        depthWrite: isOpaque,
+        depthTest: true,
+        side: THREE.DoubleSide,
+        metalness: 0.02,
+        roughness: 0.5,
+        clearcoat: 0.0,
+        envMapIntensity: 0.3,
+        premultipliedAlpha: !isOpaque,
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.renderOrder = isOpaque ? 0 : 1;
+      mesh.userData = { name, color, opacity, idx };
+      scene.add(mesh);
+      meshes.push(mesh);
+    });
+
+    // 4b. Build resection planes (Bezier surfaces) if present
+    if (resectionPlanes.length > 0) {
+      Promise.all([
+        import('BezierSurface'),
+        import('three/addons/controls/DragControls.js'),
+      ]).then(([BS, { DragControls }]) => {
+        const box = new THREE.Box3().setFromObject(scene);
+        const size = box.getSize(new THREE.Vector3());
+        const dim = Math.max(size.x, size.y, size.z) || 100;
+        const tumorCloudData = jsonData.tumor_cloud || [];
+        const tumorCloud = new Float32Array(tumorCloudData);
+
+        // Render all planes, but only show the first one
+        planeObjects = [];
+        const savedPlaneIndex = Number.isInteger(jsonData.selected_resection_plane_index)
+          ? jsonData.selected_resection_plane_index : 0;
+        activePlane = (savedPlaneIndex >= 0 && savedPlaneIndex < resectionPlanes.length)
+          ? savedPlaneIndex : 0;
+        let isEditMode = false;
+        let activeDragControls = null;
+
+        const cloneControlPoints = points => points.map(
+          row => row.map(point => point.slice()));
+
+        resectionPlanes.forEach((planeData, pi) => {
+          if (centerOffset && !planeData.center_offset) {
+            planeData.center_offset = centerOffset;
+          }
+          const result = BS.buildBezierSurface(planeData, dim);
+          scene.add(result.mesh);
+          scene.add(result.line);
+          if (result.gridHelper) scene.add(result.gridHelper);
+          if (result.label) scene.add(result.label);
+
+          // Build control points (hidden by default)
+          const cpGroup = BS.buildControlPoints(planeData, dim);
+          scene.add(cpGroup);
+          cpGroup.visible = false;
+
+          // Hide all but the first plane
+          const visible = pi === activePlane;
+          result.mesh.visible = visible;
+          result.line.visible = visible;
+          if (result.gridHelper) result.gridHelper.visible = visible;
+          if (result.label) result.label.visible = visible;
+
+          result.mesh.userData = {
+            name: resectionPlanes[pi].candidate_name || ('切除方案 ' + (pi + 1)),
+            type: 'resection_plane',
+            planeIndex: pi,
+          };
+          const initialControlPoints = planeData.original_control_points_3d
+            || planeData.control_points_3d;
+          planeObjects.push({
+            ...result,
+            cpGroup,
+            planeData,
+            hasCP: !!planeData.control_points_3d,
+            originalControlPoints: initialControlPoints
+              ? cloneControlPoints(initialControlPoints) : null,
+          });
+        });
+
+        // --- Load and display the saved sequence path, if it exists ---
+        const sequenceUrl = DATA_URL.replace(/_3d\.json(?:\?.*)?$/, '_resection_sequence.json');
+        function loadSequence(sequence) {
+          const sequencePlaneIndex = Number.isInteger(sequence.saved_plane_index)
+            ? sequence.saved_plane_index : activePlane;
+          const sequencePlane = resectionPlanes[sequencePlaneIndex];
+          if (sequence.saved_at && (!sequencePlane || !sequencePlane.saved_at
+              || sequence.saved_at !== sequencePlane.saved_at)) {
+            throw new Error('该切除序列对应的是旧版已保存切面');
+          }
+          clearSequenceCells();
+          resectionSequence = sequence;
+          selectedStartCell = Number.isInteger(sequence.start_cell) ? sequence.start_cell : selectedStartCell;
+          const algorithmSelect = document.getElementById('path-algorithm');
+          if (algorithmSelect && sequence.algorithm) algorithmSelect.value = sequence.algorithm;
+          const sequenceParams = sequence.parameters || {};
+          if (sequenceParams.vascular_safe_distance_mm != null) document.getElementById('path-vascular-distance').value = sequenceParams.vascular_safe_distance_mm;
+          if (sequenceParams.liver_intersection_min_samples != null) document.getElementById('path-liver-samples').value = sequenceParams.liver_intersection_min_samples;
+          if (sequenceParams.step_time_seconds != null) document.getElementById('path-step-time').value = sequenceParams.step_time_seconds;
+          const idx = sequencePlaneIndex;
+          if (idx >= 0 && idx < planeObjects.length && idx !== activePlane) {
+            activePlane = idx;
+            planeObjects.forEach((po, i) => {
+              const visible = i === activePlane;
+              po.mesh.visible = visible;
+              po.line.visible = visible;
+              if (po.gridHelper) po.gridHelper.visible = visible;
+              if (po.label) po.label.visible = visible;
+            });
+          }
+          // Replace the original reference grid with the exact planner grid.
+          // This also handles deliberately requested coarse experimental grids.
+          const seqResolution = sequence.grid && sequence.grid.vertex_resolution;
+          if (seqResolution && planeObjects[activePlane]) {
+            const po = planeObjects[activePlane];
+            if (po.gridHelper) {
+              scene.remove(po.gridHelper);
+              po.gridHelper.geometry.dispose();
+              po.gridHelper.material.dispose();
+            }
+            po.gridHelper = BS.buildSurfaceGridFromCP(
+              po.planeData.control_points_3d,
+              seqResolution[0], seqResolution[1]
+            );
+            po.gridHelper.renderOrder = 6;
+            po.gridHelper.visible = po.mesh.visible;
+            scene.add(po.gridHelper);
+          }
+          createSequenceControls();
+          drawSequenceStep(0);
+        }
+
+        function fetchSequence(cacheBust) {
+          const url = cacheBust ? `${sequenceUrl}?t=${Date.now()}` : sequenceUrl;
+          return fetch(url).then(r => {
+            if (!r.ok) throw new Error('没有已保存的切除序列');
+            return r.json();
+          }).then(loadSequence).catch(() => {
+            const panel = document.getElementById('path-planning-panel');
+            if (panel) {
+              panel.dataset.available = 'false';
+              panel.style.display = 'none';
+            }
+          });
+        }
+        if (jsonData.resection_sequence_available === true) {
+          fetchSequence(false);
+        }
+
+        function sequenceCellPosition(planeData, cell) {
+          const grid = resectionSequence && resectionSequence.grid;
+          const nU = grid ? grid.vertex_resolution[0] : (planeData.surface_resolution || [20, 20])[0];
+          const nV = grid ? grid.vertex_resolution[1] : (planeData.surface_resolution || [20, 20])[1];
+          const cols = nV - 1;
+          const i = cell.grid_ij ? cell.grid_ij[0] : Math.floor(cell.cell / cols);
+          const j = cell.grid_ij ? cell.grid_ij[1] : cell.cell % cols;
+          const cp = planeData.control_points_3d;
+          const positions = BS.computeSurfacePositions(cp, nU, nV);
+          const index = (u, v) => (u * nV + v) * 3;
+          const a = index(i, j), b = index(i + 1, j), c = index(i, j + 1), d = index(i + 1, j + 1);
+          return new THREE.Vector3(
+            (positions[a] + positions[b] + positions[c] + positions[d]) / 4,
+            (positions[a + 1] + positions[b + 1] + positions[c + 1] + positions[d + 1]) / 4,
+            (positions[a + 2] + positions[b + 2] + positions[c + 2] + positions[d + 2]) / 4,
+          );
+        }
+
+        function sequenceCellCorners(planeData, cell) {
+          const grid = resectionSequence && resectionSequence.grid;
+          const nU = grid ? grid.vertex_resolution[0] : (planeData.surface_resolution || [20, 20])[0];
+          const nV = grid ? grid.vertex_resolution[1] : (planeData.surface_resolution || [20, 20])[1];
+          const cols = nV - 1;
+          const i = cell.grid_ij ? cell.grid_ij[0] : Math.floor(cell.cell / cols);
+          const j = cell.grid_ij ? cell.grid_ij[1] : cell.cell % cols;
+          const positions = BS.computeSurfacePositions(planeData.control_points_3d, nU, nV);
+          const point = (u, v) => {
+            const k = (u * nV + v) * 3;
+            return new THREE.Vector3(positions[k], positions[k + 1], positions[k + 2]);
+          };
+          return [point(i, j), point(i, j + 1), point(i + 1, j + 1), point(i + 1, j)];
+        }
+
+        function clearSequenceCells() {
+          resectionCellObjects.forEach(mesh => {
+            scene.remove(mesh);
+            mesh.geometry.dispose();
+            mesh.material.dispose();
+          });
+          resectionCellObjects = [];
+          resectionCellPlaneIndex = -1;
+        }
+
+        function ensureSequenceCells(planeData) {
+          if (resectionCellPlaneIndex === activePlane && resectionCellObjects.length) return;
+          clearSequenceCells();
+          const unique = new Map();
+          const grid = resectionSequence && resectionSequence.grid;
+          const nU = grid ? grid.vertex_resolution[0] : (planeData.surface_resolution || [20, 20])[0];
+          const nV = grid ? grid.vertex_resolution[1] : (planeData.surface_resolution || [20, 20])[1];
+          const cells = resectionSequence && resectionSequence.cell_states
+            ? resectionSequence.cell_states
+            : Array.from({length: (nU - 1) * (nV - 1)}, (_, cell) => ({
+                cell, grid_ij: [Math.floor(cell / (nV - 1)), cell % (nV - 1)], state: 'candidate'
+              }));
+          cells.forEach(step => unique.set(step.cell, step));
+          unique.forEach(step => {
+            const corners = sequenceCellCorners(planeData, step);
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(
+              corners.flatMap(p => [p.x, p.y, p.z]), 3));
+            geometry.setIndex([0, 1, 2, 0, 2, 3]);
+            geometry.computeVertexNormals();
+            const material = new THREE.MeshBasicMaterial({
+              color: 0x8b949e,
+              transparent: true,
+              opacity: 0.72,
+              side: THREE.DoubleSide,
+              depthTest: false,
+              depthWrite: false,
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.renderOrder = 18;
+            mesh.userData.sequenceCell = step.cell;
+            mesh.userData.sequenceState = step.state || 'candidate';
+            scene.add(mesh);
+            resectionCellObjects.push(mesh);
+          });
+          resectionCellPlaneIndex = activePlane;
+          wireCellPicking();
+        }
+
+        function updateCellColors() {
+          const visited = resectionSequence && resectionSequence.path
+            ? new Set(resectionSequence.path.slice(0, resectionPathStep + 1).map(s => s.cell))
+            : new Set();
+          const current = resectionSequence && resectionSequence.path && resectionSequence.path.length
+            ? resectionSequence.path[resectionPathStep].cell : null;
+          resectionCellObjects.forEach(mesh => {
+            const state = mesh.userData.sequenceState;
+            const cell = mesh.userData.sequenceCell;
+            if (cell === current) {
+              mesh.material.color.setHex(0xff1744);
+              mesh.material.opacity = 0.88;
+            } else if (cell === selectedStartCell) {
+              mesh.material.color.setHex(0x1976d2);
+              mesh.material.opacity = 0.9;
+            } else if (visited.has(cell)) {
+              mesh.material.color.setHex(0x808892);
+              mesh.material.opacity = 0.72;
+            } else if (state === 'outside_liver') {
+              mesh.material.color.setHex(0x4e342e);
+              mesh.material.opacity = 0.32;
+            } else if (state === 'vascular_risk') {
+              mesh.material.color.setHex(0xff8f00);
+              mesh.material.opacity = 0.62;
+            } else if (state === 'unreachable') {
+              mesh.material.color.setHex(0x8e24aa);
+              mesh.material.opacity = 0.62;
+            } else {
+              mesh.material.color.setHex(state === 'selectable' ? 0x43a047 : (state === 'candidate' ? 0x90caf9 : 0xb8c0c8));
+              mesh.material.opacity = state === 'selectable' ? 0.52 : (state === 'candidate' ? 0.22 : 0.18);
+            }
+          });
+        }
+
+        function wireCellPicking() {
+          if (cellPickingWired) return;
+          cellPickingWired = true;
+          const raycaster = new THREE.Raycaster();
+          renderer.domElement.addEventListener('pointerup', event => {
+            if (!pickStartMode || pathPlanningBusy || !resectionCellObjects.length) return;
+            const rect = renderer.domElement.getBoundingClientRect();
+            const pointer = new THREE.Vector2(
+              ((event.clientX - rect.left) / rect.width) * 2 - 1,
+              -((event.clientY - rect.top) / rect.height) * 2 + 1
+            );
+            raycaster.setFromCamera(pointer, camera);
+            const hits = raycaster.intersectObjects(resectionCellObjects, false);
+            if (!hits.length || hits[0].object.userData.sequenceState !== 'selectable') return;
+            selectedStartCell = hits[0].object.userData.sequenceCell;
+            pickStartMode = false;
+            updateCellColors();
+            createSequenceControls(`已选择起始网格 ${selectedStartCell}。`);
+          });
+        }
+
+        function requestStartCellPreview() {
+          const cd = document.getElementById('case-data');
+          const po = planeObjects[activePlane];
+          if (!cd || !po || !po.planeData || !po.planeData.user_saved) {
+            createSequenceControls('请先保存编辑后的切面，再选择起点。');
+            return;
+          }
+          const vascularDistance = Number(document.getElementById('path-vascular-distance').value);
+          const liverSamples = Number(document.getElementById('path-liver-samples').value);
+          const selectedAlgorithm = document.getElementById('path-algorithm').value;
+          const previewKey = [
+            activePlane,
+            po.planeData.saved_at || '',
+            selectedAlgorithm,
+            vascularDistance,
+            liverSamples,
+            JSON.stringify(po.planeData.control_points_3d || []),
+          ].join('|');
+          const activatePreview = preview => {
+            clearDisplayedSequence('正在准备有效起始网格…');
+            resectionSequence = preview;
+            selectedStartCell = null;
+            pickStartMode = true;
+            ensureSequenceCells(po.planeData);
+            updateCellColors();
+            createSequenceControls('绿色边界网格可作为有效起点。');
+          };
+          const cachedPreview = startCellPreviewCache.get(previewKey);
+          if (cachedPreview) {
+            activatePreview(cachedPreview);
+            return;
+          }
+          pathPlanningBusy = true;
+          clearDisplayedSequence('正在查找有效起始网格…');
+          fetch('/api/skills/run', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              skill_name: 'plan_resection_sequence',
+              case_id: cd.dataset.caseName || '',
+              params: {
+                preview_only: true,
+                algorithm: selectedAlgorithm,
+                vascular_safe_distance_mm: vascularDistance,
+                liver_intersection_min_samples: liverSamples
+              }
+            })
+          }).then(r => r.json()).then(data => {
+            if (data.status !== 'ok' || !data.result || data.result.status !== 'preview') {
+              throw new Error(data.message || data.detail || '无法识别有效起始网格');
+            }
+            startCellPreviewCache.set(previewKey, data.result);
+            activatePreview(data.result);
+          }).catch(err => {
+            createSequenceControls('起始网格预览失败：' + err.message);
+          }).finally(() => {
+            pathPlanningBusy = false;
+            createSequenceControls();
+          });
+        }
+
+        function drawSequenceStep(step) {
+          if (!resectionSequence || !resectionSequence.path || !planeObjects.length) return;
+          const steps = resectionSequence.path;
+          resectionPathStep = Math.max(0, Math.min(step, steps.length - 1));
+          const plane = planeObjects[activePlane].planeData;
+          ensureSequenceCells(plane);
+          updateCellColors();
+          const points = steps.map(s => sequenceCellPosition(plane, s));
+          if (resectionPathObjects) {
+            scene.remove(resectionPathObjects.completed);
+            scene.remove(resectionPathObjects.remaining);
+            scene.remove(resectionPathObjects.current);
+            resectionPathObjects.completed.geometry.dispose();
+            resectionPathObjects.remaining.geometry.dispose();
+            resectionPathObjects.current.geometry.dispose();
+          }
+          const completedPoints = points.slice(0, resectionPathStep + 1);
+          const remainingPoints = points.slice(resectionPathStep);
+          const makeLine = (arr, color, width) => {
+            const geometry = new THREE.BufferGeometry().setFromPoints(arr.length > 1 ? arr : points.slice(0, 1));
+            const material = new THREE.LineBasicMaterial({color, linewidth: width, depthTest: false, transparent: true, opacity: 0.95});
+            const line = new THREE.Line(geometry, material);
+            line.renderOrder = 20;
+            return line;
+          };
+          const completed = makeLine(completedPoints, 0x20c997, 3);
+          const remaining = makeLine(remainingPoints, 0xffc107, 2);
+          const current = new THREE.Mesh(
+            new THREE.SphereGeometry(Math.max(maxDim * 0.012, 1), 16, 12),
+            new THREE.MeshBasicMaterial({color: 0xff1744, depthTest: false})
+          );
+          current.position.copy(points[resectionPathStep]);
+          current.renderOrder = 21;
+          scene.add(completed); scene.add(remaining); scene.add(current);
+          resectionPathObjects = {completed, remaining, current};
+          const label = document.getElementById('path-status');
+          if (label) {
+            const actionNames = { cut: '切除', transfer: '转移', move: '移动' };
+            const action = actionNames[steps[resectionPathStep].action] || steps[resectionPathStep].action;
+            const currentStep = steps[resectionPathStep];
+            const coveredCount = currentStep.covered_cell_count
+              || new Set(steps.slice(0, resectionPathStep + 1).map(s => s.cell)).size;
+            const coverageText = `步骤 ${resectionPathStep + 1}/${steps.length} · ${action} · 覆盖率 ${((coveredCount / (resectionSequence.target_cell_count || 1)) * 100).toFixed(1)}%`;
+            label.textContent = resectionSequence.status === 'partial'
+              ? `${coverageText} · ${resectionSequence.failure_reason || '部分覆盖'}`
+              : coverageText;
+          }
+          const slider = document.getElementById('path-slider');
+          if (slider) slider.value = resectionPathStep;
+        }
+
+        function createSequenceControls(message) {
+          const panel = document.getElementById('path-planning-panel');
+          if (!panel) return;
+          panel.dataset.available = 'true';
+          const pathToggle = document.getElementById('toggle-path-planning');
+          const planeToggle = document.getElementById('toggle-resection-plane');
+          panel.style.display = pathToggle && pathToggle.checked
+            && planeToggle && planeToggle.checked ? 'flex' : 'none';
+          const po = planeObjects[activePlane];
+          const slider = document.getElementById('path-slider');
+          const hasPath = !!(resectionSequence && resectionSequence.path && resectionSequence.path.length);
+          slider.disabled = !hasPath;
+          slider.max = hasPath ? Math.max(0, resectionSequence.path.length - 1) : 0;
+          document.getElementById('path-play').disabled = !hasPath;
+          document.getElementById('path-prev').disabled = !hasPath;
+          document.getElementById('path-next').disabled = !hasPath;
+          const replanButton = document.getElementById('path-replan');
+          if (replanButton) replanButton.disabled = pathPlanningBusy;
+          const pickButton = document.getElementById('path-pick-start');
+          pickButton.disabled = !po || !po.planeData.user_saved || pathPlanningBusy;
+          pickButton.textContent = pickStartMode ? '点击网格' : '选择起点';
+          if (message) document.getElementById('path-status').textContent = message;
+          else if (selectedStartCell != null) document.getElementById('path-status').textContent = `起始网格 ${selectedStartCell}`;
+          if (!resectionCellObjects.length && po && resectionSequence) ensureSequenceCells(po.planeData);
+          if (sequenceControlsWired) return;
+          sequenceControlsWired = true;
+          slider.addEventListener('input', () => { stopSequence(); drawSequenceStep(Number(slider.value)); });
+          document.getElementById('path-play').addEventListener('click', () => {
+            if (!resectionSequence || !resectionSequence.path.length) return;
+            if (resectionPathTimer) { stopSequence(); return; }
+            resectionPathTimer = setInterval(() => {
+              if (resectionPathStep >= resectionSequence.path.length - 1) { stopSequence(); return; }
+              drawSequenceStep(resectionPathStep + 1);
+            }, 120);
+            document.getElementById('path-play').textContent = '暂停';
+          });
+          document.getElementById('path-prev').addEventListener('click', () => { stopSequence(); drawSequenceStep(resectionPathStep - 1); });
+          document.getElementById('path-next').addEventListener('click', () => { stopSequence(); drawSequenceStep(resectionPathStep + 1); });
+          pickButton.addEventListener('click', () => {
+            if (pickStartMode) {
+              pickStartMode = false;
+              createSequenceControls('已取消起点选择。');
+              return;
+            }
+            requestStartCellPreview();
+          });
+          document.getElementById('path-replan').addEventListener('click', requestSequencePlan);
+        }
+
+        function stopSequence() {
+          if (resectionPathTimer) clearInterval(resectionPathTimer);
+          resectionPathTimer = null;
+          const btn = document.getElementById('path-play');
+          if (btn) btn.textContent = '播放';
+        }
+
+        function clearDisplayedSequence(message, revealPanel = true) {
+          stopSequence();
+          if (resectionPathObjects) {
+            scene.remove(resectionPathObjects.completed);
+            scene.remove(resectionPathObjects.remaining);
+            scene.remove(resectionPathObjects.current);
+            resectionPathObjects.completed.geometry.dispose();
+            resectionPathObjects.remaining.geometry.dispose();
+            resectionPathObjects.current.geometry.dispose();
+            resectionPathObjects = null;
+          }
+          clearSequenceCells();
+          resectionSequence = null;
+          selectedStartCell = null;
+          pickStartMode = false;
+          if (revealPanel) {
+            createSequenceControls(message || '请先保存切面，再重新规划。');
+          } else {
+            const panel = document.getElementById('path-planning-panel');
+            if (panel) {
+              panel.dataset.available = 'false';
+              panel.style.display = 'none';
+            }
+            if (message) document.getElementById('path-status').textContent = message;
+          }
+        }
+
+        function requestSequencePlan() {
+          const cd = document.getElementById('case-data');
+          const po = planeObjects[activePlane];
+          if (!cd || !po || !po.planeData || !po.planeData.user_saved) {
+            createSequenceControls('请先保存编辑后的切面。');
+            return;
+          }
+          if (selectedStartCell == null) {
+            createSequenceControls('请先在切面上选择起始网格。');
+            return;
+          }
+          const button = document.getElementById('path-replan');
+          button.disabled = true;
+          pathPlanningBusy = true;
+          button.textContent = '规划中…';
+          createSequenceControls('正在基于已保存切面规划…');
+          fetch('/api/skills/run', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              skill_name: 'plan_resection_sequence',
+              case_id: cd.dataset.caseName || '',
+              params: {
+                algorithm: document.getElementById('path-algorithm').value,
+                start_cell: selectedStartCell,
+                vascular_safe_distance_mm: Number(document.getElementById('path-vascular-distance').value),
+                liver_intersection_min_samples: Number(document.getElementById('path-liver-samples').value),
+                step_time_seconds: Number(document.getElementById('path-step-time').value)
+              }
+            })
+          }).then(r => r.json()).then(data => {
+            if (data.status !== 'ok' || !data.result || !['ok', 'partial'].includes(data.result.status)) {
+              throw new Error(data.message || data.detail || '路径规划失败');
+            }
+            return fetchSequence(true);
+          }).then(() => {
+            if (!resectionSequence) throw new Error('无法加载新的路径结果');
+          }).catch(err => {
+            createSequenceControls('路径规划失败：' + err.message);
+          }).finally(() => {
+            pathPlanningBusy = false;
+            button.disabled = false;
+            button.textContent = '重新规划';
+            createSequenceControls();
+          });
+        }
+
+        function handlePathPlanningOpenRequest(event) {
+          const requestedOpen = !event || !event.detail || event.detail.open !== false;
+          const panel = document.getElementById('path-planning-panel');
+          if (!requestedOpen) {
+            stopSequence();
+            if (panel) panel.style.display = 'none';
+            return;
+          }
+          const po = planeObjects[activePlane];
+          const message = po && po.planeData && po.planeData.user_saved
+            ? (resectionSequence ? undefined : '请选择起始网格，然后生成最优路径。')
+            : '请先保存所选切除面，再规划手术路径。';
+          createSequenceControls(message);
+        }
+        document.addEventListener('path-planning-open-request', handlePathPlanningOpenRequest);
+        const pathToggle = document.getElementById('toggle-path-planning');
+        if (pathToggle && pathToggle.checked) {
+          handlePathPlanningOpenRequest();
+        }
+
+        // --- Edit mode controls ---
+        function rebuildEditedPlane(po, controlPoints, gridVisible) {
+          const cp3d = cloneControlPoints(controlPoints);
+          const nU = (po.planeData.surface_resolution && po.planeData.surface_resolution[0]) || 20;
+          const nV = (po.planeData.surface_resolution && po.planeData.surface_resolution[1]) || 20;
+          const newPos = BS.computeSurfacePositions(cp3d, nU, nV);
+          const dists = BS.computeVertexDistances(newPos, tumorCloud);
+          const cols = BS.distancesToColors(dists);
+
+          po.planeData.control_points_3d = cp3d;
+          BS.updateSurfaceGeometry(po.mesh.geometry, newPos, cols);
+          po.cpGroup.children.forEach((sphere, index) => {
+            const point = cp3d[Math.floor(index / 4)][index % 4];
+            sphere.position.set(point[0], point[1], point[2]);
+          });
+
+          const marginMin = Math.min(...dists);
+          po.planeData.margin_min_mm = marginMin;
+          const sortedDists = [...dists].sort((a, b) => a - b);
+          const marginP05 = sortedDists.length === 0
+            ? 0
+            : sortedDists[Math.floor(sortedDists.length * 0.05)];
+          po.planeData.margin_p05_mm = marginP05;
+          po.planeData.margin_success = marginMin >= (po.planeData.margin_target_mm || 5);
+          if (po.label) {
+            const labelWasVisible = po.label.visible;
+            scene.remove(po.label);
+            po.label.material?.map?.dispose();
+            po.label.material?.dispose();
+            po.label = BS.buildMarginLabel(po.planeData, dim);
+            if (po.label) {
+              po.label.visible = labelWasVisible;
+              scene.add(po.label);
+            }
+          }
+
+          scene.remove(po.line);
+          po.line.geometry.dispose();
+          po.line.material.dispose();
+          po.line = BS.buildBoundaryLineFromCP(cp3d, nU, nV);
+          po.line.renderOrder = 6;
+          po.line.visible = po.mesh.visible;
+          scene.add(po.line);
+
+          if (po.gridHelper) {
+            scene.remove(po.gridHelper);
+            po.gridHelper.geometry.dispose();
+            po.gridHelper.material.dispose();
+          }
+          po.gridHelper = BS.buildSurfaceGridFromCP(cp3d, nU, nV);
+          po.gridHelper.renderOrder = 6;
+          po.gridHelper.visible = gridVisible;
+          scene.add(po.gridHelper);
+        }
+
+        function enterEditMode() {
+          if (isEditMode) return;
+          const po = planeObjects[activePlane];
+          if (!po.hasCP) return; // no control points data
+
+          isEditMode = true;
+          // Editing is single-plane mode: hide every other candidate and all
+          // overlays so the user sees only the surface being modified.
+          planeObjects.forEach((other, index) => {
+            const visible = index === activePlane;
+            other.mesh.visible = visible;
+            other.line.visible = visible;
+            if (other.gridHelper) other.gridHelper.visible = false;
+            if (other.label) other.label.visible = false;
+            other.cpGroup.visible = false;
+          });
+          po.cpGroup.visible = true;
+          po.mesh.visible = true;
+          po.line.visible = true;
+          if (po.gridHelper) po.gridHelper.visible = false;
+          if (po.label) po.label.visible = false;
+
+          const cpSpheres = po.cpGroup.children;
+          activeDragControls = new DragControls(cpSpheres, camera, renderer.domElement);
+          activeDragControls.addEventListener('dragstart', () => { controls.enabled = false; });
+          activeDragControls.addEventListener('dragstart', () => {
+            // Any geometry change invalidates the previous saved-plane state.
+            po.planeData.user_saved = false;
+            po.planeData.unsaved_changes = true;
+            delete po.planeData.saved_at;
+            startCellPreviewCache.clear();
+            clearDisplayedSequence('切面已编辑，请保存后重新规划。', false);
+            const cd = document.getElementById('case-data');
+            if (cd) {
+              fetch('/api/resection-plane/invalidate', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  output_dir: cd.dataset.outputDir || '',
+                  json_file: cd.dataset.jsonFile || '',
+                  plane_index: activePlane
+                })
+              }).catch(() => {});
+            }
+          });
+          activeDragControls.addEventListener('drag', () => {
+            // Extract updated 4x4 control points from sphere positions
+            const cp3d = [];
+            for (let ci = 0; ci < 4; ci++) {
+              cp3d[ci] = [];
+              for (let cj = 0; cj < 4; cj++) {
+                const sphere = cpSpheres[ci * 4 + cj];
+                cp3d[ci][cj] = [sphere.position.x, sphere.position.y, sphere.position.z];
+              }
+            }
+            po.planeData.control_points_3d = cp3d;
+            // Rebuild surface geometry with new positions + colors
+            const nU = (po.planeData.surface_resolution && po.planeData.surface_resolution[0]) || 20;
+            const nV = (po.planeData.surface_resolution && po.planeData.surface_resolution[1]) || 20;
+            const newPos = BS.computeSurfacePositions(cp3d, nU, nV);
+            const dists = BS.computeVertexDistances(newPos, tumorCloud);
+            console.log('[drag] dists min=', Math.min(...dists).toFixed(3), 'max=', Math.max(...dists).toFixed(3));
+            const cols = BS.distancesToColors(dists);
+            BS.updateSurfaceGeometry(po.mesh.geometry, newPos, cols);
+            // Update label with current margin
+            const marginMin = Math.min(...dists);
+            if (po.label) {
+              scene.remove(po.label);
+              po.planeData.margin_min_mm = marginMin;
+              const sortedDists = [...dists].sort((a, b) => a - b);
+              const marginP05 = sortedDists.length === 0
+                ? 0
+                : sortedDists[Math.floor(sortedDists.length * 0.05)];
+              po.planeData.margin_p05_mm = marginP05;
+              po.label = BS.buildMarginLabel(po.planeData, dim);
+              if (po.label) scene.add(po.label);
+            }
+            // Rebuild boundary line
+            scene.remove(po.line);
+            po.line = BS.buildBoundaryLineFromCP(cp3d, nU, nV);
+            scene.add(po.line);
+          });
+          activeDragControls.addEventListener('dragend', () => {
+            controls.enabled = true;
+            // The old grid is sampled from the pre-edit surface. Replace it
+            // only after dragging ends, so exiting edit mode never reveals a
+            // second, stale plane behind the edited mesh.
+            const nU = (po.planeData.surface_resolution && po.planeData.surface_resolution[0]) || 20;
+            const nV = (po.planeData.surface_resolution && po.planeData.surface_resolution[1]) || 20;
+            if (po.gridHelper) {
+              scene.remove(po.gridHelper);
+              po.gridHelper.geometry.dispose();
+              po.gridHelper.material.dispose();
+            }
+            po.gridHelper = BS.buildSurfaceGridFromCP(po.planeData.control_points_3d, nU, nV);
+            po.gridHelper.renderOrder = 6;
+            po.gridHelper.visible = false;
+            scene.add(po.gridHelper);
+          });
+        }
+
+        function exitEditMode() {
+          if (!isEditMode) return;
+          isEditMode = false;
+          const po = planeObjects[activePlane];
+          po.cpGroup.visible = false;
+          if (po.gridHelper) po.gridHelper.visible = po.mesh.visible;
+          if (po.label) po.label.visible = po.mesh.visible;
+          if (activeDragControls) {
+            activeDragControls.dispose();
+            activeDragControls = null;
+          }
+        }
+
+        // Add plane selector and persistence UI
+        if (resectionPlanes.length > 0) {
+          const selector = document.createElement('div');
+          selector.id = 'plane-selector';
+          selector.style.cssText = 'position:absolute;bottom:55px;left:50%;transform:translateX(-50%);z-index:25;'
+            + 'gap:8px;align-items:center;'
+            + 'background:rgba(255,255,255,0.9);padding:6px 14px;border-radius:8px;'
+            + 'border:1px solid rgba(0,0,0,0.12);font-size:13px;color:#333;';
+
+          const prevBtn = document.createElement('button');
+          prevBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg>';
+          prevBtn.setAttribute('aria-label', '上一个切面');
+          prevBtn.style.cssText = 'border:none;background:transparent;cursor:pointer;font-size:16px;padding:2px 8px;';
+          const nextBtn = document.createElement('button');
+          nextBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg>';
+          nextBtn.setAttribute('aria-label', '下一个切面');
+          nextBtn.style.cssText = 'border:none;background:transparent;cursor:pointer;font-size:16px;padding:2px 8px;';
+          const label = document.createElement('span');
+          label.id = 'plane-label';
+          label.style.cssText = 'min-width:120px;text-align:center;font-weight:500;';
+
+          // Edit mode toggle
+          const editBtn = document.createElement('button');
+          editBtn.innerHTML = '<svg viewBox="0 0 1024 1024" width="17" height="17" aria-hidden="true" fill="currentColor"><path d="M257.536 744.448 307.2 595.2 717.824 184.576a42.667 42.667 0 0 1 60.33 0l61.27 61.269a42.667 42.667 0 0 1 0 60.33L428.8 716.8l-149.248 49.664a17.067 17.067 0 0 1-22.016-22.016zM348.16 646.4l47.104 47.104 49.664-16.554-80.214-80.214L348.16 646.4z"></path></svg><span>编辑</span>';
+          editBtn.title = '编辑控制点';
+          editBtn.style.cssText = 'border:none;background:transparent;color:#333;cursor:pointer;font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;transition:all 0.15s;';
+          const editLabel = editBtn.querySelector('span');
+          editLabel.style.cssText = 'font-size:11px;line-height:17px;';
+
+          const restoreBtn = document.createElement('button');
+          restoreBtn.innerHTML = '<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg><span>复原</span>';
+          restoreBtn.title = '放弃当前切面的所有人工拖动，恢复最初的 Bézier 曲面';
+          restoreBtn.setAttribute('aria-label', '复原最初的贝塞尔曲面');
+          restoreBtn.style.cssText = 'border:none;background:transparent;color:#333;cursor:pointer;font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;transition:all 0.15s;';
+          const restoreLabel = restoreBtn.querySelector('span');
+          restoreLabel.style.cssText = 'font-size:11px;line-height:17px;';
+
+          const saveBtn = document.createElement('button');
+          saveBtn.innerHTML = '<svg viewBox="0 0 1024 1024" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M170.666667 128h597.333333l115.498667 115.498667a42.666667 42.666667 0 0 1 12.501333 30.165333V853.333333a42.666667 42.666667 0 0 1-42.666667 42.666667H170.666667a42.666667 42.666667 0 0 1-42.666667-42.666667V170.666667a42.666667 42.666667 0 0 1 42.666667-42.666667z m128 42.666667v213.333333h384V170.666667H298.666667z m-42.666667 341.333333v298.666667h512v-298.666667H256z m298.666667-298.666667h85.333333v128h-85.333333V213.333333z"></path></svg>';
+          saveBtn.title = '保存当前切面';
+          saveBtn.innerHTML += '<span>保存</span>';
+          saveBtn.style.cssText = 'border:none;background:transparent;color:#333;cursor:pointer;font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;transition:all 0.15s;';
+          const saveLabel = saveBtn.querySelector('span');
+          saveLabel.style.cssText = 'font-size:11px;line-height:18px;';
+
+          saveBtn.addEventListener('click', () => {
+            const po = planeObjects[activePlane];
+            const cd = document.getElementById('case-data');
+            if (!po || !po.planeData || !cd) return;
+            saveBtn.disabled = true;
+            saveLabel.textContent = '...';
+            fetch('/api/resection-plane/save', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                output_dir: cd.dataset.outputDir || '',
+                json_file: cd.dataset.jsonFile || '',
+                plane_index: activePlane,
+                control_points_3d: po.planeData.control_points_3d,
+                candidate_name: po.planeData.candidate_name || '',
+                source: 'three_d_editor'
+              })
+            }).then(r => r.json()).then(data => {
+              if (data.status !== 'ok') throw new Error(data.message || '保存失败');
+              po.planeData.user_saved = true;
+              po.planeData.saved_at = data.saved_at || new Date().toISOString();
+              startCellPreviewCache.clear();
+              saveLabel.textContent = '已保存';
+              saveBtn.style.background = '#34a853';
+              saveBtn.style.color = '#fff';
+              clearDisplayedSequence('切面已保存，现在可以进行路径规划。', false);
+            }).catch(err => {
+              saveLabel.textContent = '保存';
+              alert('切面保存失败：' + err.message);
+            }).finally(() => { saveBtn.disabled = false; });
+          });
+
+          editBtn.addEventListener('click', () => {
+            const po = planeObjects[activePlane];
+            if (!po.hasCP) return;
+            if (!isEditMode) {
+              enterEditMode();
+              editBtn.style.background = '#4285f4';
+              editBtn.style.color = '#fff';
+              editLabel.textContent = '完成';
+            } else {
+              exitEditMode();
+              editBtn.style.background = 'transparent';
+              editBtn.style.color = '#333';
+              editLabel.textContent = '编辑';
+            }
+          });
+
+          restoreBtn.addEventListener('click', () => {
+            const po = planeObjects[activePlane];
+            const cd = document.getElementById('case-data');
+            if (!po || !po.originalControlPoints) return;
+
+            rebuildEditedPlane(po, po.originalControlPoints, !isEditMode && po.mesh.visible);
+            po.planeData.user_saved = false;
+            po.planeData.unsaved_changes = false;
+            delete po.planeData.saved_at;
+            startCellPreviewCache.clear();
+            clearDisplayedSequence('切面已复原；如需用于路径规划，请先保存。', false);
+            saveLabel.textContent = '保存';
+            saveBtn.style.background = 'transparent';
+            saveBtn.style.color = '#333';
+            updatePlaneView(activePlane);
+
+            if (!cd) return;
+            restoreBtn.disabled = true;
+            restoreLabel.textContent = '复原中…';
+            fetch('/api/resection-plane/restore', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                output_dir: cd.dataset.outputDir || '',
+                json_file: cd.dataset.jsonFile || '',
+                plane_index: activePlane,
+                original_control_points_3d: po.originalControlPoints
+              })
+            }).then(r => r.json()).then(data => {
+              if (data.status !== 'ok') throw new Error(data.message || data.detail || '复原失败');
+              restoreLabel.textContent = '已复原';
+              window.setTimeout(() => { restoreLabel.textContent = '复原'; }, 1200);
+            }).catch(err => {
+              restoreLabel.textContent = '复原';
+              alert('画面已复原，但服务器未能保存复原状态：' + err.message);
+            }).finally(() => { restoreBtn.disabled = false; });
+          });
+
+          function updatePlaneView(idx) {
+            if (isEditMode) { exitEditMode(); editBtn.style.background = 'transparent'; editBtn.style.color = '#333'; editLabel.textContent = '编辑'; }
+            planeObjects.forEach((po, i) => {
+              const v = i === idx;
+              po.mesh.visible = v;
+              po.line.visible = v;
+              if (po.gridHelper) po.gridHelper.visible = v;
+              if (po.label) po.label.visible = v;
+              po.cpGroup.visible = false;
+            });
+            const p = resectionPlanes[idx];
+            const marginStr = p.margin_success ? '安全' : '风险';
+            label.textContent = (idx + 1) + '/' + resectionPlanes.length + ' '
+              + marginStr + ' · ' + (p.margin_min_mm || 0).toFixed(1) + ' mm';
+          }
+
+          prevBtn.addEventListener('click', function() {
+            activePlane = (activePlane - 1 + resectionPlanes.length) % resectionPlanes.length;
+            updatePlaneView(activePlane);
+          });
+          nextBtn.addEventListener('click', function() {
+            activePlane = (activePlane + 1) % resectionPlanes.length;
+            updatePlaneView(activePlane);
+          });
+
+          updatePlaneView(activePlane);
+          const planeHeading = document.createElement('div');
+          planeHeading.className = 'panel-heading plane-panel-heading';
+          planeHeading.dataset.dragHandle = 'true';
+          planeHeading.innerHTML = '<div><div class="panel-title">切除面</div>'
+            + '<div class="panel-subtitle">候选方案与安全切缘</div></div>'
+            + '<button id="plane-panel-toggle" type="button" aria-label="收起切除面面板" aria-expanded="true">'
+            + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>'
+            + '</button>';
+          const planeControls = document.createElement('div');
+          planeControls.className = 'plane-selector-controls';
+          planeControls.appendChild(prevBtn);
+          planeControls.appendChild(label);
+          planeControls.appendChild(nextBtn);
+          planeControls.appendChild(editBtn);
+          planeControls.appendChild(restoreBtn);
+          planeControls.appendChild(saveBtn);
+          selector.appendChild(planeHeading);
+          selector.appendChild(planeControls);
+          const rightWorkspace = document.getElementById('right-workspace');
+          const sequencePanel = document.getElementById('path-planning-panel');
+          if (rightWorkspace) rightWorkspace.insertBefore(selector, sequencePanel);
+          else document.body.appendChild(selector);
+        }
+
+        // --- Color legend ---
+        const legend = document.createElement('div');
+        legend.id = 'color-legend';
+        legend.style.cssText = 'position:absolute;bottom:80px;right:20px;z-index:25;'
+          + 'background:rgba(255,255,255,0.92);border-radius:8px;padding:10px 14px;'
+          + 'border:1px solid rgba(0,0,0,0.12);font-size:12px;color:#333;'
+          + 'box-shadow:0 2px 8px rgba(0,0,0,0.08);';
+        legend.innerHTML = '<div class="panel-heading distance-panel-heading" data-drag-handle="true">'
+          + '<div><div class="panel-title">肿瘤距离</div>'
+          + '<div class="panel-subtitle">安全切缘分级</div></div>'
+          + '<button id="distance-panel-toggle" type="button" aria-label="收起距离面板" aria-expanded="true">'
+          + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>'
+          + '</button></div>'
+          + '<div class="distance-legend-body">'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#2878b8"></i><span>≥ 20 mm · 充足</span></div>'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#2f8f6b"></i><span>10–20 mm · 安全</span></div>'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#d89221"></i><span>5–10 mm · 注意</span></div>'
+          + '<div class="distance-legend-row"><i class="distance-legend-swatch" style="background:#c43d3d"></i><span>&lt; 5 mm · 低于切缘</span></div>'
+          + '</div>';
+        const rightWorkspace = document.getElementById('right-workspace');
+        const planeSelector = document.getElementById('plane-selector');
+        const sequencePanel = document.getElementById('path-planning-panel');
+        if (rightWorkspace) rightWorkspace.insertBefore(legend, planeSelector || sequencePanel);
+        else document.body.appendChild(legend);
+      });
+    }
+
+    // 4c. Auto-fit camera
+    const box = new THREE.Box3().setFromObject(scene);
+    const size = box.getSize(new THREE.Vector3());
+    maxDim = Math.max(size.x, size.y, size.z) || 100;
+    fitCameraToScene();
+
+    // 4d. Build organ tree
+    buildOrganTree();
+  })
+  .catch(err => {
+    document.getElementById('info').textContent = '数据错误 · ' + (err.message || err);
+    console.error('3D data load error:', err);
+  });
+
+// ================================================================
+//  5. Organ Tree Panel — built after data is loaded
+// ================================================================
+function buildOrganTree() {
+  const treeEl = document.getElementById('organ-tree');
+  const structureCount = document.getElementById('structure-count');
+  if (structureCount) structureCount.textContent = String(MESH_DATA.length);
+
+  const LESION_KEYS = ['tumor','cancer','metastasis','cyst','lesion','nodule'];
+  const VESSEL_KEYS = ['hepatic','portal','vein','artery','vascular'];
+
+  function classify(orig) {
+    const n = (orig || '').toLowerCase();
+    if (LESION_KEYS.some(k => n.includes(k))) return 'lesion';
+    if (VESSEL_KEYS.some(k => n.includes(k))) return 'vessel';
+    return 'organ';
+  }
+
+  const groups = { organ: [], lesion: [], vessel: [], plan: [] };
+  const groupNames = { organ: '器官', lesion: '病灶', vessel: '血管', plan: '手术方案' };
+  const groupLabels = { organ: '', lesion: '', vessel: '', plan: '' };
+
+  MESH_DATA.forEach((data, idx) => {
+    const cat = classify(data.original_name);
+    groups[cat].push({ ...data, idx });
+  });
+
+  // Add resection planes to a dedicated group
+  meshes.forEach((m, idx) => {
+    if (m.userData.type === 'resection_plane') {
+      groups.plan.push({
+        name: m.userData.name,
+        color: '#44aaff',
+        opacity: 0.45,
+        volume_cm3: 0,
+        idx: idx,
+        original_name: 'resection_plane',
+      });
+    }
+  });
+
+  let totalVolume = 0;
+
+  for (const [key, items] of Object.entries(groups)) {
+    if (items.length === 0) continue;
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'tree-group';
+
+    const header = document.createElement('div');
+    header.className = 'tree-group-header';
+    header.innerHTML = `<span class="arrow open" aria-hidden="true"></span>${groupLabels[key]} ${groupNames[key]} (${items.length})`;
+    const body = document.createElement('div');
+    body.className = 'tree-group-body';
+
+    header.addEventListener('click', () => {
+      body.classList.toggle('collapsed');
+      header.querySelector('.arrow').classList.toggle('open');
+    });
+
+    items.forEach(d => {
+      totalVolume += d.volume_cm3 || 0;
+      const item = document.createElement('div');
+      item.className = 'tree-item';
+      item.dataset.idx = d.idx;
+
+      const eye = document.createElement('span');
+      eye.className = 'eye';
+      eye.textContent = '';
+      eye.title = '切换显示状态';
+      eye.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const m = meshes[d.idx];
+        if (m) { m.visible = !m.visible; }
+        eye.classList.toggle('hidden');
+        item.classList.toggle('mesh-hidden');
+      });
+
+      const swatch = document.createElement('span');
+      swatch.className = 'swatch';
+      swatch.style.background = d.color;
+
+      const label = document.createElement('span');
+      label.className = 'label';
+      label.textContent = d.name;
+      label.title = d.name;
+
+      const vol = document.createElement('span');
+      vol.className = 'volume';
+      const v = d.volume_cm3 || 0;
+      if (v >= 100) vol.textContent = `${v.toFixed(0)} mL`;
+      else if (v >= 1) vol.textContent = `${v.toFixed(1)} mL`;
+      else if (v > 0) vol.textContent = `${v.toFixed(2)} mL`;
+      else vol.textContent = '';
+
+      const opacityDot = document.createElement('span');
+      opacityDot.className = 'opacity-dot full';
+      opacityDot.title = '切换透明度';
+      opacityDot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const m = meshes[d.idx];
+        if (!m) return;
+        const cur = m.material.opacity;
+        if (cur >= 1) { m.material.opacity = 0.4; m.material.transparent = true; m.renderOrder = 1;
+          opacityDot.className = 'opacity-dot half'; }
+        else if (cur > 0) { m.material.opacity = 0; m.material.transparent = true;
+          opacityDot.className = 'opacity-dot transp'; }
+        else { m.material.opacity = m.userData.opacity;
+          const isOpaque = m.userData.opacity >= 1;
+          m.material.transparent = !isOpaque; m.renderOrder = isOpaque ? 0 : 1;
+          opacityDot.className = 'opacity-dot full'; }
+        m.material.needsUpdate = true;
+      });
+
+      item.appendChild(eye);
+      item.appendChild(swatch);
+      item.appendChild(label);
+      item.appendChild(vol);
+      item.appendChild(opacityDot);
+      body.appendChild(item);
+    });
+
+    groupDiv.appendChild(header);
+    groupDiv.appendChild(body);
+    treeEl.appendChild(groupDiv);
+  }
+
+  if (totalVolume > 0) {
+    const footer = document.createElement('div');
+    footer.className = 'tree-total';
+  footer.innerHTML = `<span>总体积</span><span>${totalVolume >= 100 ? totalVolume.toFixed(0) : totalVolume.toFixed(1)} mL</span>`;
+    treeEl.appendChild(footer);
+  }
+}
+
+// ================================================================
+//  6. Organ Tree Horizontal Resize
+// ================================================================
+const ORGAN_TREE_MIN_WIDTH = 190;
+const ORGAN_TREE_MAX_WIDTH = 480;
+const organTree = document.getElementById('organ-tree');
+const organTreeResizeHandle = document.getElementById('organ-tree-resize-handle');
+
+organTreeResizeHandle.addEventListener('pointerdown', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  organTreeResizeHandle.setPointerCapture(event.pointerId);
+  organTree.classList.add('resizing');
+
+  const startX = event.clientX;
+  const startWidth = organTree.getBoundingClientRect().width;
+
+  const onPointerMove = (moveEvent) => {
+    const viewportMaximum = Math.max(
+      0,
+      window.innerWidth - organTree.offsetLeft - 24
+    );
+    const minimum = Math.min(ORGAN_TREE_MIN_WIDTH, viewportMaximum);
+    const maximum = Math.min(ORGAN_TREE_MAX_WIDTH, viewportMaximum);
+    const nextWidth = Math.min(
+      maximum,
+      Math.max(minimum, startWidth + moveEvent.clientX - startX)
+    );
+    organTree.style.width = `${nextWidth}px`;
+  };
+
+  const finishResize = () => {
+    organTree.classList.remove('resizing');
+    organTreeResizeHandle.removeEventListener('pointermove', onPointerMove);
+    organTreeResizeHandle.removeEventListener('pointerup', finishResize);
+    organTreeResizeHandle.removeEventListener('pointercancel', finishResize);
+  };
+
+  organTreeResizeHandle.addEventListener('pointermove', onPointerMove);
+  organTreeResizeHandle.addEventListener('pointerup', finishResize);
+  organTreeResizeHandle.addEventListener('pointercancel', finishResize);
+});
+// Organ tree resize end
+
+// ================================================================
+//  7. Toolbar actions
+// ================================================================
+
+// 7a. Reset View
+document.getElementById('btn-reset').addEventListener('click', () => {
+  camera.position.copy(INITIAL_CAM_POS);
+  controls.target.set(0, 0, 0);
+  controls.update();
+});
+
+// 7a-bis. Zoom in / out
+function zoomCamera(factor) {
+  const dir = new THREE.Vector3().subVectors(controls.target, camera.position).normalize();
+  const dist = camera.position.distanceTo(controls.target);
+  const newDist = dist * factor;
+  camera.position.copy(controls.target).addScaledVector(dir, -newDist);
+  controls.update();
+}
+document.getElementById('btn-zoom-in').addEventListener('click', () => zoomCamera(0.75));
+document.getElementById('btn-zoom-out').addEventListener('click', () => zoomCamera(1.35));
+
+// 7b. Auto-rotate
+let isRotating = false;
+const btnRotate = document.getElementById('btn-rotate');
+btnRotate.addEventListener('click', () => {
+  isRotating = !isRotating;
+  controls.autoRotate = isRotating;
+  controls.autoRotateSpeed = 2.0;
+  btnRotate.classList.toggle('active', isRotating);
+  btnRotate.title = isRotating ? '停止旋转' : '自动旋转';
+  btnRotate.setAttribute('aria-label', btnRotate.title);
+  btnRotate.setAttribute('aria-pressed', String(isRotating));
+  const tooltip = btnRotate.querySelector('.tooltip');
+  if (tooltip) tooltip.textContent = btnRotate.title;
+});
+
+// 7c. Background toggle
+let isDarkBg = false;
+const btnBg = document.getElementById('btn-bg');
+btnBg.addEventListener('click', () => {
+  isDarkBg = !isDarkBg;
+  scene.background = new THREE.Color(isDarkBg ? '#1a1a2e' : "#f5f5f8");
+  document.body.classList.toggle('dark-mode', isDarkBg);
+  btnBg.title = isDarkBg ? '切换为浅色背景' : '切换为深色背景';
+  btnBg.setAttribute('aria-label', btnBg.title);
+  btnBg.setAttribute('aria-pressed', String(isDarkBg));
+  const tooltip = btnBg.querySelector('.tooltip');
+  if (tooltip) tooltip.textContent = btnBg.title;
+});
+
+// 7d. Screenshot
+document.getElementById('btn-screenshot').addEventListener('click', () => {
+  const oldRatio = renderer.getPixelRatio();
+  // Render at 2x for high-res screenshot
+  renderer.setPixelRatio(2);
+  renderer.render(scene, camera);
+  const link = document.createElement('a');
+  link.download = `screenshot_3d_${Date.now()}.png`;
+  link.href = renderer.domElement.toDataURL('image/png');
+  link.click();
+  renderer.setPixelRatio(oldRatio);
+});
+
+// ================================================================
+//  8. Measurement Tool
+// ================================================================
+const measureManager = {
+  active: false,
+  points: [],
+  markers: [],
+  lines: [],
+  labels: [],
+  group: new THREE.Group(),
+  pointerDown: { x: 0, y: 0 },
+
+  init() {
+    scene.add(this.group);
+    this.bindEvents();
+  },
+
+  bindEvents() {
+    const el = renderer.domElement;
+    el.addEventListener('pointerdown', (e) => {
+      this.pointerDown.x = e.clientX;
+      this.pointerDown.y = e.clientY;
+    });
+    el.addEventListener('pointerup', (e) => {
+      if (!this.active) return;
+      const dx = e.clientX - this.pointerDown.x;
+      const dy = e.clientY - this.pointerDown.y;
+      if (Math.sqrt(dx*dx + dy*dy) > 5) return;
+      this.handleClick(e);
+    });
+    el.addEventListener('contextmenu', (e) => {
+      if (this.active) { e.preventDefault(); this.cancelPending(); }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.active) this.cancelPending();
+    });
+  },
+
+  handleClick(event) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    const mouse = new THREE.Vector2(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1
+    );
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    const visibleMeshes = meshes.filter(m => m.visible);
+    const intersects = raycaster.intersectObjects(visibleMeshes);
+    if (intersects.length === 0) return;
+
+    const point = intersects[0].point.clone();
+    this.placePoint(point);
+  },
+
+  placePoint(point) {
+    const marker = new THREE.Mesh(
+      new THREE.SphereGeometry(maxDim * 0.004, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xffdd44 })
+    );
+    marker.position.copy(point);
+    this.group.add(marker);
+    this.markers.push(marker);
+    this.points.push(point);
+
+    const statusEl = document.getElementById('measure-status');
+
+    if (this.points.length === 1) {
+      statusEl.textContent = '测量 · 请选择第二个点';
+      statusEl.style.display = 'block';
+    } else if (this.points.length === 2) {
+      this.finalizeMeasurement(this.points[0], this.points[1]);
+      this.points = [];
+      statusEl.textContent = '测量 · 请选择第一个点继续';
+      document.getElementById('measure-clear-btn').style.display = 'block';
+    }
+  },
+
+  finalizeMeasurement(pA, pB) {
+    const dist = pA.distanceTo(pB);
+
+    // Draw line
+    const lineGeo = new THREE.BufferGeometry().setFromPoints([pA, pB]);
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xffdd44 });
+    const line = new THREE.Line(lineGeo, lineMat);
+    this.group.add(line);
+    this.lines.push(line);
+
+    // Distance label (Sprite with canvas texture)
+    const mid = new THREE.Vector3().addVectors(pA, pB).multiplyScalar(0.5);
+    const distText = dist >= 100 ? `${(dist/10).toFixed(1)} cm` : `${dist.toFixed(1)} mm`;
+    const label = this.makeTextSprite(distText);
+    label.position.copy(mid);
+    this.group.add(label);
+    this.labels.push(label);
+  },
+
+  makeTextSprite(message) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 512;
+    canvas.height = 96;
+    ctx.clearRect(0, 0, 512, 96);
+    // Background rect (fully opaque)
+    ctx.fillStyle = 'rgba(0,0,0,0.88)';
+    ctx.beginPath();
+    ctx.roundRect(10, 8, 492, 54, 10);
+    ctx.fill();
+    // Text (bigger font)
+    ctx.font = 'Bold 30px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(message, 256, 38);
+    // Texture
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    const spriteMat = new THREE.SpriteMaterial({ map: texture, depthTest: false, sizeAttenuation: true });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(maxDim * 0.12, maxDim * 0.035, 1);
+    return sprite;
+  },
+
+  cancelPending() {
+    this.points = [];
+    if (this.markers.length > 0) {
+      const lastMarker = this.markers.pop();
+      this.group.remove(lastMarker);
+      lastMarker.geometry.dispose();
+      lastMarker.material.dispose();
+    }
+    document.getElementById('measure-status').style.display = 'none';
+  },
+
+  clearAll() {
+    while (this.markers.length) {
+      const m = this.markers.pop();
+      this.group.remove(m);
+      m.geometry.dispose();
+      m.material.dispose();
+    }
+    while (this.lines.length) {
+      const l = this.lines.pop();
+      this.group.remove(l);
+      l.geometry.dispose();
+      l.material.dispose();
+    }
+    while (this.labels.length) {
+      const l = this.labels.pop();
+      this.group.remove(l);
+      l.material.map?.dispose();
+      l.material.dispose();
+    }
+    this.points = [];
+    document.getElementById('measure-status').style.display = 'none';
+    document.getElementById('measure-clear-btn').style.display = 'none';
+  },
+
+  meshHasMeasurement(mesh) { return false; },
+
+  removeMeasurementsForMesh(mesh) {},
+};
+
+measureManager.init();
+
+// Mount measurement clear button
+document.getElementById('measure-clear-btn').addEventListener('click', () => {
+  measureManager.clearAll();
+});
+
+// Toggle measurement mode
+const btnMeasure = document.getElementById('btn-measure');
+let isMeasureMode = false;
+btnMeasure.addEventListener('click', () => {
+  isMeasureMode = !isMeasureMode;
+  measureManager.active = isMeasureMode;
+  btnMeasure.classList.toggle('measuring', isMeasureMode);
+  btnMeasure.setAttribute('aria-pressed', String(isMeasureMode));
+  renderer.domElement.style.cursor = isMeasureMode ? 'crosshair' : 'default';
+  if (isMeasureMode) {
+    document.getElementById('measure-status').textContent = '测量 · 请选择第一个点';
+    document.getElementById('measure-status').style.display = 'block';
+  } else {
+    measureManager.cancelPending();
+    document.getElementById('measure-status').style.display = 'none';
+  }
+});
+
+// ================================================================
+//  9a. Annotation Manager
+// ================================================================
+let annotateIdCounter = 0;
+const annotationManager = {
+  active: false,
+  annotations: [],
+  group: new THREE.Group(),
+  pendingPoint: null,
+
+  init() {
+    scene.add(this.group);
+    this.bindEvents();
+  },
+
+  bindEvents() {
+    const el = renderer.domElement;
+    el.addEventListener('pointerup', (e) => {
+      if (!this.active) return;
+      const dx = e.clientX - measureManager.pointerDown.x;
+      const dy = e.clientY - measureManager.pointerDown.y;
+      if (Math.sqrt(dx*dx + dy*dy) > 5) return;
+      this.handleClick(e);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.active && !this.pendingPoint) {
+        this.deactivate();
+      }
+    });
+  },
+
+  handleClick(event) {
+    if (this.pendingPoint) return; // already awaiting text input
+    const rect = renderer.domElement.getBoundingClientRect();
+    const mouse = new THREE.Vector2(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1
+    );
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    const visibleMeshes = meshes.filter(m => m.visible);
+    const intersects = raycaster.intersectObjects(visibleMeshes);
+    if (intersects.length === 0) return;
+
+    const point = intersects[0].point.clone();
+    this.showInput(point);
+  },
+
+  showInput(point) {
+    this.pendingPoint = point;
+    document.getElementById('annotation-input-wrap').style.display = 'block';
+    const textarea = document.getElementById('annotation-text');
+    textarea.value = '';
+    textarea.focus();
+    document.getElementById('annotation-status').style.display = 'none';
+  },
+
+  confirmAnnotation() {
+    const text = document.getElementById('annotation-text').value.trim();
+    if (!text || !this.pendingPoint) {
+      this.hideInput();
+      return;
+    }
+    annotateIdCounter++;
+    const point = this.pendingPoint;
+    this.pendingPoint = null;
+
+    // Marker sphere (red)
+    const marker = new THREE.Mesh(
+      new THREE.SphereGeometry(maxDim * 0.010, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xff4444 })
+    );
+    marker.position.copy(point);
+    this.group.add(marker);
+
+    // Label sprite
+    const labelText = `#${annotateIdCounter} ${text}`;
+    const label = this.makeTextSprite(labelText);
+    label.position.copy(point.clone().add(new THREE.Vector3(0, maxDim * 0.025, 0)));
+    this.group.add(label);
+
+    this.annotations.push({
+      id: annotateIdCounter,
+      position: point.clone(),
+      text: text,
+      marker: marker,
+      label: label,
+    });
+
+    this.hideInput();
+    document.getElementById('annotation-status').textContent = `标注 · 已添加标注 ${annotateIdCounter}，可继续选择表面`;
+    document.getElementById('annotation-status').style.display = 'block';
+    document.getElementById('annotation-clear-btn').style.display = 'block';
+  },
+
+  cancelAnnotation() {
+    this.pendingPoint = null;
+    this.hideInput();
+    if (this.annotations.length === 0) {
+      document.getElementById('annotation-clear-btn').style.display = 'none';
+    }
+    if (this.active) {
+      document.getElementById('annotation-status').textContent = '标注 · 请选择器官表面';
+      document.getElementById('annotation-status').style.display = 'block';
+    }
+  },
+
+  hideInput() {
+    document.getElementById('annotation-input-wrap').style.display = 'none';
+  },
+
+  makeTextSprite(message) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 640;
+    canvas.height = 120;
+    ctx.clearRect(0, 0, 640, 120);
+
+    // Measure text width
+    ctx.font = 'Bold 30px Arial';
+    const tw = ctx.measureText(message).width;
+    const bw = Math.max(tw + 40, 100);
+    const bx = 8;
+
+    // Background (fully opaque red)
+    ctx.fillStyle = 'rgba(200,50,50,1.0)';
+    ctx.beginPath();
+    ctx.roundRect(bx, 10, bw + 14, 54, 10);
+    ctx.fill();
+
+    // Text (bigger font)
+    ctx.font = 'Bold 30px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(message, bx + 20, 42);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    const spriteMat = new THREE.SpriteMaterial({ map: texture, depthTest: false, sizeAttenuation: true });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(maxDim * 0.28, maxDim * 0.045, 1);
+    return sprite;
+  },
+
+  clearAll() {
+    while (this.annotations.length) {
+      const a = this.annotations.pop();
+      this.group.remove(a.marker);
+      a.marker.geometry.dispose();
+      a.marker.material.dispose();
+      this.group.remove(a.label);
+      a.label.material.map?.dispose();
+      a.label.material.dispose();
+    }
+    document.getElementById('annotation-clear-btn').style.display = 'none';
+    document.getElementById('annotation-status').style.display = 'none';
+  },
+
+  deactivate() {
+    this.active = false;
+    this.pendingPoint = null;
+    this.hideInput();
+    document.getElementById('annotation-status').style.display = 'none';
+    btnAnnotate.classList.remove('active');
+    btnAnnotate.setAttribute('aria-pressed', 'false');
+    renderer.domElement.style.cursor = 'default';
+  },
+
+  activate() {
+    this.active = true;
+    btnAnnotate.classList.add('active');
+    btnAnnotate.setAttribute('aria-pressed', 'true');
+    renderer.domElement.style.cursor = 'crosshair';
+    document.getElementById('annotation-status').textContent = '标注 · 请选择器官表面';
+    document.getElementById('annotation-status').style.display = 'block';
+  }
+};
+
+annotationManager.init();
+
+// Annotation UI buttons
+document.getElementById('annotation-confirm').addEventListener('click', () => annotationManager.confirmAnnotation());
+document.getElementById('annotation-cancel').addEventListener('click', () => annotationManager.cancelAnnotation());
+document.getElementById('annotation-text').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); annotationManager.confirmAnnotation(); }
+  if (e.key === 'Escape') { annotationManager.cancelAnnotation(); }
+});
+document.getElementById('annotation-clear-btn').addEventListener('click', () => annotationManager.clearAll());
+
+// Toggle annotation mode
+const btnAnnotate = document.getElementById('btn-annotate');
+btnAnnotate.addEventListener('click', () => {
+  if (annotationManager.active) {
+    annotationManager.deactivate();
+  } else {
+    // Deactivate measure mode if active
+    if (isMeasureMode) btnMeasure.click();
+    annotationManager.activate();
+  }
+});
+
+// ================================================================
+//  9b. Resize handler
+// ================================================================
+window.addEventListener('resize', () => {
+  resizeRendererToView();
+});
+// ================================================================
+//  10. Render loop
+// ================================================================
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// ================================================================
+//  11. Resection plane toggle — show/hide or compute on demand
+// ================================================================
+document.getElementById('toggle-resection-plane').addEventListener('change', function () {
+  const loadingEl = document.getElementById('resection-loading');
+  const toggle = this;
+  if (this.checked) {
+    if (planeObjects.length > 0) {
+      // Planes already rendered — show only active plane
+      planeObjects.forEach(function (po, i) {
+        var v = i === activePlane;
+        po.mesh.visible = v;
+        po.line.visible = v;
+        if (po.gridHelper) po.gridHelper.visible = v;
+        if (po.label) po.label.visible = v;
+        po.cpGroup.visible = false;
+      });
+      var sel = document.getElementById('plane-selector');
+      if (sel) sel.style.display = 'block';
+      var leg = document.getElementById('color-legend');
+      if (leg) leg.style.display = 'block';
+      var pathPanel = document.getElementById('path-planning-panel');
+      var pathToggle = document.getElementById('toggle-path-planning');
+      if (pathPanel) {
+        pathPanel.style.display = pathToggle && pathToggle.checked
+          && pathPanel.dataset.available === 'true' ? 'flex' : 'none';
+      }
+      document.dispatchEvent(new CustomEvent('resection-workspace-open-request', {
+        detail: {open: true}
+      }));
+    } else {
+      // No planes yet — call API to compute on demand
+      if (loadingEl) loadingEl.style.display = 'flex';
+      toggle.disabled = true;
+      const controller = new AbortController();
+      resectionPlanAbortController = controller;
+      var cd = document.getElementById('case-data');
+      fetch('/api/plan-resection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          case_dir: cd ? cd.dataset.maskDir : '',
+          output_dir: cd ? cd.dataset.outputDir : '',
+          case_name: cd ? cd.dataset.caseName : '',
+          tumor_margin_mm: 5.0
+        })
+      })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (bodyText) {
+            var detail = bodyText || ('HTTP ' + r.status);
+            try { detail = JSON.parse(bodyText).message || detail; } catch (e) { /* keep text */ }
+            throw new Error('请求失败 (' + r.status + '): ' + detail);
+          });
+        }
+        return r.json();
+      })
+      .then(function (data) {
+        if (resectionPlanAbortController !== controller) return;
+        if (data.json_updated || data.resection_plane_count > 0) {
+          // Computation succeeded — reload to show new planes
+          window.location.reload();
+        } else {
+          if (loadingEl) loadingEl.style.display = 'none';
+          toggle.checked = false;
+          alert('切除面计算失败：' + (data.message || '未知错误'));
+        }
+      })
+      .catch(function (err) {
+        if (err.name === 'AbortError') return;
+        if (resectionPlanAbortController !== controller) return;
+        if (loadingEl) loadingEl.style.display = 'none';
+        toggle.checked = false;
+        alert('网络请求失败：' + err.message);
+      })
+      .finally(function () {
+        if (resectionPlanAbortController === controller) {
+          resectionPlanAbortController = null;
+          toggle.disabled = false;
+        }
+      });
+    }
+  } else {
+    // Hide all planes
+    planeObjects.forEach(function (po) {
+      po.mesh.visible = false;
+      po.line.visible = false;
+      if (po.gridHelper) po.gridHelper.visible = false;
+      if (po.label) po.label.visible = false;
+      po.cpGroup.visible = false;
+    });
+    var sel = document.getElementById('plane-selector');
+    if (sel) sel.style.display = 'none';
+    var leg = document.getElementById('color-legend');
+    if (leg) leg.style.display = 'none';
+    var pathPanel = document.getElementById('path-planning-panel');
+    if (pathPanel) pathPanel.style.display = 'none';
+    var pathToggle = document.getElementById('toggle-path-planning');
+    if (pathToggle) {
+      pathToggle.checked = false;
+    }
+  }
+});
+
+document.getElementById('cancel-resection-computation').addEventListener('click', function () {
+  if (!resectionPlanAbortController) return;
+  resectionPlanAbortController.abort();
+  resectionPlanAbortController = null;
+  const loadingEl = document.getElementById('resection-loading');
+  if (loadingEl) loadingEl.style.display = 'none';
+  const toggle = document.getElementById('toggle-resection-plane');
+  toggle.checked = false;
+  toggle.disabled = false;
+});
+</script>
+</body>
+</html>

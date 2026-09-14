@@ -1,0 +1,118 @@
+{
+  "protocol": "live_portb_formal_v1",
+  "frozen_before_download": true,
+  "questions": 138,
+  "cases": 64,
+  "by_subtype": {
+    "lesion counting": 34,
+    "organ volume measurement": 24,
+    "liver lesion existence": 45,
+    "largest lesion diameter": 8,
+    "lesion volume measurement": 27
+  },
+  "case_ids": [
+    "BDMAP_00000010",
+    "BDMAP_00000065",
+    "BDMAP_00000095",
+    "BDMAP_00000127",
+    "BDMAP_00000134",
+    "BDMAP_00000190",
+    "BDMAP_00000198",
+    "BDMAP_00000225",
+    "BDMAP_00000303",
+    "BDMAP_00000346",
+    "BDMAP_00000396",
+    "BDMAP_00000405",
+    "BDMAP_00000413",
+    "BDMAP_00000420",
+    "BDMAP_00000503",
+    "BDMAP_00000513",
+    "BDMAP_00000524",
+    "BDMAP_00000538",
+    "BDMAP_00000560",
+    "BDMAP_00000575",
+    "BDMAP_00000581",
+    "BDMAP_00000607",
+    "BDMAP_00000660",
+    "BDMAP_00000664",
+    "BDMAP_00000668",
+    "BDMAP_00000672",
+    "BDMAP_00000700",
+    "BDMAP_00000771",
+    "BDMAP_00000776",
+    "BDMAP_00000794",
+    "BDMAP_00000815",
+    "BDMAP_00000826",
+    "BDMAP_00000831",
+    "BDMAP_00000847",
+    "BDMAP_00000855",
+    "BDMAP_00000877",
+    "BDMAP_00000879",
+    "BDMAP_00000925",
+    "BDMAP_00000929",
+    "BDMAP_00000951",
+    "BDMAP_00000981",
+    "BDMAP_00000985",
+    "BDMAP_00001016",
+    "BDMAP_00001022",
+    "BDMAP_00001029",
+    "BDMAP_00001061",
+    "BDMAP_00001064",
+    "BDMAP_00001070",
+    "BDMAP_00001123",
+    "BDMAP_00001149",
+    "BDMAP_00001168",
+    "BDMAP_00001185",
+    "BDMAP_00001215",
+    "BDMAP_00001249",
+    "BDMAP_00001292",
+    "BDMAP_00001297",
+    "BDMAP_00001343",
+    "BDMAP_00001354",
+    "BDMAP_00001485",
+    "BDMAP_00001496",
+    "BDMAP_00001529",
+    "BDMAP_00001543",
+    "BDMAP_00001572",
+    "BDMAP_00001582"
+  ],
+  "cohort_rule": "all eligible original questions for case IDs 1-1624; contiguous range covered by the first seven verified mask shards",
+  "cohort_revision_reason": "shards 8-9 were unavailable after repeated network failures before any formal model run; selection was not based on model outputs",
+  "source_revisions": {
+    "qa": "a8b9db5133fda02567476dcb49498ec51f6aed37",
+    "mask": "122e04fc188949ed60a74f3bc6b4fa74e06a6152",
+    "ct": "a7ded8ce201467fb8031d0c6d6413caed6100d6d"
+  },
+  "answer_agreement_tolerances": {
+    "organ volume measurement": {
+      "absolute_floor": 1.0,
+      "relative": 0.02,
+      "unit": "cm3"
+    },
+    "lesion volume measurement": {
+      "absolute_floor": 0.1,
+      "relative": 0.05,
+      "unit": "cm3"
+    },
+    "largest lesion diameter": {
+      "absolute_floor": 0.1,
+      "relative": 0.05,
+      "unit": "cm"
+    },
+    "lesion counting": {
+      "absolute": 0,
+      "unit": "count"
+    },
+    "liver lesion existence": {
+      "exact": true,
+      "unit": "bool"
+    }
+  },
+  "port_b_numerical_validation": {
+    "volume_absolute_cm3": 0.01,
+    "count": "exact",
+    "existence": "exact",
+    "diameter_note": "independent algorithm validation is outside this agent experiment; compare to original answer using the the frozen agreement tolerance"
+  },
+  "scope": "same-grid BodyMaps CT and AbdomenAtlas3.0Mini reference masks; actual Port B HTTP computation; no automatic segmentation"
+}

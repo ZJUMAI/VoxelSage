@@ -1,0 +1,11 @@
+{
+  "n": 25,
+  "numeric_coverage": 25,
+  "within_0_01_mm": 25,
+  "exceptions": 0,
+  "mean_absolute_error_mm": 0.0024989270578638667,
+  "median_absolute_error_mm": 0.0024330205060749677,
+  "max_absolute_error_mm": 0.004811309064326252,
+  "single_tool_call": 20,
+  "median_seconds": 13.562
+}

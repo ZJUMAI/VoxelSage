@@ -1,0 +1,30 @@
+{
+  "cold": {
+    "n": 137,
+    "answer_correct": 120,
+    "exceptions": 0,
+    "no_additional_calls": 0,
+    "median_seconds": 8.157
+  },
+  "cache": {
+    "n": 137,
+    "answer_correct": 122,
+    "exceptions": 0,
+    "no_additional_calls": 130,
+    "median_seconds": 2.563
+  },
+  "missing": {
+    "n": 137,
+    "answer_correct": 137,
+    "exceptions": 0,
+    "no_additional_calls": 0,
+    "median_seconds": 2.781
+  },
+  "multi": {
+    "n": 63,
+    "answer_correct": 59,
+    "exceptions": 0,
+    "no_additional_calls": 0,
+    "median_seconds": 11.297
+  }
+}
