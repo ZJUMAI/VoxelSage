@@ -152,36 +152,17 @@ def figure_replication_effects(rows: dict[str, dict[str, dict[str, Any]]]) -> No
 def figure_shield_ablation(rows: dict[str, dict[str, dict[str, Any]]]) -> None:
     delta_c4 = paired_values(rows, "C4", "C0", "realized_episode_B_ml")
     delta_c5 = paired_values(rows, "C5", "C0", "realized_episode_B_ml")
-    scene_ids = sorted(rows["C0"])
-    overrun_c4 = sum(
-        rows["C4"][scene_id]["realized_episode_B_ml"]
-        > rows["C4"][scene_id]["budget_ml"] + 1e-9
-        for scene_id in scene_ids
-    )
-    overrun_c5 = sum(
-        rows["C5"][scene_id]["realized_episode_B_ml"]
-        > rows["C5"][scene_id]["budget_ml"] + 1e-9
-        for scene_id in scene_ids
-    )
     margin = 16.07054347826075
-    fig, axes = plt.subplots(2, 1, figsize=(4.8, 4.2))
-    axes[0].boxplot(
+    fig, ax = plt.subplots(figsize=(4.8, 2.8))
+    ax.boxplot(
         [delta_c4, delta_c5],
         tick_labels=["BC + lazy exact", "BC, no shield"],
         showfliers=True,
     )
-    axes[0].axhline(margin, color="#a33b3b", linestyle="--", linewidth=1, label="Frozen margin")
-    axes[0].set_ylabel("Paired simulated blood difference (mL)")
-    axes[0].legend()
-    axes[0].grid(axis="y", alpha=0.2)
-    counts = [overrun_c4, overrun_c5]
-    bars = axes[1].bar(
-        ["BC + lazy exact", "BC, no shield"], counts, color=["#4b8b64", "#b65b5b"]
-    )
-    axes[1].bar_label(bars)
-    axes[1].set_ylabel("Scenes exceeding episode budget")
-    axes[1].set_ylim(0, max(counts) + 5)
-    axes[1].grid(axis="y", alpha=0.2)
+    ax.axhline(margin, color="#a33b3b", linestyle="--", linewidth=1, label="Frozen margin")
+    ax.set_ylabel("Paired simulated blood difference (mL)")
+    ax.legend()
+    ax.grid(axis="y", alpha=0.2)
     fig.tight_layout()
     save_figure(fig, "shield_ablation")
 
