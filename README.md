@@ -13,6 +13,8 @@ Upload DICOM or NIfTI data, direct the agent in natural language, and complete
 segmentation, quantitative measurements, key-slice selection, interactive 3D
 reconstruction, and preoperative planning—all in one place.
 
+[Technical report](https://arxiv.org/abs/2609.37648)
+
 [![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
 [![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
