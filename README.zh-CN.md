@@ -12,6 +12,8 @@ VoxelSage 是面向腹部 CT 研究的自托管医学影像工作台。上传 DI
 数据后，即可通过自然语言与 Agent 交互，在同一工作台中完成影像分割、定量
 测量与关键切片选取，查看交互式三维重建结果，并开展术前规划。
 
+[技术报告](https://arxiv.org/abs/2609.37648)
+
 [![GitHub Stars](https://img.shields.io/github/stars/ZJUMAI/VoxelSage?style=flat&logo=github)](https://github.com/ZJUMAI/VoxelSage)
 [![Last Commit](https://img.shields.io/github/last-commit/ZJUMAI/VoxelSage)](https://github.com/ZJUMAI/VoxelSage/commits/main)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
